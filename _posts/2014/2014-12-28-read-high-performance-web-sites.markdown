@@ -4,6 +4,7 @@ title:  "读书笔记：高性能网站建设"
 date:   '2014-12-28 22:16:41'
 author: hector
 categories: notes
+tags: [笔记, 高性能]
 ---
 
 **第一章  减少HTTP请求**

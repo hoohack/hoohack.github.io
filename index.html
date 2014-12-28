@@ -7,15 +7,24 @@ layout: default
   <ul class="post-list">
     {% for post in site.posts %}
       <li>
-        <span class="post-meta">{{ post.date | date: "%b %d, %Y" }},&nbsp;By {{ post.author }}</span>
 
         <h2>
           <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
         </h2>
 
+        <span class="post-meta">{{ post.date | date: "%b %d, %Y" }},&nbsp;By {{ post.author }}</span>
+
         <p>
           {{ post.content | split:'<!--more-->' |first }}
         </p>
+
+        <!--<p>-->
+          <!--标签：-->
+          <!--{% for tag in site.tags %}-->
+            <!--&lt;!&ndash;<a href="/show_by_tag.html?tag={{ tag[0] }}"> {{ tag[0] }}</a>&ndash;&gt;-->
+          <!--&lt;!&ndash;{{ tag[0] }}&ndash;&gt;-->
+          <!--{% endfor %}-->
+        <!--</p>-->
 
         <h6><a class="post-link" href="{{ post.url | prepend: site.baseurl }}">查看更多</a></h6>
       </li>

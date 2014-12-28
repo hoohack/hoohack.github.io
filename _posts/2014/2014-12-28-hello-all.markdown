@@ -1,9 +1,0 @@
----
-layout: post
-title:  "Hello everybody"
-date:   '2014-12-28 16:35:41'
-categories: essay
----
-Hello everybody
-
-This is my first blog

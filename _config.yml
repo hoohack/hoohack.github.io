@@ -1,11 +1,13 @@
+timezone: 'Asia/Shanghai'
+
 # Site settings
-site_name: Hector's Blog
+site_name : Hector's blog
 title: 我并非不是一个菜鸟
 email: hhqcontinue@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   Power by Hector
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: "https://hhqcontinue.github.io" # the base hostname & protocol for your site
+url: "http://www.aintnot.com" # the base hostname & protocol for your site
 github_username:  hhqcontinue
 
 # Build settings

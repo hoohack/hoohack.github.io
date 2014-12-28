@@ -8,14 +8,12 @@
 
     // Positioning context for the mobile navigation icon
     position: relative;
+    text-align: center;
 }
 
 .site-title {
-    font-size: 26px;
-    line-height: 56px;
     letter-spacing: -1px;
     margin-bottom: 0;
-    float: left;
 
     &,
     &:visited {
@@ -23,9 +21,40 @@
     }
 }
 
+.blog-header {
+    padding: 10px;
+}
+
+.blog-header h3 {
+    font-weight: normal;
+    font-size: 2em;
+    line-height: 1;
+}
+
+.blog-header h4 {
+    font-weight: normal;
+    font-size: 1.2em;
+    line-height: 1;
+    margin-top: 10px;
+}
+
 .site-nav {
-    float: right;
-    line-height: 56px;
+    line-height: 2.5em;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 346px;
+
+    @extend %clearfix;
+
+    ul {
+        list-style: none;
+    }
+
+    ul li {
+        float: left;
+        margin-left: 30px;
+        font-size: 1.5em;
+    }
 
     .menu-icon {
         display: none;
@@ -175,6 +204,7 @@
 
     > li {
         margin-bottom: $spacing-unit;
+        border-bottom: 2px solid #ccc;
     }
 }
 

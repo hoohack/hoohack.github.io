@@ -6,14 +6,14 @@ author: hector
 categories: notes
 ---
 
-# 读书笔记-高性能网站建设
-
 **第一章  减少HTTP请求**
 
 >* 使用图片地图：当导航栏包含多张图片时，可以将其合并成一张图片，再通过计算位置触发不同的链接
 >* CSS sprites：将图标合并，引入一张背景图，通过CSS控制其位置
 >* 内联图片：将图片编码后再放到data后面。可用PHP的base64_encode对图片文件进行编码。
 >* 合并脚本和样式文件：理想情况下一个页面一个CSS文件
+
+<!--more-->
 
 **第二章  使用CDN(Content Delivery Networks)**
 

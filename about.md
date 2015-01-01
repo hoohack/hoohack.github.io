@@ -7,4 +7,4 @@ permalink: /about/
 
 [Github](https://github.com/hhqcontinue)
 
-[个人简历](/assets/resume)
+[个人简历](/assets/resume)s

@@ -1,0 +1,167 @@
+* {
+	margin: 0 auto;
+	padding: 0;
+}
+
+ul, li {
+	list-style: none;
+}
+
+body {
+	font-family: sans-serif;
+	page-break-after:always;
+}
+
+#container {
+	width: 1000px;
+}
+
+#header {
+	padding: 30px 0;
+}
+
+#title p {
+	text-align: center;
+	font-size: 2.5em;
+	font-weight: bolder;
+}
+
+.fixed {
+	clear: both;
+}
+
+#apply {
+	padding-top: 20px;
+	padding-right: 80px;
+	padding-bottom: 20px;
+}
+
+#apply p {
+	text-align: right;
+	font-size: 20px;
+}
+
+#apply span {
+	text-decoration: underline;
+}
+
+#content {
+	padding: 0 80px;
+}
+
+.element {
+	text-align: left;
+	/*width: 50px;*/
+}
+
+#photo {
+	width: 155px;
+	float: left;
+}
+
+#msg-content {
+	width: 650px;
+	float: left;
+	/*padding-left: 30px;*/
+}
+
+#msg-content li {
+	line-height: 30px;
+}
+
+.part-title {
+	padding-top: 10px;
+	border-bottom: 1px solid #555;
+}
+
+#education-msg, #internship-msg, #honors-msg, #skills-content {
+	padding-top: 10px;
+}
+
+.background {
+	width: 100px;
+	float: left;
+}
+
+.specialty {
+	width: 80px;
+	float: left;
+}
+
+.background, .specialty {
+	padding-top: 5px;
+}
+
+.fa {
+	width: 15px;
+	float: left;
+	padding-right: 5px;
+}
+
+.company-name {
+	width: 250px;
+	float: left;
+}
+
+.responsibility {
+	width: 100px;
+	float: right;
+}
+
+.position-msg {
+	clear: both;
+}
+
+.position-msg .position{
+	width: 200px;
+	float: left;
+}
+
+.position-msg .work-date {
+	width: 120px;
+	float: right;
+}
+
+.position-msg {
+	padding-top: 5px;
+}
+
+.work-content {
+	padding: 5px 0;
+}
+
+#honors-msg {
+	padding-bottom: 20px;
+}
+
+.honors-name {
+	width: 200px;
+	float: left;
+}
+
+.honors-date {
+	width: 120px;
+	float: right;
+}
+
+.compus-content {
+	padding-top: 5px;
+}
+
+#skills-content .fa {
+	padding-top: 4px;
+}
+
+#skills-content {
+	line-height: 25px;
+}
+
+.project-content {
+	padding: 10px 0;
+	line-height: 20px;
+	border-bottom: 1px dashed #BDBDBD;
+}
+
+#project-exp .last {
+	border-bottom: none;
+}

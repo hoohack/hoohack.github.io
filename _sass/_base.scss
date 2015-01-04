@@ -147,6 +147,17 @@ pre {
     }
 }
 
+table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+table, tr, td, th {
+    border:1px solid #ddd!important
+}
+
 
 
 /**

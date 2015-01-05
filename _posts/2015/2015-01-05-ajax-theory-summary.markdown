@@ -18,6 +18,8 @@ tags: [ajax原理]
 ###通过XMLHTTPRequest理解AJAX
 > AJAX原理简单地说就是通过XMLHTTPRequest来向服务器发送异步请求，从服务器获得数据，然后用JavaScript来操作DOM而刷新页面。
 
+<!--more-->
+
 ####XMLHTTPRequest对象属性
 ![XMLHTTPRequest对象属性](http://7u2eqw.com1.z0.glb.clouddn.com/XMLHTTPRequest对象属性.png)
 

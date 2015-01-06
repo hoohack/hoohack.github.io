@@ -23,6 +23,7 @@
 
 .blog-header {
     padding: 10px;
+    background-color: #000000;
 }
 
 .blog-header h3 {
@@ -31,11 +32,16 @@
     line-height: 1;
 }
 
+.blog-header a {
+    color: #ffffff !important;
+}
+
 .blog-header h4 {
     font-weight: normal;
     font-size: 1.2em;
     line-height: 1;
     margin-top: 10px;
+    color: #ffffff !important;
 }
 
 .site-nav {

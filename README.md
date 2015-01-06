@@ -1,2 +1,2 @@
-hhqcontinue.github.io
+My Blog
 =====================

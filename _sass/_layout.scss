@@ -77,7 +77,6 @@
     }
 
     @include media-query($on-palm) {
-        position: absolute;
         top: 9px;
         right: 30px;
         background-color: $background-color;

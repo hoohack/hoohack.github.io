@@ -34,6 +34,10 @@ ul, ol, dl, figure,
     margin-bottom: $spacing-unit / 2;
 }
 
+ul,li {
+    margin:0;
+    padding:0
+}
 
 
 /**

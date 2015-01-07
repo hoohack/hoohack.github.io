@@ -13,9 +13,9 @@ tags: [jsonp原理]
 ##跨域是什么
 简单理解，当a.com/get.html文件需要获取b.com/data.html文件中的数据，而这里a.com和b.com并不是同一台服务器，这就是跨域。
 引用一个表格，看看引起跨域的条件:
+<!--more-->
 
 ![跨域条件表格](http://7u2eqw.com1.z0.glb.clouddn.com/cross-domain.png)
-
 
 ##JSONP是怎么产生的
 > 因为AJAX无法实现跨域请求，凡事WEB页面中调用JavaScript文件不受是否跨域影响。于是判断，是否能通过纯WEB端跨域访问数据，只有一种可能，即在远程服务器上

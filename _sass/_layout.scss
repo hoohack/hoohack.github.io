@@ -2,7 +2,6 @@
  * Site header
  */
 .site-header {
-    border-top: 5px solid $grey-color-dark;
     border-bottom: 1px solid $grey-color-light;
     min-height: 56px;
 
@@ -23,7 +22,7 @@
 
 .blog-header {
     padding: 10px;
-    background-color: #000000;
+    background-color: #f9f9f9;
 }
 
 .blog-header h3 {
@@ -33,7 +32,7 @@
 }
 
 .blog-header a {
-    color: #ffffff !important;
+    color: #333 !important;
 }
 
 .blog-header h4 {
@@ -41,22 +40,27 @@
     font-size: 1.2em;
     line-height: 1;
     margin-top: 10px;
-    color: #ffffff !important;
+    color: #333 !important;
 }
 
 .site-nav {
-    line-height: 2.5em;
+//    line-height: 2.5em;
     margin-left: auto;
     margin-right: auto;
-    max-width: 346px;
+    text-align: center;
+    background-color: #333838;
 
     @extend %clearfix;
 
     ul {
         list-style: none;
+        display: inline-block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: -7px;
     }
 
-    ul li {
+    li {
         float: left;
         margin-left: 30px;
         font-size: 1.5em;
@@ -120,7 +124,9 @@
     }
 }
 
-
+.site-nav a {
+    color: #ddd;
+}
 
 /**
  * Site footer

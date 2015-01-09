@@ -44,7 +44,6 @@
 }
 
 .site-nav {
-//    line-height: 2.5em;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
@@ -58,12 +57,17 @@
         margin-left: auto;
         margin-right: auto;
         margin-bottom: -7px;
+        text-align: center;
     }
 
     li {
         float: left;
         margin-left: 30px;
         font-size: 1.5em;
+    }
+
+    ul li:first-child {
+        margin-left: 0;
     }
 
     .menu-icon {
@@ -83,10 +87,10 @@
     @include media-query($on-palm) {
         top: 9px;
         right: 30px;
-        background-color: $background-color;
+        background-color: #333838;
         border: 1px solid $grey-color-light;
         border-radius: 5px;
-        text-align: right;
+        text-align: center;
 
         .menu-icon {
             display: block;

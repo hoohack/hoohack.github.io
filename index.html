@@ -18,14 +18,6 @@ layout: default
           {{ post.content | split:'<!--more-->' |first }}
         </p>
 
-        <!--<p>-->
-          <!--标签：-->
-          <!--{% for tag in site.tags %}-->
-            <!--&lt;!&ndash;<a href="/show_by_tag.html?tag={{ tag[0] }}"> {{ tag[0] }}</a>&ndash;&gt;-->
-          <!--&lt;!&ndash;{{ tag[0] }}&ndash;&gt;-->
-          <!--{% endfor %}-->
-        <!--</p>-->
-
         <h6><a class="post-link" href="{{ post.url | prepend: site.baseurl }}">查看更多</a></h6>
       </li>
     {% endfor %}

@@ -25,6 +25,7 @@ layout: default
 
 </div>
 
+{% if paginator.total_pages != 1 %}
 <div id="post-pagination" class="pagination">
   {% if paginator.previous_page %}
   <span class="previous">
@@ -63,3 +64,4 @@ layout: default
   {% endif %}
 
 </div>
+{% endif %}

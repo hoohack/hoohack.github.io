@@ -136,6 +136,24 @@
     border-bottom: 1px solid #CCC;
 }
 
+#post-pagination ul {
+    list-style: none;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: -7px;
+    text-align: center;
+}
+
+#post-pagination li {
+    float: left;
+    margin-left: 5px;
+}
+
+#post-pagination ul li:first-child {
+    margin-left: 0;
+}
+
 /**
  * Site footer
  */

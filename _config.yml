@@ -10,7 +10,8 @@ baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://www.aintnot.com" # the base hostname & protocol for your site
 github_username:  hhqcontinue
 
-paginate: 10
+paginate: 5
+paginate_path: "page:num"
 
 # Build settings
 markdown: kramdown

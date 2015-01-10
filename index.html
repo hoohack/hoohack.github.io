@@ -5,7 +5,7 @@ layout: default
 <div class="home">
 
   <ul class="post-list">
-    {% for post in site.posts %}
+    {% for post in paginator.posts %}
       <li>
 
         <h2>
@@ -22,5 +22,44 @@ layout: default
       </li>
     {% endfor %}
   </ul>
+
+</div>
+
+<div id="post-pagination" class="pagination">
+  {% if paginator.previous_page %}
+  <span class="previous">
+    {% if paginator.previous_page == 1 %}
+    <a href="/">上一页</a>
+    {% else %}
+    <a href="{{ paginator.previous_page_path }}">上一页</a>
+    {% endif %}
+  </span>
+  {% endif %}
+
+  <ul class="pages">
+    <li class="page">
+      {% if paginator.page == 1 %}
+      <span class="current-page">1</span>
+      {% else %}
+      <a href="/">1</a>
+      {% endif %}
+    </li>
+
+    {% for count in (2..paginator.total_pages) %}
+    <li class="page">
+      {% if count == paginator.page %}
+      <span class="current-page">{{ count }}</span>
+      {% else %}
+      <a href="/page{{ count }}">{{ count }}</a>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if paginator.next_page %}
+  <span class="next">
+    <a href="{{ paginator.next_page_path }}">下一页</a>
+  </span>
+  {% endif %}
 
 </div>

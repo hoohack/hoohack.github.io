@@ -18,7 +18,7 @@ layout: default
           {{ post.content | split:'<!--more-->' |first }}
         </p>
 
-        <h6><a class="post-link" href="{{ post.url | prepend: site.baseurl }}">查看更多</a></h6>
+        <h6><a class="post-link read-more" href="{{ post.url | prepend: site.baseurl }}">Read more...</a></h6>
       </li>
     {% endfor %}
   </ul>

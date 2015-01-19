@@ -17,6 +17,8 @@ tags: [div, 浮动]
 
 很多时候我们期望实现下图的效果：
 
+<!--more-->
+
 ![期望效果](http://7u2eqw.com1.z0.glb.clouddn.com/parentDIV-subDIV_actural.png)
 
 于是添加如下样式:

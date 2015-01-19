@@ -259,6 +259,7 @@
 .read-more {
     font-weight: bold;
     font-size: 1.5em;
+    color: $brand-color;
 }
 
 .post-link, .read-more {
@@ -275,6 +276,9 @@
 .post-title {
     letter-spacing: -1px;
     line-height: 1;
+    color: $head-color;
+    font-size: 2em;
+    font-weight: bold;
 
     @include media-query($on-laptop) {
         font-size: 36px;

@@ -138,10 +138,8 @@
 
 #post-pagination ul {
     list-style: none;
-    display: inline-block;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: -7px;
     text-align: center;
 }
 
@@ -153,7 +151,6 @@
 #post-pagination ul li:first-child {
     margin-left: 0;
 }
-
 /**
  * Site footer
  */
@@ -311,4 +308,13 @@
             font-size: 18px;
         }
     }
+}
+
+.pagination {
+    color: #9EABB3;
+    font-size: 0.8em;
+    line-height: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
 }

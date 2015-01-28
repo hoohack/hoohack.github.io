@@ -1,10 +1,14 @@
 .container {
-    max-width: calc(1000px - (15px * 2));
+    max-width: 1000px;
     margin-right: auto;
     margin-left: auto;
     background-color: #fff;
     margin-bottom: 30px;
     box-shadow: 1px 1px 10px #BBB;
+
+    @include media-query($on-palm) {
+        max-width: 600px;
+    }
 }
 
 /**

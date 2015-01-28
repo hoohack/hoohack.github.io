@@ -191,6 +191,17 @@
     vertical-align: super;
 }
 
+.archives {
+    a {
+        color: #50585D;
+    }
+
+    a:hover {
+        color: #1F85C8;
+    }
+
+}
+
 #post-pagination ul {
     list-style: none;
     margin-left: auto;

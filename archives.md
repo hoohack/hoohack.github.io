@@ -3,7 +3,7 @@ layout: page
 head: "归档"
 permalink: /archives/
 ---
-<div class="well">
+<div class="archives">
 {% for post in site.posts  %}
     {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
     {% capture this_month %}{{ post.date | date: "%m" }}{% endcapture %}

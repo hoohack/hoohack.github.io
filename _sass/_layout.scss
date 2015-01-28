@@ -68,6 +68,7 @@
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+    height: 46px;
 
     @extend %clearfix;
 
@@ -88,7 +89,7 @@
         font-size: 1.3em;
         line-height: 1.8;
         text-align: center;
-        width:20%;
+        width: 16.6%;
     }
 
     .page-link {
@@ -168,7 +169,7 @@
     border-bottom: 1px solid #CCC;
 }
 
-.categories-box {
+.categories-box, .tags-box {
     a {
         color: #50585D;
     }
@@ -184,7 +185,7 @@
     }
 }
 
-.article-size {
+.article-size, .tags-size {
     font-size: 0.7em;
     font-weight: bold;
     vertical-align: super;

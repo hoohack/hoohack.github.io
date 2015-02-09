@@ -3,8 +3,15 @@ layout: page
 head: 关于我
 permalink: /about/
 ---
-> 我，并非不是一个菜鸟。一个正在学习WEB开发的菜鸟，因为我很笨，因为我很蠢，因为我不怕犯错，因为我敢去犯错。
 
-[Github](https://github.com/hhqcontinue)
+> #我是...
 
-[个人简历](/assets/resume)
+我并非不是一个菜鸟。一个正在学习WEB开发的菜鸟，因为我很笨，因为我很蠢，因为我不怕犯错，因为我敢去犯错。
+
+[`个人简历`](/assets/resume)
+
+[`Github`](https://github.com/hhqcontinue)
+
+> #RSS
+
+如果你想订阅，请点击[`这里`](/feed.xml)

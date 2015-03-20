@@ -4,7 +4,7 @@ title:  "Redis初体验--在Window安装Redis和配置PHPRedis扩展"
 date:   '2015-03-19 20:56:41'
 author: Hector
 categories: Redis
-tags: [redis,php]
+tags: [redis,PHP]
 ---
 
 这两天在学习Redis，刚在Windows下安装好，记录一下安装的过程。
@@ -78,15 +78,19 @@ windows版：[https://github.com/MSOpenTech/redis](https://github.com/MSOpenTech
 本人用的是php5.5.12，网上很多教程中的下载链接都不适合。于是又要另辟蹊径，下面给出链接，根据对应的php版本以及对应的电脑配置下载就行
 
 >php_redis-5.5-vc11-ts-x86-00233a.zip [http://d-h.st/4A5](http://d-h.st/4A5)
+>
 >php_igbinary-5.5-vc11-ts-x86-c35d48.zip [http://d-h.st/QGH](http://d-h.st/QGH)
->
+
 >php_redis-5.5-vc11-nts-x86-00233a.zip [http://d-h.st/uGS](http://d-h.st/uGS)
+>
 >php_igbinary-5.5-vc11-nts-x86-c35d48.zip [http://d-h.st/bei](http://d-h.st/bei)
->
+
 >php_redis-5.5-vc11-ts-x64-00233a.zip [http://d-h.st/1tO](http://d-h.st/1tO)
->php_igbinary-5.5-vc11-ts-x64-c35d48.zip [http://d-h.st/rYb](http://d-h.st/rYb)
 >
+>php_igbinary-5.5-vc11-ts-x64-c35d48.zip [http://d-h.st/rYb](http://d-h.st/rYb)
+
 >php_redis-5.5-vc11-nts-x64-00233a.zip [http://d-h.st/N0d](http://d-h.st/N0d)
+>
 >php_igbinary-5.5-vc11-nts-x64-c35d48.zip [http://d-h.st/c1a](http://d-h.st/c1a)
 
 看下自己的phpinfo的信息

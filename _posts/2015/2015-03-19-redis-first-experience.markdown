@@ -4,7 +4,7 @@ title:  "Redis初体验--在Window安装Redis和配置PHPRedis扩展"
 date:   '2015-03-19 20:56:41'
 author: Hector
 categories: Redis
-tags: [redis,PHP]
+tags: [Redis,PHP]
 ---
 
 这两天在学习Redis，刚在Windows下安装好，记录一下安装的过程。

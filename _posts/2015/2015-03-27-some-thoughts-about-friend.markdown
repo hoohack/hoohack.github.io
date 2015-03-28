@@ -25,3 +25,4 @@ tags: [Life, Friend]
 
 以上只是一些感想，并没有别的意思。毕竟，朋友还是很重要的。好好珍惜你现在的朋友。愿天下友谊长存。
 
+![hello_friend](http://7u2eqw.com1.z0.glb.clouddn.com/aboutfriend1.jpg)

@@ -9,9 +9,7 @@ keywords: '字符翻转,杂耍算法,LeetCode,RotateArray,Reverse'
 tags: [LeetCode,Algorithm]
 ---
 
-最近在LeetCode网站上学习算法，算法是解决问题的方案，想多学一点算法，但是也没有为什么。
-
-先来看看最近刚完成的一道题的解法。
+最近在LeetCode网站上学习算法，记录一下学到的东西。
 
 ##问题描述
 
@@ -21,6 +19,8 @@ tags: [LeetCode,Algorithm]
 >
 >Note:
 Try to come up as many solutions as you can, there are at least 3 different ways to solve this problem.
+
+<!--more-->
 
 ##解法一：一个一个地移动
 刚开始看到这道题，题目说有很多种解法，当时我的第一个想法就是一个一个地移动。于是就有下面的解法：

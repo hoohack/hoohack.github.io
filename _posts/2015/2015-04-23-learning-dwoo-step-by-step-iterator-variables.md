@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "一步步学习Dwoo模板引擎--迭代器变量"
-date:   '2015-04-23 12:00:41'
+date:   '2015-04-23 19:00:41'
 author: Hector
 categories: PHP
 excerpt: 'PHP,Dwoo,模板引擎'

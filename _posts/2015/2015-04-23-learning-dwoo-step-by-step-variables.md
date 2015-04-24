@@ -62,7 +62,7 @@ Dwoo变量的名字仅限于`/[a-z0-9_]/i`，那就是说仅限于所有的字�
 
 在下面的所有例子中，FOO是你需要展示的变量名。
 
-`{\%FOO} = {$dwoo.const.FOO}`
+`{ %FOO } = {$dwoo.const.FOO}`
 
 `{$.FOO} = {$dwoo.FOO}, i.e. for a {$.get.user_id} = {$dwoo.get.user_id}`
 

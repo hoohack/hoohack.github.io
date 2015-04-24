@@ -4,8 +4,8 @@ title:  "一步步学习Dwoo模板引擎--介绍、安装"
 date:   '2015-04-22 18:56:41'
 author: Hector
 categories: PHP
-excerpt: 'PHP,Dwoo,模板引擎'
-keywords: 'PHP，Dwoo，模板引擎'
+excerpt: '一步步学习Dwoo,PHP,Dwoo,模板引擎'
+keywords: '一步步学习Dwoo,PHP，Dwoo，模板引擎'
 tags: [PHP,模板引擎,Dwoo]
 ---
 

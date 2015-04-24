@@ -4,8 +4,8 @@ title:  "一步步学习Dwoo模板引擎--块和标签"
 date:   '2015-04-24 18:37:41'
 author: Hector
 categories: PHP
-excerpt: 'PHP,Dwoo,模板引擎'
-keywords: 'PHP，Dwoo，模板引擎'
+excerpt: '一步步学习Dwoo,PHP,Dwoo,模板引擎'
+keywords: '一步步学习Dwoo,PHP，Dwoo，模板引擎'
 tags: [PHP,Dwoo,模板引擎]
 ---
 

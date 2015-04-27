@@ -5,7 +5,7 @@ date:   '2015-04-24 18:37:41'
 author: Hector
 categories: PHP
 excerpt: '一步步学习Dwoo,一步步学习Dwoo引擎,PHP,Dwoo,模板引擎'
-keywords: '一步步学习Dwoo,一步步学习Dwoo引擎,PHP，Dwoo，模板引擎'
+keywords: '一步步学习Dwoo,一步步学习Dwoo引擎,PHP,Dwoo,模板引擎'
 tags: [PHP,Dwoo,模板引擎]
 ---
 

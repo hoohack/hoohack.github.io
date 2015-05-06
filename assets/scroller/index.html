@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome/css/font-awesome.min.css">
+    <title>Scroller</title>
+</head>
+<body>
+<div id="container">
+
+    <div id="content">
+        <div id="header">
+            <p>图片轮播器</p>
+        </div>
+        <div class="fixed"></div>
+
+        <div id="img-board">
+            <div id="img-list">
+                <img src="images/imga.jpg" class="image current">
+                <img src="images/imgb.gif" class="image">
+                <img src="images/imgc.jpg" class="image">
+                <img src="images/imgd.jpg" class="image">
+            </div>
+
+            <div id="operation">
+                <a href="javascript:;" id="prev"><i class="fa fa-arrow-left fa-3x"></i></a>
+                <a href="javascript:;" id="next"><i class="fa fa-arrow-right fa-3x"></i></a>
+            </div>
+
+            <ul id="img-nav">
+                <li class="nav selected"><a href="javascript:;">1</a></li>
+                <li class="nav"><a href="javascript:;">2</a></li>
+                <li class="nav"><a href="javascript:;">3</a></li>
+                <li class="nav"><a href="javascript:;">4</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="js/scroller.js"></script>
+</body>
+</html>

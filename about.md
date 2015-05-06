@@ -13,6 +13,10 @@ permalink: /about/
 
 如果你想订阅，请点击[`这里`](/feed.xml)
 
+> #个人小作品
+
+[`图片轮播`](/assets/scroller)
+
 > #更多
 
 [`个人简历`](/assets/resume)

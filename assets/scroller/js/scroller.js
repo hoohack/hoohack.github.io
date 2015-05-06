@@ -9,6 +9,41 @@
             autoChange = 0,
             interval = 3000;
 
+        //设置透明度
+        function setOpacity(item,level){
+            if(item.filters){
+                item.style.filter = "alpha(opacity="+level+")";
+            }else{
+                item.style.opacity = level / 100;
+            }
+        }
+
+        //淡入处理函数
+        function fadeIn(item) {
+            setOpacity(item, 0);
+            for(var i = 0; i<=20; i++) {
+                (function(){
+                    var level = i * 5;
+                    setTimeout(function(){
+                        setOpacity(item, level)
+                    },i*25);
+                })(i);
+            }
+        }
+
+        //淡出处理函数
+        function fadeOut(item) {
+            setOpacity(item, 0);
+            for(var i = 0; i<=20; i++) {
+                (function(){
+                    var level = 100 - i * 5;
+                    setTimeout(function(){
+                        setOpacity(item, level)
+                    },i*25);
+                })(i);
+            }
+        }
+
         //下一张
         function getNextImg() {
             var selected = document.getElementsByClassName('nav');
@@ -21,6 +56,7 @@
                 if(selected[i].className.indexOf('selected') > 0) {
                     currNav = selected[i];
                     currImg = selectedImg[i];
+                    fadeOut(currImg);
                     if(i == (selected.length - 1)) {
                         nextNav = selected[0];
                         nextImg = selectedImg[0];
@@ -28,6 +64,7 @@
                         nextNav = selected[i+1];
                         nextImg = selectedImg[i+1];
                     }
+                    fadeIn(nextImg);
                     currNav.className = "nav";
                     nextNav.className += " selected";
                     currImg.className = "image";
@@ -49,6 +86,7 @@
                 if(selected[i].className.indexOf('selected') > 0) {
                     currNav = selected[i];
                     currImg = selectedImg[i];
+                    fadeOut(currImg);
                     if(i == 0) {
                         nextNav = selected[selected.length-1];
                         nextImg = selectedImg[selected.length-1];
@@ -56,6 +94,7 @@
                         nextNav = selected[i-1];
                         nextImg = selectedImg[i-1];
                     }
+                    fadeIn(nextImg);
                     currNav.className = "nav";
                     nextNav.className += " selected";
                     currImg.className = "image";
@@ -74,11 +113,12 @@
                     if(nav_class != 'selected') {
                         var selected = document.getElementsByClassName('selected');
                         var selectedImg = document.getElementsByClassName('current');
-                        console.log(selectedImg[0]);
+                        fadeOut(selectedImg[0]);
                         selected[0].className = "nav";
                         selectedImg[0].className = "image";
                         this.className += ' selected';
                         imgs[this.i].className += ' current';
+                        fadeIn(imgs[this.i]);
                     }
                 };
             }

@@ -32,6 +32,8 @@ tags: [PHP,PHP优化]
             echo 'Connection failed: ' , $e->getMessage();
         }
 
+    <!--more-->
+
         $begin = microtime(true) * 1000;
 
         $count = 100;

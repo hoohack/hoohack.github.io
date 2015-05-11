@@ -32,7 +32,7 @@ tags: [PHP,PHP优化]
             echo 'Connection failed: ' , $e->getMessage();
         }
 
-    <!--more-->
+<!--more-->
 
         $begin = microtime(true) * 1000;
 

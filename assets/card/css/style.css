@@ -1,0 +1,36 @@
+/*
+* @Author: Hector
+* @Date:   2015-05-21 17:18:50
+* @Last Modified by:   huhuaquan
+* @Last Modified time: 2015-05-21 18:31:46
+*/
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    /*background-color: #D8D8D8;*/
+    height: 1000px;
+}
+
+#start {
+    margin: auto;
+    height: 220px;
+    width: 800px;
+    position: absolute;
+    border: 1px solid #E6E6E6;
+    border-radius: 10px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 3px #e6e6e6;
+}
+
+#start-btn {
+    height: 128px;
+    width: 128px;
+    margin: auto;
+    margin-top: 47px;
+}

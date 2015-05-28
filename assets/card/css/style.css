@@ -1,36 +1,60 @@
-/*
+/* 
 * @Author: Hector
 * @Date:   2015-05-21 17:18:50
 * @Last Modified by:   huhuaquan
-* @Last Modified time: 2015-05-21 18:31:46
+* @Last Modified time: 2015-05-22 11:47:04
 */
 * {
-    margin: 0px;
-    padding: 0px;
+	margin: 0px;
+	padding: 0px;
 }
 
 body {
-    /*background-color: #D8D8D8;*/
-    height: 1000px;
+	/*background-color: #D8D8D8;*/
+	height: 1000px;
 }
 
 #start {
-    margin: auto;
-    height: 220px;
-    width: 800px;
-    position: absolute;
-    border: 1px solid #E6E6E6;
-    border-radius: 10px;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    box-shadow: 0 0 3px #e6e6e6;
+	margin: auto;
+	height: 660px;
+	width: 1000px;
+	position: absolute;
+	border: 1px solid #E6E6E6;
+	border-radius: 10px;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	box-shadow: 0 0 3px #e6e6e6;
+	background-image: url(../images/lover.jpg);
+	filter:alpha(opacity=15);-moz-opacity:0.15;opacity:0.15; -khtml-opacity: 0.15;
 }
 
 #start-btn {
-    height: 128px;
-    width: 128px;
-    margin: auto;
-    margin-top: 47px;
+	height: 128px;
+	width: 128px;
+	margin: auto;
+	margin-top: 247px;
+}
+
+#start-header ul {
+	position: relative;
+	margin-right: auto;
+	margin-left: auto;
+	list-style-type: none;
+	width: 60%;
+	height: 100px;
+	margin-top: 550px;
+	filter:alpha(opacity=60);-moz-opacity:0.6;opacity:0.6; -khtml-opacity: 0.6;
+}
+
+#start-header li {
+	font-family: Arial;
+	color: #FE2E64;
+	text-align: center;
+	list-style:none;
+	display: inline-block;
+	width: 24%;
+	font-size: 5em;
+	display: none;
 }

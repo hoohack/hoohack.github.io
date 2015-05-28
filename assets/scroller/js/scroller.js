@@ -23,7 +23,7 @@
         function fadeIn(item) {
             setOpacity(item, 0);
             for(var i = 0; i<=20; i++) {
-                (function(){
+                (function(i){
                     var level = i * 5;
                     setTimeout(function(){
                         setOpacity(item, level)
@@ -36,7 +36,7 @@
         function fadeOut(item) {
             setOpacity(item, 0);
             for(var i = 0; i<=20; i++) {
-                (function(){
+                (function(i){
                     var level = 100 - i * 5;
                     setTimeout(function(){
                         setOpacity(item, level)

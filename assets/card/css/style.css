@@ -2,7 +2,7 @@
 * @Author: Hector
 * @Date:   2015-05-21 17:18:50
 * @Last Modified by:   huhuaquan
-* @Last Modified time: 2015-05-22 11:47:04
+* @Last Modified time: 2015-05-28 12:49:40
 */
 * {
 	margin: 0px;
@@ -26,7 +26,7 @@ body {
 	left: 0;
 	right: 0;
 	box-shadow: 0 0 3px #e6e6e6;
-	background-image: url(../images/lover.jpg);
+	background-image: url(../images/lover.JPG);
 	filter:alpha(opacity=15);-moz-opacity:0.15;opacity:0.15; -khtml-opacity: 0.15;
 }
 

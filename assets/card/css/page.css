@@ -8,25 +8,18 @@ body {
 	height: 1000px;
 }
 
+.visited {
+	opacity: 1;
+}
+
 #egg {
 	background-image: url(../images/egg.png);
 	width: 65px;
  	height: 65px;
 	position:absolute;
-	left: 0px;
-	top: 0;
+	left: 100px;
+	top: 500px;
 	z-index: 9;
-	-webkit-animation:myfirst 1.5s;
-	-0-animation:myfirst 1.5s;
-	-webkit-animation-fill-mode: forwards;
-}
-
-@-webkit-keyframes myfirst
-{
-	0%   {left: 101px; top: 0px;}
-	100% {
-		left: 100px; top: 500px;-webkit-animation-fill-mode: forwards;
-	}
 }
 
 #broegg {
@@ -36,139 +29,80 @@ body {
 	left: 100px;
 	top: 500px;
 	z-index: 9;
-	background-image: url(../images/egg_broke.jpg);
-	opacity: 0;
-	-webkit-animation: mysecond 1.5s;
-	-webkit-animation-play-state: paused;
-	-webkit-animation-fill-mode: forwards;
-}
-
-@-webkit-keyframes mysecond
-{
-	1%   {left: 100px; top: 500px;-webkit-transform:rotate(7deg);}
-	25% {left: 145px; top: 500px;-webkit-transform:rotate(-7deg);}
-	50% {left: 190px; top: 500px;-webkit-transform:rotate(7deg);}
-	75% {left: 235px; top: 500px;-webkit-transform:rotate(-7deg);}
-	100% {
-		left: 280px; top: 500px;-webkit-animation-fill-mode: forwards;
-	}
+	background-image: url(../images/egg.png);
 }
 
 #kid {
 	width: 72px;
  	height: 107px;
 	position:absolute;
-	left: 280px;
+	left: 290px;
 	top: 500px;
 	z-index: 9;
 	background-image: url(../images/kid.png);
 	opacity: 0;
-	-webkit-animation:mythird 1.5s;
-	-webkit-animation-play-state: paused;
-	-webkit-animation-fill-mode: forwards;
-}
-
-@-webkit-keyframes mythird
-{
-	0%   {left: 281px; top: 500px;}
-	100% {
-		left: 460px; top: 500px;-webkit-animation-fill-mode: forwards;
-	}
 }
 
 #pupils {
 	width: 72px;
  	height: 107px;
 	position:absolute;
-	left: 460px;
+	left: 470px;
 	top: 500px;
 	z-index: 9;
 	background-image: url(../images/pupils.png);
 	opacity: 0;
-	-webkit-animation:saas 1.5s;
-	-webkit-animation-play-state: paused;
-	-webkit-animation-fill-mode: forwards;
-}
-
-@-webkit-keyframes saas
-{
-	0%   {left: 461px; top: 500px;}
-	100% {
-		left: 640px; top: 500px;-webkit-animation-fill-mode: forwards;
-	}
 }
 
 #junior {
 	width: 72px;
  	height: 107px;
 	position:absolute;
-	left: 640px;
+	left: 650px;
 	top: 500px;
 	z-index: 9;
 	background-image: url(../images/junior.jpg);
 	opacity: 0;
-	-webkit-animation:myfifth 1.5s;
-	-webkit-animation-play-state: paused;
-	-webkit-animation-fill-mode: forwards;
 }
 
-@-webkit-keyframes myfifth
-{
-	0%   {left: 641px; top: 500px;}
-	100% {
-		left: 820px; top: 500px;-webkit-animation-fill-mode: forwards;
-	}
+#withme {
+	width: 72px;
+	height: 107px;
+	position: absolute;
+	left: 830px;
+	top: 500px;
+	z-index: 9;
+	background-image: url(../images/couple.jpg);
+	opacity: 0;
 }
 
 #senior {
 	width: 72px;
  	height: 107px;
 	position:absolute;
-	left: 820px;
+	left: 1010px;
 	top: 500px;
 	z-index: 9;
 	background-image: url(../images/senior.jpg);
 	opacity: 0;
-	-webkit-animation:mysixed 1.5s;
-	-webkit-animation-play-state: paused;
-	-webkit-animation-fill-mode: forwards;
-}
-
-@-webkit-keyframes mysixed
-{
-	0%   {left: 821px; top: 500px;}
-	100% {
-		left: 1000px; top: 500px;-webkit-animation-fill-mode: forwards;
-	}
 }
 
 #college {
 	width: 72px;
  	height: 107px;
 	position:absolute;
-	left: 1000px;
+	left: 1190px;
 	top: 500px;
 	z-index: 9;
 	background-image: url(../images/college.jpg);
 	opacity: 0;
-	-webkit-animation:mysevened 1.5s;
-	-webkit-animation-play-state: paused;
-	-webkit-animation-fill-mode: forwards;
-}
-
-@-webkit-keyframes mysevened
-{
-	0%   {left: 1000px; top: 500px;}
-	100% {
-		left: 1180px; top: 500px;-webkit-animation-fill-mode: forwards;
-	}
 }
 
 #recent {
 	width: 72px;
  	height: 107px;
 	position:absolute;
-	left: 1180px;
+	left: 1370px;
 	top: 500px;
 	z-index: 9;
 	background-image: url(../images/recent.jpg);
@@ -178,7 +112,7 @@ body {
 #timeline {
 	position: absolute;
 	height: 4px;
-	left: 140px;
+	left: 150px;
 	top: 620px;
 	background: #000;
 }
@@ -198,35 +132,44 @@ body {
 }
 
 .time_desc p {
+	font-family: "Lucida handwriting";
 	text-align: center;
 }
 
+p .ch {
+	font-family: "Microsoft YaHei";
+}
+
 #broegg_time {
-	left: 140px;
+	left: 150px;
 }
 
 #kid_time {
-	left: 315px;
+	left: 335px;
 }
 
 #pupils_time {
-	left: 495px;
+	left: 515px;
 }
 
 #junior_time {
-	left: 675px;
+	left: 695px;
+}
+
+#withme_time {
+	left: 875px;
 }
 
 #senior_time {
-	left: 855px;
+	left: 1055px;
 }
 
 #college_time {
-	left: 1035px;
+	left: 1235px;
 }
 
 #recent_time {
-	left: 1215px;
+	left: 1415px;
 }
 
 #broegg_desc {
@@ -234,25 +177,29 @@ body {
 }
 
 #kid_desc {
-	left: 280px;
+	left: 290px;
 }
 
 #pupils_desc {
-	left: 460px;
+	left: 470px;
 }
 
 #junior_desc {
-	left: 640px;
+	left: 650px;
+}
+
+#withme_desc {
+	left: 830px;
 }
 
 #senior_desc {
-	left: 820px;
+	left: 1010px;
 }
 
 #college_desc {
-	left: 1000px;
+	left: 1190px;
 }
 
 #recent_desc {
-	left: 1180px;
+	left: 1370px;
 }

@@ -2,7 +2,7 @@
 * @Author: Hector
 * @Date:   2015-05-22 17:15:52
 * @Last Modified by:   huhuaquan
-* @Last Modified time: 2015-05-29 10:03:06
+* @Last Modified time: 2015-05-29 12:56:54
 */
 (function() {
 
@@ -11,9 +11,9 @@
 			second = 5.5,
 			animationProperty = 'webkitAnimationEnd',
 			animateState = '-webkit-animation-play-state',
-			positions = [0, 190, 370, 550, 730, 910, 1090, 1270];
+			positions = [0, 230, 430, 630, 830, 1030, 1230, 1430];
 
-		function move(begin, end, interval) {
+		function move(begin, end, interval, property) {
 	    	var elem = $('#timeline'),
 	    		left = begin;
 
@@ -21,6 +21,7 @@
 				left++;
 			    elem.width(left);
 			    if (left == end) {
+			    	drawTime(property);
 			    	clearInterval(id)
 			    }
 			}
@@ -54,7 +55,7 @@
 					drawTime('broegg');
 					setTimeout(function () {
 						_this.growToKid();
-						move(positions[0], positions[1], second);
+						move(positions[0], positions[1], second, 'kid');
 					}, 500);
 				});
 			},
@@ -62,10 +63,9 @@
 				var _this = this;
 				$("#kid").addClass('animated fadeInLeftBig').one(animationProperty, function(e) {
 					$(this).fadeTo('slow', 1);
-					drawTime('kid');
 					setTimeout(function () {
 						_this.growToPupils();
-						move(positions[1], positions[2], second);
+						move(positions[1], positions[2], second, 'pupils');
 					}, 500);
 				});
 			},
@@ -73,10 +73,9 @@
 				var _this = this;
 				$("#pupils").addClass('animated flash').one(animationProperty, function(e) {
 					$(this).fadeTo('slow', 1);
-					drawTime('pupils');
 					setTimeout(function () {
 						_this.growToJunior();
-						move(positions[2], positions[3], second);
+						move(positions[2], positions[3], second, 'junior');
 					}, 500);
 				});
 			},
@@ -84,10 +83,9 @@
 				var _this = this;
 				$("#junior").addClass('animated rollIn').one(animationProperty, function(e) {
 					$(this).fadeTo('slow', 1);
-					drawTime('junior');
 					setTimeout(function () {
 						_this.growToWithme();
-						move(positions[3], positions[4], second);
+						move(positions[3], positions[4], second, 'withme');
 					}, 500);
 				});
 			},
@@ -95,10 +93,9 @@
 				var _this = this;
 				$("#withme").addClass('animated lightSpeedIn').one(animationProperty, function(e) {
 					$(this).fadeTo('slow', 1);
-					drawTime('withme');
 					setTimeout(function () {
 						_this.growToSenior();
-						move(positions[4], positions[5], second);
+						move(positions[4], positions[5], second, 'senior');
 					}, 500);
 				});
 			},
@@ -106,10 +103,9 @@
 				var _this = this;
 				$("#senior").addClass('animated fadeInUpBig').one(animationProperty, function(e) {
 					$(this).fadeTo('slow', 1);
-					drawTime('senior');
 					setTimeout(function () {
 						_this.growToCollege();
-						move(positions[5], positions[6], second);
+						move(positions[5], positions[6], second, 'college');
 					}, 500);
 				});
 			},
@@ -117,10 +113,9 @@
 				var _this = this;
 				$("#college").addClass('animated fadeInDownBig').one(animationProperty, function(e) {
 					$(this).fadeTo('slow', 1);
-					drawTime('college');
 					setTimeout(function () {
 						_this.growToRecent();
-						move(positions[6], positions[7], second);
+						move(positions[6], positions[7], second, 'recent');
 					}, 500);
 				});
 			},

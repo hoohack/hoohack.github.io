@@ -2,7 +2,7 @@
 * @Author: Hector
 * @Date:   2015-05-22 17:15:52
 * @Last Modified by:   huhuaquan
-* @Last Modified time: 2015-05-28 17:14:05
+* @Last Modified time: 2015-05-29 10:03:06
 */
 (function() {
 
@@ -50,7 +50,6 @@
 			init : function() {
 				var _this = this;
 				$('#broegg').addClass('animated bounceInDown').one(animationProperty, function(e) {
-					$(this).removeClass('bounceInDown');
 					$(this).css('background-image', "url(./images/egg_broke.jpg)");
 					drawTime('broegg');
 					setTimeout(function () {
@@ -62,7 +61,6 @@
 			growToKid : function() {
 				var _this = this;
 				$("#kid").addClass('animated fadeInLeftBig').one(animationProperty, function(e) {
-					$(this).removeClass('fadeInLeftBig');
 					$(this).fadeTo('slow', 1);
 					drawTime('kid');
 					setTimeout(function () {
@@ -73,8 +71,7 @@
 			},
 			growToPupils : function() {
 				var _this = this;
-				$("#pupils").addClass('animated zoomInUp').one(animationProperty, function(e) {
-					$(this).removeClass('zoomInUp');
+				$("#pupils").addClass('animated flash').one(animationProperty, function(e) {
 					$(this).fadeTo('slow', 1);
 					drawTime('pupils');
 					setTimeout(function () {
@@ -86,7 +83,6 @@
 			growToJunior : function() {
 				var _this = this;
 				$("#junior").addClass('animated rollIn').one(animationProperty, function(e) {
-					$(this).removeClass('rollIn');
 					$(this).fadeTo('slow', 1);
 					drawTime('junior');
 					setTimeout(function () {
@@ -98,7 +94,6 @@
 			growToWithme : function() {
 				var _this = this;
 				$("#withme").addClass('animated lightSpeedIn').one(animationProperty, function(e) {
-					$(this).removeClass('lightSpeedIn');
 					$(this).fadeTo('slow', 1);
 					drawTime('withme');
 					setTimeout(function () {
@@ -110,7 +105,6 @@
 			growToSenior : function() {
 				var _this = this;
 				$("#senior").addClass('animated fadeInUpBig').one(animationProperty, function(e) {
-					$(this).removeClass('lightSpeedIn');
 					$(this).fadeTo('slow', 1);
 					drawTime('senior');
 					setTimeout(function () {
@@ -122,7 +116,6 @@
 			growToCollege : function() {
 				var _this = this;
 				$("#college").addClass('animated fadeInDownBig').one(animationProperty, function(e) {
-					$(this).removeClass('fadeInDownBig');
 					$(this).fadeTo('slow', 1);
 					drawTime('college');
 					setTimeout(function () {
@@ -133,7 +126,6 @@
 			},
 			growToRecent : function() {
 				$("#recent").addClass('animated rotateIn').one(animationProperty, function(e) {
-					$(this).removeClass('rotateIn');
 					$(this).fadeTo('slow', 1);
 					drawTime('recent');
 					// $("#main-content").fadeOut(4000);

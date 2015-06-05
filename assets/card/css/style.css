@@ -1,51 +1,182 @@
-/* 
-* @Author: Hector
-* @Date:   2015-05-21 17:18:50
-* @Last Modified by:   huhuaquan
-* @Last Modified time: 2015-05-28 12:49:40
-*/
 * {
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 }
 
 body {
-	/*background-color: #D8D8D8;*/
+	background: url(../images/back.jpg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-color: rgba(0, 0, 0, 0.6);
 	height: 1000px;
 }
 
-#start {
-	margin: auto;
-	height: 660px;
-	width: 1000px;
+#broegg {
+	width: 65px;
+ 	height: 65px;
+	position:absolute;
+	left: 100px;
+	top: 550px;
+	z-index: 9;
+	background-image: url(../images/egg.png);
+	opacity: 0;
+}
+
+.imgs {
+	width: 120px;
+	height: 177px;
 	position: absolute;
-	border: 1px solid #E6E6E6;
-	border-radius: 10px;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	box-shadow: 0 0 3px #e6e6e6;
-	background-image: url(../images/lover.JPG);
-	filter:alpha(opacity=15);-moz-opacity:0.15;opacity:0.15; -khtml-opacity: 0.15;
+	top: 440px;
+	z-index: 9;
+	opacity: 0;
+}
+
+#kid {
+	left: 320px;
+	background-image: url(../images/kid.jpg);
+}
+
+#pupils {
+	left: 520px;
+	background-image: url(../images/pupils.jpg);
+}
+
+#junior {
+	left: 720px;
+	background-image: url(../images/junior.jpg);
+}
+
+#withme {
+	left: 920px;
+	background-image: url(../images/couple.jpg);
+}
+
+#senior {
+	left: 1120px;
+	background-image: url(../images/senior.jpg);
+}
+
+#college {
+	left: 1320px;
+	background-image: url(../images/college.jpg);
+}
+
+#recent {
+	left: 1520px;
+	background-image: url(../images/recent.jpg);
+}
+
+#timeline {
+	position: absolute;
+	height: 4px;
+	left: 150px;
+	top: 620px;
+	background: #000;
+}
+
+.time {
+	position: absolute;
+	width: 5px;
+	top: 624px;
+	background-color: #000;
+}
+
+.time_desc {
+	position: absolute;
+	top: 645px;
+	opacity: 0;
+}
+
+.time_desc p {
+	font-family: "Lucida handwriting";
+	text-align: center;
+}
+
+#broegg_time {
+	left: 150px;
+}
+
+#kid_time {
+	left: 375px;
+}
+
+#pupils_time {
+	left: 575px;
+}
+
+#junior_time {
+	left: 775px;
+}
+
+#withme_time {
+	left: 975px;
+}
+
+#senior_time {
+	left: 1175px;
+}
+
+#college_time {
+	left: 1375px;
+}
+
+#recent_time {
+	left: 1575px;
+}
+
+#broegg_desc {
+	left: 100px;
+}
+
+#kid_desc {
+	left: 320px;
+}
+
+#pupils_desc {
+	left: 520px;
+}
+
+#junior_desc {
+	left: 720px;
+}
+
+#withme_desc {
+	left: 920px;
+}
+
+#senior_desc {
+	left: 1120px;
+}
+
+#college_desc {
+	left: 1320px;
+}
+
+#recent_desc {
+	left: 1520px;
 }
 
 #start-btn {
+	position: absolute;
 	height: 128px;
 	width: 128px;
 	margin: auto;
-	margin-top: 247px;
+	left: 50%;
+	top: 40%;
+}
+
+#start-header {
+	position: absolute;
+	top: 800px;
+	width: 60%;
+	left: 400px;
 }
 
 #start-header ul {
 	position: relative;
-	margin-right: auto;
-	margin-left: auto;
 	list-style-type: none;
-	width: 60%;
 	height: 100px;
-	margin-top: 550px;
-	filter:alpha(opacity=60);-moz-opacity:0.6;opacity:0.6; -khtml-opacity: 0.6;
+	opacity:0.6;
 }
 
 #start-header li {
@@ -56,5 +187,26 @@ body {
 	display: inline-block;
 	width: 24%;
 	font-size: 5em;
+	display: none;
+}
+
+#sweet {
+	position: absolute;
+	top: 200px;
+	left: 400px;
+	width: 1200px;
+	height: 600px;
+	border: 1px solid #e6e6e6;
+	border-radius: 10px;
+	opacity: 0.8;
+	padding: 5px;
+	text-indent: 50px;
+}
+
+#sweet p {
+	color: red;
+}
+
+#second-content {
 	display: none;
 }

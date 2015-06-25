@@ -13,6 +13,8 @@ tags: [php,PDO]
 
 有一次，在执行数据库的INSERT操作时，返回的插入结果是新增的插入行的ID，但是在数据库里面没有看到插入的记录。查找了数据库的Log发现也没有执行sql的记录。折腾了恒久，然后在配置文件将所有配置去掉之后发现执行成功了。后来逐项配置取消，最后发现是设置了`PDO::ATTR_AUTOCOMMIT => 0`这个选项。于是便上网查找相关原因如下。
 
+<!--more-->
+
 在配置PDO时，设置了一项`PDO::ATTR_AUTOCOMMIT => 0`。阅读PHP手册发现，如果这项设为false，那么PDO将试图禁用自动提交以便数据库连接开始一个事务。然而，通过阅读MYSQL文档发现这么一段话：
 
 >After disabling autocommit mode by setting the autocommit variable to zero, changes to transaction-safe tables (such as those for InnoDB or NDBCLUSTER) are not made permanent immediately. You must use COMMIT to store your changes to disk or ROLLBACK to ignore the changes.

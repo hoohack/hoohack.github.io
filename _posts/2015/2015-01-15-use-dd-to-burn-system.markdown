@@ -4,7 +4,6 @@ title:  "在Linux中使用dd刻录系统"
 date:   '2015-01-15 15:46:41'
 author: Hector
 categories: Linux
-tags: [Linux,刻录系统]
 ---
 
 第一次接触Linux操作系统的时候使用的是Ubuntu发行版，装系统的时候只需要使用ultraisoPE软件添加镜像文件就可以进行刻录了，但是后来经过朋友的

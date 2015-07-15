@@ -4,7 +4,6 @@ title:  "MySQL中VARCHAR与CHAR格式数据的区别"
 date:   '2015-01-04 19:15:41'
 author: Hector
 categories: MySQL
-tags: [mysql,varchar与char区别]
 ---
 
 #区别

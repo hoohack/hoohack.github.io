@@ -6,7 +6,6 @@ author: Hector
 categories: PHP
 excerpt: '一步步学习Dwoo,一步步学习Dwoo引擎,PHP,Dwoo,模板引擎,Dwoo模板'
 keywords: '一步步学习Dwoo,一步步学习Dwoo引擎,PHP,Dwoo,模板引擎,Dwoo模板'
-tags: [PHP,Dwoo,模板引擎]
 ---
 
 ###assign

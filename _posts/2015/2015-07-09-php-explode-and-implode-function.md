@@ -6,7 +6,6 @@ author: Hector
 categories: php
 excerpt: 'php,implode,explode'
 keywords: 'php,implode,explode'
-tags: [php]
 ---
 
 ##implode--将一个一维数组的值转化为字符串。

@@ -4,7 +4,6 @@ title:  "父DIV浮动后无法撑开子DIV的解决方案"
 date:   '2015-01-19 14:46:41'
 author: Hector
 categories: CSS
-tags: [css,浮动]
 ---
 
 直奔主题。

@@ -6,7 +6,6 @@ author: Hector
 categories: Redis
 excerpt: 'Redis常用命令'
 keywords: 'Redis, Redis common command, Redis常用命令'
-tags: [Redis]
 ---
 
 ##Redis常用命令

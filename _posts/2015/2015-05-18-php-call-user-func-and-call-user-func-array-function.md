@@ -6,7 +6,6 @@ author: Hector
 categories: php
 excerpt: 'php,call_user_func,call_user_func_array,回调'
 keywords: 'php,call_user_func,call_user_func_array,回调'
-tags: [php,回调]
 ---
 
 以前一直都有看到过和用过这两个回调函数，但是只是知道简单地使用，并没有深入了解两个函数的具体用法和不同之处，今天刚好有机会再次接触到这两个函数，就来做个总结，好记性不如烂笔头。

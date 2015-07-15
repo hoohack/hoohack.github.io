@@ -4,7 +4,6 @@ title:  "Linux修改环境变量"
 date:   '2014-12-29 04:46:41'
 author: Hector
 categories: Linux
-tags: [Linux]
 ---
 
 > 在Linux操作系统中，有时候跟着教程安装了一些软件，安装成功后，很高兴的准备运行该软件相应命令，但是偶尔会遇到"Command not found..."的提示。原因是因为你安装的软件需要设置环境变量才能运行。

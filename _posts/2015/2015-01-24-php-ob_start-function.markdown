@@ -4,7 +4,6 @@ title:  "谈谈PHP中ob_start()函数的用法"
 date:   '2015-01-24 15:46:41'
 author: Hector
 categories: PHP
-tags: [PHP,ob_start,缓冲函数]
 ---
 
 ## ob_start

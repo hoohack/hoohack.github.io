@@ -6,7 +6,6 @@ author: Hector
 categories: 读书笔记
 excerpt: 'TCP/IP详解,TCP/IP,读书笔记'
 keywords: 'TCP/IP详解,TCP/IP,读书笔记'
-tags: [TCP/IP,笔记]
 ---
 
 ##引言

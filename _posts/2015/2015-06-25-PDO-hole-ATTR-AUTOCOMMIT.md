@@ -6,7 +6,6 @@ author: Hector
 categories: php
 excerpt: 'php,pdo,ATTR_AUTOCOMMIT'
 keywords: 'php,pdo,ATTR_AUTOCOMMIT'
-tags: [php,PDO]
 ---
 
 很久没有写博客了，最近工作比较多，没有做到一星期至少一文章。在这里记录下开发过程中在PDO里遇到的一个坑。

@@ -4,7 +4,6 @@ title:  "AJAX跨域请求----JSONP"
 date:   '2015-01-07 14:15:41'
 author: Hector
 categories: AJAX
-tags: [jsonp原理]
 ---
 
 ##JSONP是什么

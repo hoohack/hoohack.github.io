@@ -6,7 +6,6 @@ author: Hector
 categories: LeetCode
 excerpt: '字符翻转,杂耍算法,逆置'
 keywords: '字符翻转,杂耍算法,LeetCode,RotateArray,Reverse'
-tags: [LeetCode,Algorithm]
 ---
 
 最近在LeetCode网站上学习算法，记录一下学到的东西。

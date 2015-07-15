@@ -6,7 +6,6 @@ author: Hector
 categories: PHP
 excerpt: 'PHP,foreach,引用,释放引用'
 keywords: 'PHP,foreach,引用,释放引用'
-tags: [PHP,引用]
 ---
 
 先来看看下面这段代码：

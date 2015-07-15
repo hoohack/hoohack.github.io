@@ -6,7 +6,6 @@ author: Hector
 categories: Linux
 excerpt: 'Linux,chmod,修改权限'
 keywords: 'Linux,chmod,修改权限'
-tags: [Linux,chmod]
 ---
 
 chmod命令用得很多，但是有时会忘记此命令的正确用法和一些注意事项。最近用得比较多，总结一下。

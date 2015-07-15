@@ -6,7 +6,6 @@ author: Hector
 categories: PHP
 excerpt: 'PHP面试,PHP,面试总结'
 keywords: 'PHP面试,PHP,面试总结'
-tags: [PHP,Interview]
 ---
 
 去年校园招聘的时候自己准备了挺久的，其中在PHP开发这个岗位上做的准备工作比较多，今天整理自己的印象笔记，发现当时收集了很多资料，在这里整理一下，帮助自己回顾一些基础知识，同时也分享给有需要的人。

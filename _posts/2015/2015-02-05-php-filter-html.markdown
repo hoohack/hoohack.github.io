@@ -4,7 +4,6 @@ title:  "PHP过滤HTML数据"
 date:   '2015-02-05 18:46:41'
 author: Hector
 categories: PHP
-tags: [PHP,Filter]
 ---
 
 ## 分享两个过滤HTML标签的方法。

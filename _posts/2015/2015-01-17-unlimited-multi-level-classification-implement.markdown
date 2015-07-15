@@ -4,7 +4,6 @@ title:  "无限多级分类实现(PHP)"
 date:   '2015-01-17 09:46:41'
 author: Hector
 categories: PHP
-tags: [PHP,无限多级分类]
 ---
 
 ## 前言

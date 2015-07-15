@@ -6,7 +6,6 @@ author: Hector
 categories: php
 excerpt: 'php,hashtable,array,php source code'
 keywords: 'php,hashtable,array'
-tags: [php]
 ---
 
 ##问题

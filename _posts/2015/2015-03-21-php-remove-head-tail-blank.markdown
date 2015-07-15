@@ -4,7 +4,6 @@ title:  "在PHP中使用正则表达式去除字符串首尾的空格"
 date:   '2015-03-21 20:56:41'
 author: Hector
 categories: PHP
-tags: [trim,PHP]
 ---
 
 最近在网上，看到一个有趣的正则表达式如下

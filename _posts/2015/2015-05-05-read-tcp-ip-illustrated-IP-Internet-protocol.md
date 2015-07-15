@@ -6,7 +6,6 @@ author: Hector
 categories: 读书笔记
 excerpt: 'TCP/IP详解,TCP/IP,读书笔记'
 keywords: 'TCP/IP详解,TCP/IP,读书笔记'
-tags: [TCP/IP,笔记]
 ---
 
 IP协议是TCP/IP协议族中最核心的协议。它提供不可靠、无连接的数据传送服务。

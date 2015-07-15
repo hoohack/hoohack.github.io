@@ -6,7 +6,6 @@ author: Hector
 categories: php
 excerpt: 'php,匿名函数,闭包'
 keywords: 'php,匿名函数,闭包'
-tags: [php,匿名函数,闭包]
 ---
 
 ##定义(摘抄自PHP手册)

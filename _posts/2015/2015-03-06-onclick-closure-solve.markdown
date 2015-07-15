@@ -4,7 +4,6 @@ title:  "Javascript中使用onclick函数时的闭包问题解决"
 date:   '2015-03-05 21:46:41'
 author: Hector
 categories: Javascript
-tags: [closure,onclick]
 ---
 
 在Javascript函数中，经常有遇到闭包的情况。

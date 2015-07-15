@@ -4,7 +4,6 @@ title:  "PHP中require、include、require_once和include_once的区别"
 date:   '2015-01-10 10:20:41'
 author: Hector
 categories: PHP
-tags: [PHP]
 ---
 
 之前在做项目和面试的时候都遇到这个问题，也有上网查阅了一些资料，现在自己总结一下以便加深对这个问题的理解程度。

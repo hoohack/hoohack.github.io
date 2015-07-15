@@ -6,7 +6,6 @@ author: Hector
 categories: Other
 excerpt: '关于朋友的一些想法'
 keywords: '关于朋友的一些想法'
-tags: [Life, Friend]
 ---
 
 >朋友，我当你一世朋友。

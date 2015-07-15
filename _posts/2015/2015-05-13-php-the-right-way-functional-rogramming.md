@@ -6,7 +6,6 @@ author: Hector
 categories: php
 excerpt: 'php之道,函数式编程'
 keywords: 'php之道,函数式编程'
-tags: [php之道,函数式编程]
 ---
 
 原文出处：[http://www.phptherightway.com/pages/Functional-Programming.html](http://www.phptherightway.com/pages/Functional-Programming.html)

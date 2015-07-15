@@ -6,7 +6,6 @@ author: Hector
 categories: PHP
 excerpt: '一步步学习Dwoo,一步步学习Dwoo引擎,PHP,Dwoo,模板引擎'
 keywords: '一步步学习Dwoo,一步步学习Dwoo引擎,PHP,Dwoo,模板引擎'
-tags: [PHP,Dwoo,模板引擎]
 ---
 
 介绍完如何安装之后，现在来介绍一下前端开发者如何使用Dwoo模板引擎套模板。

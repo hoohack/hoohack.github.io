@@ -6,7 +6,6 @@ author: Hector
 categories: php
 excerpt: 'php,array_key_exists'
 keywords: 'php,array_key_exists'
-tags: [php]
 ---
 
 好记性不如烂笔头，虽然手册上都有函数的说明，但是自己记录一遍的话能记得更加牢固。

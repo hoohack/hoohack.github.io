@@ -6,7 +6,6 @@ author: Hector
 categories: php
 excerpt: 'php优化,优化,批量操作'
 keywords: 'php优化,优化,批量操作'
-tags: [PHP,PHP优化]
 ---
 
 设计一个数据表如下:

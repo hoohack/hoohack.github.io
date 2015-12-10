@@ -252,6 +252,7 @@ PHP的curl扩展是PHP支持的允许你与各种服务器使用各种类型的�
 >程序不能完全保证在fork进程之前，父进程不会创建redis连接实例。因此，要解决这个问题只能靠子进程本身了。试想一下，如果在子进程中获取的实例只与当前进程相关，那么这个问题就不存在了。于是解决方案就是稍微改造一下redis类实例化的静态方式，与当前进程ID绑定起来。
 
 改造后的代码如下：
+
     <?php
          public static function getInstance() {
               static $instances = array();

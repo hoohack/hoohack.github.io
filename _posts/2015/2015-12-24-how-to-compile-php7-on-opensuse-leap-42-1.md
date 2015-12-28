@@ -17,6 +17,8 @@ keywords: '编译安装PHP,编译安装PHP7,PHP编译配置文件,configure: err
 ## 下载源码并解压
 进入正题，要编译安装PHP7,首先当然要下载PHP7的源码。你可以到[github](https://github.com/php/php-src)上clone，也可以到[PHP官网](http://php.net/downloads.php)下载。下载后解压到`/usr/local/src`目录，并将目录重命名为php7。进入目录。
 
+<!--more-->
+
 ## 配置编译参数
 ### 生成配置文件
     

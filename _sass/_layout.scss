@@ -326,6 +326,10 @@
     margin-left: 0;
     list-style: none;
 
+    p a {
+        color: #2E64FE;
+    }
+
     > li {
         margin-bottom: $spacing-unit;
         border-bottom: 3px solid #aaa;

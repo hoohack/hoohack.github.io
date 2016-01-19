@@ -4,8 +4,8 @@ title:  "【译】更快的方式实现PHP数组去重"
 date:   '2016-01-11 09:00:00'
 author: Hector
 categories: PHP
-excerpt: 'PHP,数组去重,array_unique,array_keys,array_flip,PHP数组去重'
-keywords: 'PHP,数组去重,array_unique,array_keys,array_flip,PHP数组去重'
+excerpt: 'PHP,数组去重,`array_unique`,`array_keys`,array_flip,PHP数组去重,更快的方式实现PHP数组去重'
+keywords: 'PHP,数组去重,`array_unique`,`array_keys`,array_flip,PHP数组去重,更快的方式实现PHP数组去重'
 ---
 
 原文:[Faster Alternative to PHP’s Array Unique Function](http://www.thecave.info/faster-alternative-to-phps-array-unique-function/)

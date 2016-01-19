@@ -201,3 +201,5 @@ keywords: 'lastInsertId函数返回0的原因,PHP,PDO,lastInsertId retur 0,lasti
 
 本文是探讨一个问题出现的原因，由于个人水平有限，如有建议和批评，欢迎指出。
 
+注：本文使用的是PHP5.4.15，MySQL5.5.41。
+

@@ -86,40 +86,51 @@ keywords: '编译安装PHP,编译安装PHP7,PHP编译配置文件,configure: err
 执行上面命令的过程中会遇到一些依赖缺少的提示，下面列出我遇到的依赖问题：
 
 错误：
+
 >configure: error: xml2-config not found. Please check your libxml2 installation.
 
 解决：
+
 > zypper install libxml2-devel
 
 错误：
+
 > configure: WARNING: unrecognized options: --with-mysql
 
 解决：
+
 > 取消这个选项，这个选项是不存在的
 
 错误：
 > configure: error: jpeglib.h not found.
 
 解决：
+
 > zypper install libjpeg-devel
 
 错误：
+
 > configure: error: mcrypt.h not found. Please reinstall libmcrypt.
 
 解决：
+
 > zypper install libmcrypt-devel
 
 错误：
+
 > configure: error: Cannot find pspell
 
 解决：
+
 > 取消该选项
 
 错误：
+
 >checking for recode support... yes
 >configure: error: Can not find recode.h anywhere under /usr /usr/local /usr /opt.
 
 解决：
+
 > zypper install librecode-devel
 
 总的来说，在配置的时候遇到没有的就打开Yast搜一下，如果有的话就安装，然后重新编译看还需要那些，如果在Yast找不到，那就上网找一下Google。
@@ -138,14 +149,15 @@ keywords: '编译安装PHP,编译安装PHP7,PHP编译配置文件,configure: err
 ## 设置PHP7的配置文件
 
     cp /usr/local/src/php7/php.ini-production /usr/local/php7/etc/php.ini
-    cp /usr/local/src/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+    cp /usr/local/src/php7/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
     cp /usr/local/php7/etc/php-fpm.conf.default /usr/local/php7/etc/php-fpm.conf
     cp /usr/local/php7/etc/php-fpm.d/www.conf.default /usr/local/php7/etc/php-fpm.d/www.conf
 
 ## 添加环境变量
 在/etc/profile 文件的最后一行加上
 
-    `export PATH=/usr/local/php7/bin:/usr/local/php7/sbin:$PATH`
+    export PATH=/usr/local/php7/bin:/usr/local/php7/sbin:$PATH
+
 然后执行`source /etc/profile`
 
 ## 设置PHP日志目录和php-fpm进程文件（php-fpm.sock）目录
@@ -163,7 +175,7 @@ keywords: '编译安装PHP,编译安装PHP7,PHP编译配置文件,configure: err
 
     service php-fpm start
 
-> 通过ps aux | grep 'php'查看PHP是否启动成功
+> 通过`ps aux | grep 'php'`查看PHP是否启动成功
 
 ![PHP启动](http://7u2eqw.com1.z0.glb.clouddn.com/php-run.png)
 

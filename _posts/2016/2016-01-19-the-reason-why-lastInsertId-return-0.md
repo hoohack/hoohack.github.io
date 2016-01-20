@@ -199,7 +199,24 @@ keywords: 'lastInsertId函数返回0的原因,PHP,PDO,lastInsertId retur 0,lasti
 ## 结论
 从手册的描述可以知道，`mysql_insert_id`函数返回的是储存在有`AUTO_INCREMENT`约束的字段的值，如果表中的字段不使用`AUTO_INCREMENT`约束或者使用自己生成的唯一值插入，那么该函数不会返回你所存储的值，而是返回NULL或0。因此，在没有使用AUTO_INCREMENT约束的表中，或者ID是自己生成的唯一ID，lastInsertId函数返回的都是0。
 
-本文是探讨一个问题出现的原因，由于个人水平有限，如有建议和批评，欢迎指出。
+## 解决方案
+那么，有没有另一种方法可以帮助我们判断程序执行插入是否成功呢？答案是有的。在PDO执行了excecute之后，调用PDO实例的rowCount函数可以得到执行之后的影响行数，如果结果非0，那么说明数据库插入操作执行成功了。下面这个解决方案的一小段demo：
+
+    $sql = 'INSERT INTO `tbl_test` (tbl_id, name) VALUE (:tbl_id, :name)';
+    $new_data = array(
+            ':tbl_id' => uniqid(),
+            ':name' => 'user_another'
+    );
+    $sth = $dbh->prepare($sql);
+    $sth->execute($new_data);
+    $row_count = $sth->rowCount();
+    if( $row_count ){
+        echo 'execute success';
+    } else{
+        echo 'execute failed';
+    }
+
+本文探讨一个问题出现的原因和一个解决方案，由于个人水平有限，如有更好的方法或者其他建议和批评，欢迎指出。
 
 注：本文使用的是PHP5.4.15，MySQL5.5.41。
 

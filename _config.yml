@@ -4,8 +4,6 @@ timezone: 'Asia/Shanghai'
 site_name : Hector的博客
 title: 划拳
 email: hhqcontinue@gmail.com
-description: Hector's blog
-  Power by Hector
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://www.aintnot.com" # the base hostname & protocol for your site
 github_username:  hhqcontinue

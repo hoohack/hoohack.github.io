@@ -21,6 +21,8 @@ keywords: 'PHP,PHP源码,PHP源码结构,PHP源码分析,PHP变量'
     zend_uchar is_ref__gc;
     };
 
+<!--more-->
+
 然后我们就得到PHP的基础，zval。看起来很简单，对吗？是的，没错，但这里还有一些很有意义的神奇的东西。注意，这是一个结构或结构体。基本上，这可以看作PHP里面的类，这些类只有公共的属性。这里，我们有四个属性：`value`,`refcount__gc`,`type`以及`is_ref__gc`。让我们来一一查看这些属性（省略它们的顺序）。
 
 ### Value

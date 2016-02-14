@@ -8,6 +8,8 @@ excerpt: 'PHP,PHP源码,PHP源码结构,PHP源码分析,PHP变量'
 keywords: 'PHP,PHP源码,PHP源码结构,PHP源码分析,PHP变量'
 ---
 
+原文：[http://blog.ircmaxell.com/2012/03/phps-source-code-for-php-developers_21.html](http://blog.ircmaxell.com/2012/03/phps-source-code-for-php-developers_21.html)
+
 在"给PHP开发者的PHP源码"系列的第三篇文章，我们打算扩展上一篇文章来帮助理解PHP内部是怎么工作的。在第一篇文章，我们介绍了如何查看PHP的源码，它的代码结构是怎样的以及一些介绍给PHP开发者的C指针基础。第二篇文章介绍了函数。这一次，我们打算深入PHP最有用的结构之一：变量。
 
 ## 进入ZVAL

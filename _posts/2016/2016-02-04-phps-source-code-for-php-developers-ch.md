@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "【译】给PHP开发者讲讲PHP源码-第一部分-源码结构"
+title: "【译】给PHP开发者的PHP源码-第一部分-源码结构"
 date: '2016-02-04 18:00:00'
 author: Hector
 categories: PHP

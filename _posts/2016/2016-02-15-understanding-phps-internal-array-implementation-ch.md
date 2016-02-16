@@ -8,6 +8,8 @@ excerpt: 'PHP,PHP源码,PHP源码结构,PHP源码分析,PHP数组'
 keywords: 'PHP,PHP源码,PHP源码结构,PHP源码分析,PHP数组'
 ---
 
+原文：[https://nikic.github.io/2012/03/28/Understanding-PHPs-internal-array-implementation.html](https://nikic.github.io/2012/03/28/Understanding-PHPs-internal-array-implementation.html)
+
 欢迎来到"给PHP开发者的PHP源码"系列的第四部分，这一部分我们会谈论PHP数组在内部是如何表示和在代码库里使用的。
 
 为了防止你错过了之前的文章，以下是链接：

@@ -42,4 +42,4 @@ strlen函数说明。
 
     #define Z_STRLEN_PP(zval_pp)    Z_STRLEN(**zval_pp)
 
-在继续看`Z_STRLEN`宏的定义，`#define Z_STRLEN(zval)          (zval).value.str.len`。由此我们可以知道，`strlen`函数是通过直接返回zval结构体中的str的len属性来实现的。
+再继续看`Z_STRLEN`宏的定义，`#define Z_STRLEN(zval)          (zval).value.str.len`。由此我们可以知道，`strlen`函数是通过直接返回zval结构体中的str的len属性来实现的。

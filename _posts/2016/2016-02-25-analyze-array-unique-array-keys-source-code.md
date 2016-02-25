@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "【性能为王】从PHP源码剖析array_keys和array_unique"
-date: '2016-02-25 17:00:00'
+date: '2016-02-25 16:00:00'
 author: Hector
 categories: PHP
 excerpt: 'php, PHP源码, php内部函数实现, array_flip源码, array_unique源码, array_keys源码, array源码, PHP函数性能分析'
@@ -50,9 +50,8 @@ keywords: 'php, PHP源码, php内部函数实现, array_flip源码, array_unique
 测试结果表明，使用array_flip后再调用array_keys函数比array_unique函数快。那么，具体原因是什么呢？让我们看看在PHP底层，这两个函数是怎么实现的。
 
 ## 源码分析
-    
-    /* {{{ proto array array_keys(array input [, mixed search_value[, bool strict]])
-       Return just the keys from the input array, optionally only for the specified             search_value */
+
+    /* \{\{\{ proto array array_keys(array input [, mixed search_value[, bool strict]]) Return just the keys from the input array, optionally only for the specified search_value */
     PHP_FUNCTION(array_keys)
     {
         //变量定义
@@ -122,12 +121,12 @@ keywords: 'php, PHP源码, php内部函数实现, array_flip源码, array_unique
             zend_hash_move_forward_ex(Z_ARRVAL_P(input), &pos);
         }
     }
-    /* }}} */
+    /* \}\}\} */
     
 以上是array_keys函数底层的源码。为方便理解，笔者添加了一些中文注释。如果需要查看原始代码，可以点击查看。这个函数的功能就是新建一个临时数组，然后将键值对重新复制到新的数组，如果复制过程中有重复的键值出现，那么就用新的值替换。这个函数的主要步骤是地57和63行调用的zend_hash_next_index_insert函数。该函数将元素插入到数组中，如果出现重复的值，则使用新的值更新原键值指向的值，否则直接插入，时间复杂度是O(n)。
 
 
-    /* {{{ proto array array_flip(array input)
+    /* \{\{\{ proto array array_flip(array input)
        Return array with key <-> value flipped */
     PHP_FUNCTION(array_flip)
     {
@@ -177,14 +176,14 @@ keywords: 'php, PHP源码, php内部函数实现, array_flip源码, array_unique
             zend_hash_move_forward_ex(Z_ARRVAL_P(array), &pos);
         }
     }
-    /* }}} */
+    /* \}\}\} */
     
 上面就是是array_flip函数的源码。[点击链接](http://lxr.php.net/xref/PHP_5_4/ext/standard/array.c#2691)查看原始代码。这个函数主要的做的事情就是创建一个新的数组，遍历原数组。在26行开始将原数组的值赋值为新数组的键，然后在37行开始将原数组的键赋值为新数组的值，如果有重复的，则使用新值覆盖旧值。整个函数的时间复杂度也是O(n)。因此，使用了array_flip之后再使用array_keys的时间复杂度是O(n)。
 
 接下来，我们看看array_unique函数的源码。[点击链接](http://lxr.php.net/xref/PHP_5_4/ext/standard/array.c#2777)查看原始代码。
 
 
-    /* {{{ proto array array_unique(array input [, int sort_flags])
+    /* \{\{\{ proto array array_unique(array input [, int sort_flags])
        Removes duplicate values from array */
     PHP_FUNCTION(array_unique)
     {
@@ -255,7 +254,7 @@ keywords: 'php, PHP源码, php内部函数实现, array_flip源码, array_unique
         }
         pefree(arTmp, Z_ARRVAL_P(array)->persistent);
     }
-    /* }}} */
+    /* \}\}\} */
     
 可以看到，这个函数初始化一个新的数组，然后将值拷贝到新数组，然后在45行调用排序函数对数组进行排序，排序的算法是zend引擎的块树排序算法。接着遍历排序好的数组，删除重复的元素。整个函数开销最大的地方就在调用排序函数上，而快排的时间复杂度是O(n*logn)，因此，该函数的时间复杂度是O(n*logn)。
 

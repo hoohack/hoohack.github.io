@@ -12,7 +12,7 @@ strlen函数说明。
 
     int strlen ( string $string )
 
-在[这篇文章](http://www.aintnot.com/2016/02/10/understanding-phps-internal-function-definitions-ch)，我们可以知道`strlen`函数是通过Zend Engine定义的。函数的定义可以在[这里](http://lxr.php.net/xref/PHP_5_4/Zend/zend_builtin_functions.c#478)查看。
+在[这篇文章](http://www.hoohack.me/2016/02/10/understanding-phps-internal-function-definitions-ch)，我们可以知道`strlen`函数是通过Zend Engine定义的。函数的定义可以在[这里](http://lxr.php.net/xref/PHP_5_4/Zend/zend_builtin_functions.c#478)查看。
 
 在这里也给出函数的源码：
 

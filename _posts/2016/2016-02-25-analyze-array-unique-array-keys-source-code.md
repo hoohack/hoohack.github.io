@@ -8,7 +8,7 @@ excerpt: 'php, PHP源码, php内部函数实现, array_flip源码, array_unique�
 keywords: 'php, PHP源码, php内部函数实现, array_flip源码, array_unique源码, array_keys源码, array源码, PHP函数性能分析'
 ---
 
-之前在[[译]更快的方式实现PHP数组去重](http://www.aintnot.com/2016/01/11/faster-way-to-phps-array-unique-function/)这篇文章里讨论了使用array_flip后再调用array_keys函数替换直接调用array_unique函数实现数组去重性能较好。由于原文没有给出源码分析和测试的结果，导致给读者造成迷惑，在此说声抱歉。为了解开读者的疑惑，笔者承诺了会补上源码的分析，于是花了一些时间去研究PHP的源码，现在此补上详细的说明。
+之前在[[译]更快的方式实现PHP数组去重](http://www.hoohack.me/2016/01/11/faster-way-to-phps-array-unique-function/)这篇文章里讨论了使用array_flip后再调用array_keys函数替换直接调用array_unique函数实现数组去重性能较好。由于原文没有给出源码分析和测试的结果，导致给读者造成迷惑，在此说声抱歉。为了解开读者的疑惑，笔者承诺了会补上源码的分析，于是花了一些时间去研究PHP的源码，现在此补上详细的说明。
 
 <!--more-->
 

@@ -21,4 +21,4 @@ permalink: /about/
 
 [`个人简历`](/assets/resume)
 
-[`Github`](https://github.com/hhqcontinue)
+[`Github`](https://github.com/hoohack)

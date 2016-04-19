@@ -3,7 +3,7 @@ layout: post
 title:  "AJAX原理总结"
 date:   '2015-01-05 17:15:41'
 author: Hector
-categories: AJAX
+categories: Javascript
 ---
 
 ###AJAX全称

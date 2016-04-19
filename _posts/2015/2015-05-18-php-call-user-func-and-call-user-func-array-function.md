@@ -3,7 +3,7 @@ layout: post
 title:  "PHP中call_user_func和call_user_func_array函数使用与比较"
 date:   '2015-05-18 18:47:41'
 author: Hector
-categories: php
+categories: PHP
 excerpt: 'php,call_user_func,call_user_func_array,回调'
 keywords: 'php,call_user_func,call_user_func_array,回调'
 ---

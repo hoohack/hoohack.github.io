@@ -3,7 +3,7 @@ layout: post
 title:  "PHP函数--array_map"
 date:   '2015-07-16 15:08:37'
 author: Hector
-categories: php
+categories: PHP
 excerpt: 'php,array_map'
 keywords: 'php,array_map'
 ---

@@ -16,6 +16,9 @@ keywords: 'Javascript,css,learning,freecodecamp'
     var args = Array.prototype.slice.call(arguments);
 
 ## 修改字符串中的字符
+
+<!--more-->_
+
 可以新生成字符串变量；或者也可以使用如下方法：
 
     String.prototype.replaceAt = function(index, character) {

@@ -3,7 +3,7 @@ layout: post
 title:  "关于朋友的一些想法"
 date:   '2015-03-27 20:56:41'
 author: Hector
-categories: Other
+categories: Life
 excerpt: '关于朋友的一些想法'
 keywords: '关于朋友的一些想法'
 ---

@@ -1,9 +1,7 @@
 .container {
-    max-width: 1000px;
+    width: 100%;
     margin-right: auto;
     margin-left: auto;
-    background-color: #fff;
-    margin-bottom: 30px;
     box-shadow: 1px 1px 10px #BBB;
 
     @include media-query($on-palm) {
@@ -15,7 +13,6 @@
  * Site header
  */
 .site-header {
-    border-bottom: 1px solid $grey-color-light;
     min-height: 56px;
 
     // Positioning context for the mobile navigation icon
@@ -42,8 +39,9 @@
 }
 
 .blog-header {
+    height: 70px;
     padding: 10px;
-    background-color: #f9f9f9;
+    padding-top: 50px;
 }
 
 .blog-header h3 {
@@ -73,23 +71,21 @@
     @extend %clearfix;
 
     ul {
-        width: 32%;
+        width: 40%;
         display: inline-block;
         margin: 0 0 50px;
         padding: 4px 20px;
-        background-color: #000;
         vertical-align: top;
         border-radius: 0 0 10px 10px;
     }
 
     li {
-        display: block;
-        float: left;
+        display: inline-block;
         list-style: none;
-        font-size: 1.3em;
+        font-size: 1.1em;
         line-height: 1.8;
         text-align: center;
-        width: 25%;
+        width: 10%;
     }
 
     .page-link {
@@ -154,15 +150,11 @@
 
 .site-nav a {
     display: block;
-    color: #fff;
     border-radius: 4px;
 }
 
 .site-nav a:hover {
-    -webkit-box-shadow: inset 0 0 1px #fff;
-    -moz-box-shadow: inset 0 0 1px #fff;
-    box-shadow: inset 0 0 1px #fff;
-    background-color: #1a1a1a;
+    color: $head-color;
 }
 
 .archive_head {
@@ -221,7 +213,7 @@
 #back-top {
   position: fixed;
   bottom: 30px;
-  margin-left: 1040px;
+  margin-left: 90%;
 }
 #back-top a {
   width: 54px;
@@ -314,25 +306,56 @@
  * Page content
  */
 .page-content {
-    padding: $spacing-unit 0;
-//    background-color: #f9f9f9;
+    background-color: #f9f9f9;
 }
 
 .page-heading {
     font-size: 20px;
 }
 
+.sidebar {
+    width: 20%;
+    background-color: #FFF;
+    float: right;
+    padding: 20px;
+
+    > ul {
+        margin-left: 0;
+
+        > li {
+            font-size: 0.9em;
+            border-bottom: 1px solid #e0e0e0;
+        }
+    }
+
+    > p {
+        font-weight: 700;
+    }
+}
+
+.home-category-item {
+    height: 35px;
+    line-height: 1.6em;
+}
+
 .post-list {
-    margin-left: 0;
-    list-style: none;
+    margin-right: -20%;
+    width: 75%;
+    float: left;
 
     p a {
         color: #2E64FE;
     }
+}
+
+.post-list ul {
+    list-style: none;
+    margin-left: 0;
 
     > li {
-        margin-bottom: $spacing-unit;
-        border-bottom: 3px solid #aaa;
+        margin-bottom: 40px;
+        background-color: #FFF;
+        padding: 30px;
     }
 }
 
@@ -342,8 +365,9 @@
 }
 
 .post-link {
+    font-size: 1.7em;
+    display: block;
     color: $head-color;
-    font-size: 1.3em;
 }
 
 .read-more {
@@ -352,13 +376,18 @@
     color: $brand-color;
 }
 
-.post-link, .read-more {
+.read-more {
     font-weight: bold;
 }
 
 /**
  * Posts
  */
+.post {
+    background-color: #FFF;
+    padding: 30px;
+}
+
 .post-header {
     margin-bottom: $spacing-unit;
 }
@@ -367,8 +396,7 @@
     letter-spacing: -1px;
     line-height: 1;
     color: $head-color;
-    font-size: 2em;
-    font-weight: bold;
+    font-size: 1.7em;
 
     @include media-query($on-laptop) {
         font-size: 36px;
@@ -379,7 +407,7 @@
     margin-bottom: $spacing-unit;
 
     h2 {
-        font-size: 32px;
+        font-size: 1.7em;
 
         @include media-query($on-laptop) {
             font-size: 28px;
@@ -387,7 +415,7 @@
     }
 
     h3 {
-        font-size: 26px;
+        font-size: 1.5em;
 
         @include media-query($on-laptop) {
             font-size: 22px;
@@ -395,7 +423,7 @@
     }
 
     h4 {
-        font-size: 20px;
+        font-size: 1.3em;
 
         @include media-query($on-laptop) {
             font-size: 18px;
@@ -405,7 +433,7 @@
 
 .pagination {
     color: #9EABB3;
-    font-size: 0.8em;
+    font-size: 1em;
     line-height: 1em;
     margin-left: auto;
     margin-right: auto;

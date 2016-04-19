@@ -3,7 +3,7 @@ layout: post
 title:  "AJAX跨域请求----JSONP"
 date:   '2015-01-07 14:15:41'
 author: Hector
-categories: AJAX
+categories: Javascript
 ---
 
 ##JSONP是什么

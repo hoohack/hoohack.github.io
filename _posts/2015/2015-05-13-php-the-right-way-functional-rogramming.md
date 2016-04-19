@@ -3,7 +3,7 @@ layout: post
 title:  "PHP之道--函数式编程(译)"
 date:   '2015-05-13 16:34:41'
 author: Hector
-categories: php
+categories: PHP
 excerpt: 'php之道,函数式编程'
 keywords: 'php之道,函数式编程'
 ---

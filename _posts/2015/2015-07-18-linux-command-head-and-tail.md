@@ -3,7 +3,7 @@ layout: post
 title:  "Linux获取文件内容命令总结--tail和head"
 date:   '2015-07-18 23:28:37'
 author: Hector
-categories: php
+categories: PHP
 excerpt: 'Linux,tail'
 keywords: 'Linux,tail'
 ---

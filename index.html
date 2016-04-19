@@ -1,28 +1,40 @@
 ---
-layout: default
+layout: version_2
 ---
 
 <div class="home">
 
-  <ul class="post-list">
-    {% for post in paginator.posts %}
-      <li>
+  <div class="post-list">
+    <ul>
+      {% for post in paginator.posts %}
+        <li class="post-item">
 
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
+            <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
 
-        <span class="post-meta">{{ post.date | date: "%b %d, %Y" }},&nbsp;By {{ post.author }}</span>
+          <span class="post-meta">{{ post.date | date: "%b %d, %Y" }},&nbsp;By {{ post.author }}</span>
 
-        <p>
-          {{ post.content | split:'<!--more-->' |first }}
-        </p>
+          <p>
+            {{ post.content | split:'<!--more-->' |first }}
+          </p>
 
-        <h6><a class="post-link read-more" href="{{ post.url | prepend: site.baseurl }}">Read more...</a></h6>
-      </li>
-    {% endfor %}
-  </ul>
+          <h6><a class="post-link read-more" href="{{ post.url | prepend: site.baseurl }}">Read more...</a></h6>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 
+  <div class="sidebar">
+    <p>分类</p>
+    <ul class="categories-box">
+        {% if site.posts != empty %}
+            {% for cat in site.categories %}
+              <li class="home-category-item">
+                <a href="categories#{{ cat[0] }}" title="{{ cat[0] }}" rel="{{ cat[1].size }}">{{ cat[0] | join: "/"}} - <span> {{ cat[1].size }}</span></a>
+              </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+  </div>
 </div>
 
 {% if paginator.total_pages != 1 %}
@@ -36,7 +48,7 @@ layout: default
     {% endif %}
   </span>
   {% endif %}
-    <span>Page {{ paginator.page }} of {{ paginator.total_pages }}</span>
+    <span>Page {{ paginator.page }} / {{ paginator.total_pages }}</span>
 
   {% if paginator.next_page %}
   <span class="next">

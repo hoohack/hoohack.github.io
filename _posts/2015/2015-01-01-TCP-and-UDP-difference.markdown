@@ -3,7 +3,7 @@ layout: post
 title:  "TCP字节流和UDP数据报区别"
 date:   '2015-01-01 19:15:41'
 author: Hector
-categories: ComputerNetworks
+categories: 计算机网络
 ---
 
 两者的区别在于TCP接收的是一堆数据，而每次取多少由主机决定;而UDP发的是数据报，客户发送多少就接收多少。

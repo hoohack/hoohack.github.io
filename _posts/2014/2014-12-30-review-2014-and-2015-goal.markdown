@@ -3,7 +3,7 @@ layout: post
 title:  "回首2014这一年，2015年目标"
 date:   '2014-12-30 19:56:41'
 author: Hector
-categories: life
+categories: Life
 ---
 
 许久没有动笔总结自己的学习、生活、工作。趁着这2014年的末尾，总结自己2014这一年的旅程。

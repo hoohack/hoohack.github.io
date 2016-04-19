@@ -3,7 +3,7 @@ layout: post
 title:  "PHP优化之批量操作MySQL"
 date:   '2015-05-11 16:34:41'
 author: Hector
-categories: php
+categories: PHP
 excerpt: 'php优化,优化,批量操作'
 keywords: 'php优化,优化,批量操作'
 ---

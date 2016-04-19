@@ -3,9 +3,9 @@ layout: post
 title: "［深入浅出Sphinx］Sphinx的工作原理"
 date: '2016-04-05 11:00:00'
 author: Hector
-categories: 读书笔记
-excerpt: 'Javascript,css,learning,freecodecamp'
-keywords: 'Javascript,css,learning,freecodecamp'
+categories: MySQL
+excerpt: 'sphinx简介, Sphinx工作原理, Sphinx搜索引擎, Coreseek, 什么是Sphinx, 搜索引擎'
+keywords: 'sphinx简介, Sphinx工作原理, Sphinx搜索引擎, Coreseek, 什么是Sphinx, 搜索引擎'
 ---
 
 ## What/Sphinx是什么

@@ -4,9 +4,9 @@ timezone: 'Asia/Shanghai'
 site_name : Blog - hoohack
 email: hhqcontinue@gmail.com
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://www.aintnot.com" # the base hostname & protocol for your site
+url: "http://www.hoohack.me" # the base hostname & protocol for your site
 github_username:  hhqcontinue
-keywords: "ainnot, Hector的博客"
+keywords: "hoohack, Hector的博客"
 paginate: 10
 paginate_path: "page:num"
 

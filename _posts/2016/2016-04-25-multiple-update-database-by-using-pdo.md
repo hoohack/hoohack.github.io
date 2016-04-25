@@ -25,8 +25,9 @@ PDO绑定参数
 
 为了防止SQL注入，使用了PDO扩展绑定参数。上面的数字在一般情况下是变量，那么就需要做参数绑定。刚开始是想着在IN的时候将id组成的字符串作为变量绑定过去，第一次实现的代码如下：
 
+<!--more-->
 
-<?php
+    <?php
         $data = array(array('id' => 1, 'val' => 2), array('id' => 2, 'val' => 3));
         $ids = implode(',', array_map(function($v) {return $v['id'];}, $data)); //获取ID数组
         $update_sql = 'UPDATE tbl_test SET val = CASE id';

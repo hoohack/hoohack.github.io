@@ -17,6 +17,8 @@ permalink: /about/
 
 [`图片轮播`](/assets/scroller)
 
+[井字游戏](/assets/tictactoe)
+
 > #更多
 
 [`个人简历`](/assets/resume)

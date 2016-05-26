@@ -10,6 +10,8 @@ keywords: 'php, PHP源码, php内部函数实现, array_flip源码, array_unique
 
 之前在[[译]更快的方式实现PHP数组去重](http://www.hoohack.me/2016/01/11/faster-way-to-phps-array-unique-function/)这篇文章里讨论了使用array_flip后再调用array_keys函数替换直接调用array_unique函数实现数组去重性能较好。由于原文没有给出源码分析和测试的结果，导致给读者造成迷惑，在此说声抱歉。为了解开读者的疑惑，笔者承诺了会补上源码的分析，于是花了一些时间去研究PHP的源码，现在此补上详细的说明。
 
+我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/hoohack/read-php-src)。可以通过[commit记录](https://github.com/hoohack/read-php-src/commits/master)查看已添加的注解。
+
 <!--more-->
 
 ## 性能分析
@@ -264,3 +266,5 @@ keywords: 'php, PHP源码, php内部函数实现, array_flip源码, array_unique
 原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。
 
 如果本文对你有帮助，望点下推荐，写文章不容易。
+
+最后再安利一下，我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/hoohack/read-php-src)。可以通过[commit记录](https://github.com/hoohack/read-php-src/commits/master)查看已添加的注解。

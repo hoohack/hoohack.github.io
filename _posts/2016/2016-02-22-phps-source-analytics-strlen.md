@@ -8,6 +8,8 @@ excerpt: 'PHP,PHP源码,PHP源码结构,PHP源码分析,strlen函数'
 keywords: 'PHP,PHP源码,PHP源码结构,PHP源码分析,strlen函数'
 ---
 
+我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/hoohack/read-php-src)。可以通过[commit记录](https://github.com/hoohack/read-php-src/commits/master)查看已添加的注解。
+
 strlen函数说明。
 
     int strlen ( string $string )
@@ -43,3 +45,5 @@ strlen函数说明。
     #define Z_STRLEN_PP(zval_pp)    Z_STRLEN(**zval_pp)
 
 再继续看`Z_STRLEN`宏的定义，`#define Z_STRLEN(zval)          (zval).value.str.len`。由此我们可以知道，`strlen`函数是通过直接返回zval结构体中的str的len属性来实现的。
+
+最后再安利一下，我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/hoohack/read-php-src)。可以通过[commit记录](https://github.com/hoohack/read-php-src/commits/master)查看已添加的注解。

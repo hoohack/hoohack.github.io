@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[PHP源码阅读]array_push和array_unshift函数"
+title: "[PHP源码阅读]array_pop和array_shift函数"
 date: '2016-05-30'
 author: Hector
 categories: PHP

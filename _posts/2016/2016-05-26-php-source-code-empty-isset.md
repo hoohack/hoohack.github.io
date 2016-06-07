@@ -10,7 +10,7 @@ keywords: 'php,c,PHP源码分析,源码学习,PHP源码,empty源码,isset源码,
 
 近日被问到PHP中empty和isset函数时怎么判断变量的，刚开始我是一脸懵逼的，因为我自己也只是一知半解，为了弄懂其真正的原理，赶紧翻开源码研究研究。经过分析可发现两个函数调用的都是同一个函数，因此本文将对两个函数一起分析。
 
-我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/hoohack/read-php-src)。可以通过[commit记录](https://github.com/hoohack/read-php-src/commits/master)查看已添加的注解。
+我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/read-php-src/read-php-src)。可以通过[commit记录](https://github.com/read-php-src/read-php-src/commits/master)查看已添加的注解。
 
 ## 函数使用格式
 
@@ -221,7 +221,7 @@ empty(1)，到IS_LONG分支，result = Z_LVAL_P(op) = 1，i_zend_is_true == 1，
 
  
 
-我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/hoohack/read-php-src)。可以通过[commit记录](https://github.com/hoohack/read-php-src/commits/master)查看已添加的注解。
+我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/read-php-src/read-php-src)。可以通过[commit记录](https://github.com/read-php-src/read-php-src/commits/master)查看已添加的注解。
 
 
 参考文章

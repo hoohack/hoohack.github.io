@@ -11,7 +11,7 @@ keywords: 'php,c,PHP源码分析,源码学习,PHP源码,array_push源码,array_u
 在PHP中，在数组中添加元素也是一种很常用的操作，分别有在数组尾部和头部添加元素，看看PHP内部是如何实现数组插入的操作。
 
 
-我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/hoohack/read-php-src)。可以通过[commit记录](https://github.com/hoohack/read-php-src/commits/master)查看已添加的注解。
+我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/read-php-src/read-php-src)。可以通过[commit记录](https://github.com/read-php-src/read-php-src/commits/master)查看已添加的注解。
  
 ## array_push
 
@@ -84,7 +84,7 @@ array_unshift函数将数据元素插入到数组的头部，插入时是作为�
 
  
 
-我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/hoohack/read-php-src)。可以通过[commit记录](https://github.com/hoohack/read-php-src/commits/master)查看已添加的注解。
+我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/read-php-src/read-php-src)。可以通过[commit记录](https://github.com/read-php-src/read-php-src/commits/master)查看已添加的注解。
 
 
 更多源码文章，欢迎访问个人主页继续查看：[hoohack](http://www.hoohack.me)

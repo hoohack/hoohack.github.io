@@ -10,7 +10,7 @@ keywords: 'php,c,源码分析,源码学习,PHP源码,explode源码,implode源码
 
 explode和implode函数主要用作字符串和数组间转换的操作，比如获取一段参数后根据某个字符分割字符串，或者将一个数组的结果使用一个字符合并成一个字符串输出。在PHP中经常会用到这两个函数，因此有必要了解一下其原理。
 
-我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/hoohack/read-php-src)。可以通过[commit记录](https://github.com/hoohack/read-php-src/commits/master)查看已添加的注解。
+我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/read-php-src/read-php-src)。可以通过[commit记录](https://github.com/read-php-src/read-php-src/commits/master)查看已添加的注解。
 
 ## explode
 
@@ -230,12 +230,12 @@ php_implode函数核心代码：
 
  
 
-最后再安利一下，我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/hoohack/read-php-src)。可以通过[commit记录](https://github.com/hoohack/read-php-src/commits/master)查看已添加的注解。
+最后再安利一下，我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/read-php-src/read-php-src)。可以通过[commit记录](https://github.com/read-php-src/read-php-src/commits/master)查看已添加的注解。
 
 
-  [1]: https://github.com/hoohack/read-php-src/blob/master/ext/standard/string.c#L1094
-  [2]: https://github.com/hoohack/read-php-src/blob/master/ext/standard/string.c#L1015
-  [3]: https://github.com/hoohack/read-php-src/blob/master/ext/standard/string.c#L1235
-  [4]: https://github.com/hoohack/read-php-src/blob/master/ext/standard/string.c#L1143
-  [5]: https://github.com/hoohack/read-php-src/blob/master/ext/standard/php_smart_str.h#L85
-  [6]: https://github.com/hoohack/read-php-src/blob/master/ext/standard/php_smart_str.h#L112
+  [1]: https://github.com/read-php-src/read-php-src/blob/master/ext/standard/string.c#L1094
+  [2]: https://github.com/read-php-src/read-php-src/blob/master/ext/standard/string.c#L1015
+  [3]: https://github.com/read-php-src/read-php-src/blob/master/ext/standard/string.c#L1235
+  [4]: https://github.com/read-php-src/read-php-src/blob/master/ext/standard/string.c#L1143
+  [5]: https://github.com/read-php-src/read-php-src/blob/master/ext/standard/php_smart_str.h#L85
+  [6]: https://github.com/read-php-src/read-php-src/blob/master/ext/standard/php_smart_str.h#L112

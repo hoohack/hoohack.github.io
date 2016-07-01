@@ -8,7 +8,7 @@ excerpt: '数据结构和算法,红黑树,红黑树实现,red black tree,impleme
 keywords: '数据结构和算法,红黑树,红黑树实现,red black tree,implement red black in c,C语言实现红黑树'
 ---
 
-最近花了些时间重拾数据结构的基础知识，先尝试了红黑树，花了大半个月的时间研究其原理和实现，下面是学习到的知识和一些笔记的分享。望各位多多指教。本次代码的实现请点击：[红黑树实现代码 - gist](https://gist.github.com/hoohack/3b98a43f0119d9f95b40fa539a040653)
+最近花了些时间重拾数据结构的基础知识，先尝试了红黑树，花了大半个月的时间研究其原理和实现，下面是学习到的知识和一些笔记的分享。望各位多多指教。本次代码的实现请点击：[红黑树实现代码](https://github.com/hoohack/KeepCoding/tree/master/DataStructure/RBTree)
 
 
 ## 红黑树基础知识
@@ -323,7 +323,7 @@ TRANSPLANT(T, u, v) 是移植结点的操作，此函数的功能是使结点 v 
 
 如果对部分步骤不理解，可以到这个网站看看红黑树每一步操作的可视化过程：[红黑树可视化网站](http://www.cs.usfca.edu/~galles/visualization/RedBlack.html)。
 
-本次代码的实现请点击：[红黑树实现代码](https://gist.github.com/hoohack/3b98a43f0119d9f95b40fa539a040653)
+本次代码的实现请点击：[红黑树实现代码](https://github.com/hoohack/KeepCoding/tree/master/DataStructure/RBTree)
 
 
 ## 总结

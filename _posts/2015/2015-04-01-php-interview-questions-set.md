@@ -81,13 +81,13 @@ if (strpos(“abc”, “a”) == true){ // 这部分永不会被执行，因为
 A:
 
 >header() 可以用来使浏览器转向到另一个页面，例如：
-`header(“Location: http://www.aintnot.com/”);`
+`header(“Location: http://www.hoohack.me/”);`
 
 ##Q:include 和 include_once 、require 和 require_once有什么分别？
 
 A:
 
-[`PHP中require、include、require_once和include_once的区别`](http://www.aintnot.com/2015/01/10/php-require-include-require_once-include_once/)
+[`PHP中require、include、require_once和include_once的区别`](http://www.hoohack.me/2015/01/10/php-require-include-require_once-include_once/)
 
 ##Q:mysql_fetch_row() 和 mysql_fetch_array() 有什么分别？
 

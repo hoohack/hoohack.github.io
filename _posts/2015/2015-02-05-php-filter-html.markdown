@@ -10,7 +10,7 @@ categories: PHP
 
 ### 一、使用正则表达式过滤html标签
 
-    $html_data = "<a href="#">www.aintnot.com</a>";
+    $html_data = "<a href="#">www.hoohack.me</a>";
     preg_replace("/(</?)(w+)([^>]*>)/e", "'\1'.strtoupper('\2').'\3'", $html_data);
     
 ### 二、PHP内置函数strip_tags
@@ -23,7 +23,7 @@ categories: PHP
 
 #### 使用示例代码
 
-    $str = "<a href='#'>www.aintnot.com</a><img src=''><p>hello</p>";
+    $str = "<a href='#'>www.hoohack.me</a><img src=''><p>hello</p>";
     
     $newStr = strip_tags($str);                               //过滤所有html标签
     

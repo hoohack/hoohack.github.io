@@ -15,6 +15,8 @@ HTTP服务器，就是一个运行在主机上的程序。程序启动了之后�
 
 先直接上代码，然后再详细说明实现细节。
 
+<!--more-->
+
     #include <stdio.h>
     #include <ctype.h>
     #include <sys/types.h>

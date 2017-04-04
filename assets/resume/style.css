@@ -12,6 +12,11 @@ body {
 	page-break-after:always;
 }
 
+a {
+	text-decoration: none;
+	color: blue;
+}
+
 #container {
 	width: 1000px;
 }
@@ -92,10 +97,12 @@ body {
 	padding-top: 5px;
 }
 
-.fa {
-	width: 15px;
-	float: left;
-	padding-right: 5px;
+.fa-1 a {
+	/*font-family: Microsoft YaHei;*/
+}
+
+.fa-circle-o {
+	padding-top: 4px;
 }
 
 .company-name {
@@ -110,6 +117,18 @@ body {
 
 .position-msg {
 	clear: both;
+}
+
+.job-detail {
+	padding-left: 10px;
+}
+
+.personal-job {
+	padding-left: 10px;
+}
+
+.fa-genderless {
+	padding-right: 5px;
 }
 
 .position-msg .position{

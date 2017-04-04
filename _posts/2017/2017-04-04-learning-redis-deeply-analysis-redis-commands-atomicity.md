@@ -16,6 +16,9 @@ keywords: 'Redis,atomic,redis atomic,why redis can atomic,redis原子性,redis a
 对于Redis而言，命令的原子性指的是：一个操作的不可以再分，操作要么执行，要么不执行。
 
 ## Redis操作原子性的原因
+
+<!--more-->
+
 Redis的操作之所以是原子性的，是因为Redis是单线程的。
 
 由于对操作系统相关的知识不是很熟悉，从上面这句话并不能真正理解Redis操作是原子性的原因，进一步查阅进程与线程的概念及其区别。

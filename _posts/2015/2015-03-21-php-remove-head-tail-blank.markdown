@@ -2,7 +2,7 @@
 layout: post
 title:  "在PHP中使用正则表达式去除字符串首尾的空格"
 date:   '2015-03-21 20:56:41'
-author: Hector
+author: hoohack
 categories: PHP
 ---
 

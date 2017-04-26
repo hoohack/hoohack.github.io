@@ -2,7 +2,7 @@
 layout: post
 title: "[PHP源码阅读]array_slice和array_splice函数"
 date: '2016-07-05'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'php,c,PHP源码分析,源码学习,PHP源码,array_slice源码,array_splice源码,php array_slice源码,php array_splice源码,php源码阅读,PHP源码阅读'
 keywords: 'php,c,PHP源码分析,源码学习,PHP源码,array_slice源码,array_splice源码,php array_slice源码,php array_splice源码,php源码阅读,PHP源码阅读'

@@ -2,7 +2,7 @@
 layout: post
 title:  "PDO中使用了ATTR_AUTOCOMMIT的一个坑"
 date:   '2015-06-25 16:37:41'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'php,pdo,ATTR_AUTOCOMMIT'
 keywords: 'php,pdo,ATTR_AUTOCOMMIT'

@@ -2,7 +2,7 @@
 layout: post
 title:  "【nginx配置】nginx做非80端口转发"
 date:   '2015-12-10 18:00:37'
-author: Hector
+author: hoohack
 categories: Nginx
 excerpt: 'Nginx,Nginx配置,Nginx非80端口转发,非80端口转发,端口转发'
 keywords: 'Nginx,Nginx配置,Nginx非80端口转发,非80端口转发,端口转发'

@@ -2,7 +2,7 @@
 layout: post
 title:  "迟到的2015总结"
 date:   '2016-01-05 09:00:00'
-author: Hector
+author: hoohack
 categories: Life
 excerpt: '2015总结'
 keywords: '2015总结'

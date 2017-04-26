@@ -2,7 +2,7 @@
 layout: post
 title: "[计算机网络]简易http server程序"
 date: '2016-10-28 17:00:00'
-author: Hector
+author: hoohack
 categories: 计算机网络
 excerpt: 'socket,socket编程,server,http server'
 keywords: 'socket,socket编程,server,http server'

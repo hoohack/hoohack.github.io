@@ -2,7 +2,7 @@
 layout: post
 title:  "一步步学习Dwoo模板引擎--介绍、安装"
 date:   '2015-04-22 18:56:41'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: '一步步学习Dwoo,一步步学习Dwoo引擎,PHP,Dwoo,模板引擎'
 keywords: '一步步学习Dwoo,一步步学习Dwoo引擎,PHP,Dwoo,模板引擎'

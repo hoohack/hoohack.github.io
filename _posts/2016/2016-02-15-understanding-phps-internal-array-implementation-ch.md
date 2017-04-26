@@ -2,7 +2,7 @@
 layout: post
 title: "【译】理解数组在PHP内部的实现（给PHP开发者的PHP源码-第四部分）"
 date: '2016-02-15 22:00:00'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'PHP,PHP源码,PHP源码结构,PHP源码分析,PHP数组'
 keywords: 'PHP,PHP源码,PHP源码结构,PHP源码分析,PHP数组'

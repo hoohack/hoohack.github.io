@@ -2,7 +2,7 @@
 layout: post
 title:  "Linux命令chmod学习"
 date:   '2015-04-22 16:56:41'
-author: Hector
+author: hoohack
 categories: Linux
 excerpt: 'Linux,chmod,修改权限'
 keywords: 'Linux,chmod,修改权限'

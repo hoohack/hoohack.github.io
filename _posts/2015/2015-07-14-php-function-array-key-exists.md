@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP函数--array_key_exists"
 date:   '2015-07-14 10:08:37'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'php,array_key_exists'
 keywords: 'php,array_key_exists'

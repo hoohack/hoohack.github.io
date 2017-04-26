@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP过滤HTML数据"
 date:   '2015-02-05 18:46:41'
-author: Hector
+author: hoohack
 categories: PHP
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP匿名函数"
 date:   '2015-05-16 17:55:41'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'php,匿名函数,闭包'
 keywords: 'php,匿名函数,闭包'

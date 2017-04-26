@@ -2,7 +2,7 @@
 layout: post
 title: "[代码大全读书笔记]如何定义一个好的变量名"
 date: '2016-07-25 11:00:00'
-author: Hector
+author: hoohack
 categories: 读书笔记
 excerpt: '读书笔记,变量命名,代码大全,如何命名,优秀变量命名,代码规范'
 keywords: '读书笔记,变量命名,代码大全,如何命名,优秀变量命名,代码规范'

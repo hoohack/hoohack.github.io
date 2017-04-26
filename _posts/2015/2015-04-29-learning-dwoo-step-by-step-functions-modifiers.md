@@ -2,7 +2,7 @@
 layout: post
 title:  "一步步学习Dwoo模板引擎--函数/修饰符"
 date:   '2015-04-29 13:27:41'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: '一步步学习Dwoo,一步步学习Dwoo引擎,PHP,Dwoo,模板引擎,Dwoo模板'
 keywords: '一步步学习Dwoo,一步步学习Dwoo引擎,PHP,Dwoo,模板引擎,Dwoo模板'

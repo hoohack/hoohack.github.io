@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP是怎么运行的"
 date:   '2015-09-02 17:00:37'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'PHP执行原理,PHP如何运行,PHP内核'
 keywords: 'PHP执行原理,PHP如何运行,PHP内核'

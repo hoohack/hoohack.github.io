@@ -2,13 +2,13 @@
 layout: post
 title:  "【php爬虫】百万级别知乎用户数据爬取与分析"
 date:   '2015-09-30 17:00:37'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'php,网页爬虫,pcntl,curl'
 keywords: 'php,网页爬虫,pcntl,curl'
 ---
 
-代码托管地址：[https://github.com/HectorHu/zhihuSpider][1]
+代码托管地址：[https://github.com/hoohackHu/zhihuSpider][1]
 
 这次抓取了110万的用户数据，数据分析结果如下：
 
@@ -290,7 +290,7 @@ PHP的curl扩展是PHP支持的允许你与各种服务器使用各种类型的�
 若文中有不正确的地方，望各位指出以便改正。
 
 
-  [1]: https://github.com/HectorHu/zhihuSpider
+  [1]: https://github.com/hoohackHu/zhihuSpider
   [2]: http://7u2eqw.com1.z0.glb.clouddn.com/知乎数据统计图.png
   [3]: http://7u2eqw.com1.z0.glb.clouddn.com/爬虫-查看cookie.jpg
   [4]: http://7u2eqw.com1.z0.glb.clouddn.com/爬虫-查看链接.jpg

@@ -2,7 +2,7 @@
 layout: post
 title:  "无限多级分类实现(PHP)"
 date:   '2015-01-17 09:46:41'
-author: Hector
+author: hoohack
 categories: PHP
 ---
 

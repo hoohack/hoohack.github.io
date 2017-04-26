@@ -2,7 +2,7 @@
 layout: post
 title:  "[LeetCode]字符翻转--多种解法分析"
 date:   '2015-03-28 17:56:41'
-author: Hector
+author: hoohack
 categories: LeetCode
 excerpt: '字符翻转,杂耍算法,逆置'
 keywords: '字符翻转,杂耍算法,LeetCode,RotateArray,Reverse'

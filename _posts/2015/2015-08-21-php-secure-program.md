@@ -2,7 +2,7 @@
 layout: post
 title:  "读书笔记--PHP安全编程"
 date:   '2015-08-21 10:00:37'
-author: Hector
+author: hoohack
 categories: 读书笔记
 excerpt: 'PHP安全编程,PHP,安全编程'
 keywords: 'PHP安全编程,PHP,安全编程'

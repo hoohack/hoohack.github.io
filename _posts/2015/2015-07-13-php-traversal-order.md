@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP数组遍历顺序"
 date:   '2015-07-13 10:52:41'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'php,hashtable,array,php source code'
 keywords: 'php,hashtable,array'

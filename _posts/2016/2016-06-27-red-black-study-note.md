@@ -2,7 +2,7 @@
 layout: post
 title: "红黑树探索笔记"
 date: '2016-06-27'
-author: Hector
+author: hoohack
 categories: 数据结构和算法
 excerpt: '数据结构和算法,红黑树,红黑树实现,red black tree,implement red black in c,C语言实现红黑树'
 keywords: '数据结构和算法,红黑树,红黑树实现,red black tree,implement red black in c,C语言实现红黑树'

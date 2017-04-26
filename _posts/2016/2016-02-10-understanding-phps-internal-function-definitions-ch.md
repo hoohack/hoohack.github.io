@@ -2,7 +2,7 @@
 layout: post
 title: "【译】理解PHP内部函数的定义（给PHP开发者的PHP源码-第二部分）"
 date: '2016-02-10 11:00:00'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'PHP,PHP源码,PHP源码结构,PHP源码分析,PHP内部函数'
 keywords: 'PHP,PHP源码,PHP源码结构,PHP源码分析,PHP内部函数'

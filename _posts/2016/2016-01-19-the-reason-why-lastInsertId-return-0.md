@@ -2,7 +2,7 @@
 layout: post
 title:  "【PDO扩展】lastInsertId函数返回0的原因"
 date:   '2016-01-19 17:00:00'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'lastInsertId函数返回0的原因,PHP,PDO,lastInsertId retur 0,lastinsertid return 0,lastInsertId,lastInsertId always return 0,为什么lastInsertId返回0'
 keywords: 'lastInsertId函数返回0的原因,PHP,PDO,lastInsertId retur 0,lastinsertid return 0,lastInsertId,lastInsertId always return 0,为什么lastInsertId返回0'

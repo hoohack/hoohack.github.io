@@ -2,7 +2,7 @@
 layout: post
 title: "［搜索引擎］Sphinx的介绍和原理探索"
 date: '2016-04-21 17:00:00'
-author: Hector
+author: hoohack
 categories: MySQL
 excerpt: 'sphinx简介, Sphinx工作原理, Sphinx搜索引擎, Coreseek, 什么是Sphinx, 搜索引擎,sphinx cli乱码,sphinxurge索引,sphinx分词算法'
 keywords: 'sphinx简介, Sphinx工作原理, Sphinx搜索引擎, Coreseek, 什么是Sphinx, 搜索引擎,sphinx cli乱码,sphinxurge索引,sphinx分词算法'

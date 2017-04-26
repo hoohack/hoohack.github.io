@@ -2,7 +2,7 @@
 layout: post
 title:  "说说PHP中foreach引用的一个坑"
 date:   '2015-04-25 10:47:41'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'PHP,foreach,引用,释放引用'
 keywords: 'PHP,foreach,引用,释放引用'

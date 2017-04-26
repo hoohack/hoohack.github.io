@@ -1,7 +1,7 @@
 /*
 * @Author: huhuaquan
 * @Date:   2016-04-20 10:18:53
-* @Last Modified by:   HectorHu
+* @Last Modified by:   hoohackHu
 * @Last Modified time: 2016-04-25 21:27:33
 */
 $(function() {

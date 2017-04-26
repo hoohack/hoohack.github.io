@@ -2,7 +2,7 @@
 layout: post
 title: "［PHP源码阅读］explode和implode函数"
 date: '2016-05-20'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'php,c,源码分析,源码学习,PHP源码,explode源码,implode源码,php explode源码,php源码阅读,PHP源码阅读'
 keywords: 'php,c,源码分析,源码学习,PHP源码,explode源码,implode源码,php explode源码,php源码阅读,PHP源码阅读'

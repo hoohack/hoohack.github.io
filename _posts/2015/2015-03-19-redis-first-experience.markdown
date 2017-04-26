@@ -2,7 +2,7 @@
 layout: post
 title:  "Redis初体验--在Window安装Redis和配置PHPRedis扩展"
 date:   '2015-03-19 20:56:41'
-author: Hector
+author: hoohack
 categories: Redis
 ---
 

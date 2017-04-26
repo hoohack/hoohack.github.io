@@ -2,7 +2,7 @@
 layout: post
 title: "【读书笔记】代码整洁之道"
 date: '2016-03-23 11:00:00'
-author: Hector
+author: hoohack
 categories: 读书笔记
 excerpt: '代码优化,代码整洁之道,整洁的代码,优化代码'
 keywords: '代码优化,代码整洁之道,整洁的代码,优化代码'

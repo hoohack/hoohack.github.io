@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP面试题总结"
 date:   '2015-04-01 12:56:41'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'PHP面试,PHP,面试总结'
 keywords: 'PHP面试,PHP,面试总结'

@@ -2,7 +2,7 @@
 layout: post
 title:  "Linux修改环境变量"
 date:   '2014-12-29 04:46:41'
-author: Hector
+author: hoohack
 categories: Linux
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title: "[计算机网络]httpserver--如何解析HTTP请求报文"
 date: '2016-11-06 22:00:00'
-author: Hector
+author: hoohack
 categories: 计算机网络
 excerpt: 'socket,socket编程,server,http server,parse request,http request line'
 keywords: 'socket,socket编程,server,http server,parse request,http request line'

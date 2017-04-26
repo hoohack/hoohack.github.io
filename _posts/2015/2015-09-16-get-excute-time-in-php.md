@@ -2,7 +2,7 @@
 layout: post
 title:  "在PHP中获取脚本执行时间"
 date:   '2015-09-16 15:00:37'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: '执行时间,获取脚本执行时间,PHP脚本执行时间'
 keywords: '执行时间,获取脚本执行时间,PHP脚本执行时间'

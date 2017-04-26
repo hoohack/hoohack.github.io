@@ -2,7 +2,7 @@
 layout: post
 title:  "谈谈PHP中ob_start()函数的用法"
 date:   '2015-01-24 15:46:41'
-author: Hector
+author: hoohack
 categories: PHP
 ---
 

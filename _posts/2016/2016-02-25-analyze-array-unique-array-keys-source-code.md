@@ -2,7 +2,7 @@
 layout: post
 title: "【性能为王】从PHP源码剖析array_keys和array_unique"
 date: '2016-02-25 16:00:00'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'php, PHP源码, php内部函数实现, array_flip源码, array_unique源码, array_keys源码, array源码, PHP函数性能分析'
 keywords: 'php, PHP源码, php内部函数实现, array_flip源码, array_unique源码, array_keys源码, array源码, PHP函数性能分析'

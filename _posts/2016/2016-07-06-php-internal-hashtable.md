@@ -2,7 +2,7 @@
 layout: post
 title: "[PHP内核探索]PHP中的哈希表"
 date: '2016-07-06'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: 'php, PHP源码分析, hashtable, php数组实现, PHP内核, PHP hashtable'
 keywords: 'php, PHP源码分析, hashtable, php数组实现, PHP内核, PHP hashtable'

@@ -2,7 +2,7 @@
 layout: post
 title:  "如何在openSUSE42.1下编译安装PHP7"
 date:   '2015-12-24 12:00:37'
-author: Hector
+author: hoohack
 categories: PHP
 excerpt: '编译安装PHP,编译安装PHP7,PHP编译配置文件,configure: error: Cannot find pspell,openSUSE编译安装PHP,openSUSE编译安装PHP7,opensuse编译安装PHP'
 keywords: '编译安装PHP,编译安装PHP7,PHP编译配置文件,configure: error: Cannot find pspell,openSUSE编译安装PHP,openSUSE编译安装PHP7,opensuse42.1编译安装PHP'

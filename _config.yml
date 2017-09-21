@@ -14,6 +14,6 @@ paginate_path: "page:num"
 markdown: kramdown
 permalink: /:year/:month/:day/:title
 
-gems:
+plugins:
   - jekyll-sitemap
   - jekyll-paginate

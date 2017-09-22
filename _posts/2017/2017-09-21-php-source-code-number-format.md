@@ -68,7 +68,6 @@ keywords: 'php,c,源码分析,源码学习,PHP源码,number_format源码,number_
                 thousand_sep = &thousand_sep_chr;
                 thousand_sep_len = 1;
             }
-            // _php_math_number_format_ex
             // 真正处理的函数，在本文件第1107行
             RETVAL_STR(_php_math_number_format_ex(num, (int)dec,
                     dec_point, dec_point_len, thousand_sep, thousand_sep_len));
@@ -77,7 +76,6 @@ keywords: 'php,c,源码分析,源码学习,PHP源码,number_format源码,number_
             WRONG_PARAM_COUNT;
         }
     }
-    /* }}} */
 
 ## 代码执行流程图
 ![number_format流程图](http://7u2eqw.com1.z0.glb.clouddn.com/number_format.png)

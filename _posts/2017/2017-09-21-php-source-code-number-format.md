@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "［PHP源码阅读］number_format函数"
-date: '2017-09-21'
+date: '2017-09-21 16:00:00'
 author: hoohack
 categories: PHP
 excerpt: 'php,c,源码分析,源码学习,PHP源码,number_format源码,,php源码阅读,PHP源码阅读'

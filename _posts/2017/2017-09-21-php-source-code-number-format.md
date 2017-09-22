@@ -34,7 +34,7 @@ keywords: 'php,c,源码分析,源码学习,PHP源码,number_format源码,number_
     // 指定小数点显示的字符
     // thousands_separator
     // 指定千位分隔符显示的字符
-    /* {{{ proto string number_format(float number [, int num_decimal_places [, string dec_separator, string thousands_separator]])
+    /* proto string number_format(float number [, int num_decimal_places [, string dec_separator, string thousands_separator]])
        Formats a number with grouped thousands */
     PHP_FUNCTION(number_format)
     {
@@ -63,11 +63,12 @@ keywords: 'php,c,源码分析,源码学习,PHP源码,number_format源码,number_
             if (dec_point == NULL) {
                 dec_point = &dec_point_chr;
                 dec_point_len = 1;
-            }
+            //}
             if (thousand_sep == NULL) {
                 thousand_sep = &thousand_sep_chr;
                 thousand_sep_len = 1;
             }
+            // _php_math_number_format_ex
             // 真正处理的函数，在本文件第1107行
             RETVAL_STR(_php_math_number_format_ex(num, (int)dec,
                     dec_point, dec_point_len, thousand_sep, thousand_sep_len));

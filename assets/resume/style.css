@@ -136,6 +136,10 @@ a {
 	float: left;
 }
 
+.position {
+  font-style: italic;
+}
+
 .position-msg .work-date {
 	width: 120px;
 	float: right;

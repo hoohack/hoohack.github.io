@@ -18,4 +18,4 @@ plugins_dir:
   - jekyll-sitemap
   - jekyll-paginate
 
-gems: [jekyll-paginate]
+plugins : [jekyll-paginate]

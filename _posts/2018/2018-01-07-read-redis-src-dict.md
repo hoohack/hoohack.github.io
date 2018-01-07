@@ -180,3 +180,11 @@ dict是一种用于保存键值对的抽象数据结构，在redis中使用非�
 
 ## 总结
 使用一个标记值标记某项操作正在执行是编程中常用的手段，比如本文提到的rehashidx，多利用此手段可以解决很多问题。
+
+我在github有对Redis源码更详细的注解。感兴趣的可以围观一下，给个star。[Redis4.0源码注解](https://github.com/hoohack/read-redis-src)。可以通过[commit记录](https://github.com/hoohack/read-redis-src/commits/master)查看已添加的注解。
+
+原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。
+
+更多精彩内容，请关注个人公众号。
+
+![](http://7u2eqw.com1.z0.glb.clouddn.com/qrcode_for_gh_4906075ba3ae_258.jpg)

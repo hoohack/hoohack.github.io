@@ -194,3 +194,9 @@ hget命令的实现最终是调用addHashFieldToReply函数（代码如下），
 
 ## 总结
 redis中的很多操作都是基于上面介绍的redis对象，了解这些对象的底层实现，可以为之后更多的redis特性做准备。
+
+原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。
+
+更多精彩内容，请关注个人公众号。
+
+![](http://7u2eqw.com1.z0.glb.clouddn.com/qrcode_for_gh_4906075ba3ae_258.jpg)

@@ -22,19 +22,6 @@ layout: version_2
       {% endfor %}
     </ul>
   </div>
-
-  <div class="sidebar">
-    <p>分类</p>
-    <ul class="categories-box">
-        {% if site.posts != empty %}
-            {% for cat in site.categories %}
-              <li class="home-category-item">
-                <a href="categories#{{ cat[0] }}" title="{{ cat[0] }}" rel="{{ cat[1].size }}">{{ cat[0] | join: "/"}} - <span> {{ cat[1].size }}</span></a>
-              </li>
-            {% endfor %}
-        {% endif %}
-    </ul>
-  </div>
 </div>
 
 {% if paginator.total_pages != 1 %}

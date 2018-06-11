@@ -460,9 +460,9 @@ dict数据结构的介绍可见之前的文章：[dict字典的实现](http://ww
 
 现在，username:1234已经设置了值，如果再次调用命令：`get username:1234`，过程跟上面描述的一样，到了`dictFind`阶段，函数能在数据库中找到`key username:1234`，函数返回的结果不为空，因此调用dictGetVal函数获取key的值，然后调用`addReply`返回对象的值。
 
-至此，set/get命令的整个流程到此结束，通读一遍可能还会有点懵逼，因此根据本次分享的内容再加一个图，看完这个图再回顾整个流程可以加深理解。[查看大图](https://user-gold-cdn.xitu.io/2018/6/11/163ec67400ec3f0b?w=2467&h=1344&f=png&s=130445)
+至此，set/get命令的整个流程到此结束，通读一遍可能还会有点懵逼，因此根据本次分享的内容再加一个图，看完这个图再回顾整个流程可以加深理解。[查看大图](http://7u2eqw.com1.z0.glb.clouddn.com/redis.jpg)
 
-![redis调用链路](https://user-gold-cdn.xitu.io/2018/6/11/163ec67400ec3f0b?w=2467&h=1344&f=png&s=130445)
+![redis调用链路](http://7u2eqw.com1.z0.glb.clouddn.com/redis.jpg)
 
 
 ## 总结

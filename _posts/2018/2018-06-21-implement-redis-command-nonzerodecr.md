@@ -3,7 +3,7 @@ layout: post
 title: "［Redis源码阅读］实现一个redis命令--nonzerodecr"
 date: '2018-06-21 9:00:00'
 author: hoohack
-categories: PHP
+categories: Redis
 excerpt: 'redis,c,源码分析,源码学习,redis源码,redis 4.0源码,实现redis命令,秒杀'
 keywords: 'redis,c,源码分析,源码学习,redis源码,redis 4.0源码,实现redis命令,秒杀'
 ---

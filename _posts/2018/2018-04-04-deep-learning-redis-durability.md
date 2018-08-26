@@ -3,7 +3,7 @@ layout: post
 title: "［Redis源码阅读］redis持久化"
 date: '2018-04-04 12:30:00'
 author: hoohack
-categories: PHP
+categories: Redis
 excerpt: 'redis,c,源码分析,源码学习,redis源码,redis对象,redis对象源码,redis 4.0源码'
 keywords: 'redis,c,源码分析,源码学习,redis源码,redis对象,redis对象源码,redis 4.0源码'
 ---

@@ -3,7 +3,7 @@ layout: post
 title: "［Redis源码阅读］当你启动Redis的时候，Redis做了什么"
 date: '2018-05-26 10:00:00'
 author: hoohack
-categories: PHP
+categories: Redis
 excerpt: 'redis,c,源码分析,源码学习,redis源码,redis 4.0源码,redis启动'
 keywords: 'redis,c,源码分析,源码学习,redis源码,redis 4.0源码,redis启动'
 ---

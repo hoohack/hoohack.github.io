@@ -3,7 +3,7 @@ layout: post
 title: "［Redis源码阅读］dict字典的实现"
 date: '2018-01-07 17:00:00'
 author: hoohack
-categories: PHP
+categories: Redis
 excerpt: 'redis,c,源码分析,源码学习,redis源码,dict源码,dict源码阅读,dict源码阅读,redis 4.0源码'
 keywords: 'redis,c,源码分析,源码学习,redis源码,dict源码,dict源码阅读,dict源码阅读,redis 4.0源码'
 ---

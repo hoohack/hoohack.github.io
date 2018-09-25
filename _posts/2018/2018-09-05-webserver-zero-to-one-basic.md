@@ -27,7 +27,7 @@ keywords: '网络编程,服务器编程,LinuxC,socket,tcp/ip'
 
 网络通信要解决的首要问题是如何唯一地标示一个通信的主体，比如网络上的两台服务器，如果无法唯一地标示两台服务器，那么就无法建立唯一的连接，通信自然也就无从谈起；再比如网络上的两个服务：两个用户使用微信通信，如果不能唯一标示两个微信客户端应用，A想发给B的消息却发送到C了，那么用户的通信就会变得混乱。
 
-![通信](http://7u2eqw.com1.z0.glb.clouddn.com/%E9%80%9A%E4%BF%A1.png)
+![通信](http://http://www.hoohack.me/assets/images/2018/TCP-Communicate.png)
 
 
 
@@ -35,7 +35,7 @@ keywords: '网络编程,服务器编程,LinuxC,socket,tcp/ip'
 
 
 
-![唯一标识通信载体](http://7u2eqw.com1.z0.glb.clouddn.com/%E5%94%AF%E4%B8%80%E6%A0%87%E8%AF%86%E9%80%9A%E4%BF%A1%E8%BD%BD%E4%BD%93.png)
+![唯一标识通信载体](http://http://www.hoohack.me/assets/images/2018/mark-communicate.png)
 
 
 
@@ -54,7 +54,7 @@ socket直译的意思就是网络套接字， 是一种操作系统提供的进�
 
 对于一次TCP连接而言，建立连接主要通过socket、bind、listen、accept这些API，整个流程如下图所示：
 
-![TCP连接](http://7u2eqw.com1.z0.glb.clouddn.com/TCP%E9%80%9A%E4%BF%A1.png)
+![TCP连接](http://http://www.hoohack.me/assets/images/2018/TCP-Connect.png)
 
 下面简单介绍下这些API的用法和函数参数的含义，更详细的操作可以直接读[man page文档](http://man7.org)。
 
@@ -209,7 +209,7 @@ count：要写入的数据字节大小
 本次的demo选用的都是C语言，无可否认，使用C语言编写服务器真的特别麻烦。但是个人比较喜欢C语言（虽然C语言比较水，但就是喜欢它），觉得它是一门特别优秀的语言，而且C语言最接近计算机底层的操作，程序出现各种错误和内存操作都需要程序员去考虑，涉及到的内存细节也更多，这些情况在更高级比如Java、Go这些语言里是很少能见到的，这样一来，除了能通过此练习巩固编程思维之外，还能了解到高级语言的API是如何封装的，怎么考虑异常情况等等，如果是自己设计的话，会怎么编写出强壮且维护性强的API。因此，学习服务器编程，需要准备一些C语言的基础，当然，一边练习一边学习也是可以的。
 
 ### 小结
-![服务器准备](http://7u2eqw.com1.z0.glb.clouddn.com/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%87%86%E5%A4%87.png)
+![服务器准备](http://http://www.hoohack.me/assets/images/2018/server-learning.png)
 本次主要描述了为什么需要学习网络编程，同时介绍了网络交互的本质，以及计算机通信的方式，还有一些常用到的API。通过了解这些介绍，可以着手去学习基础知识，为之后编写服务器打下坚实的基础。
 再次强调，网络基础真的很重要，只要开发工作涉及到网络交互，那么不管是开发还是调试功能，都会起到非常重要的作用。
 

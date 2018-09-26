@@ -18,7 +18,7 @@ keywords: 'redis,redis源码,redis 4.0源码,RDB文件,读取二进制文件,Gol
 
 举个例子，redis的对象类型是特定的几个字符表示，0代表字符串，读取到字符串类型后，紧接着就是字符串的长度，保存着接下来需要读取的字节大小，读取到的字节最终构成完整字符串对象的值。对于保存了`"name" => "hoohack"`键值对的字符串对象保存到内存可以用下图表示：
 
-![redis字符串存储](http://7u2eqw.com1.z0.glb.clouddn.com/redis-string-storage)
+![redis字符串存储](http://www.hoohack.me/assets/images/2018/08/redis-string-storage.png)
 
 当然，除了字符串，redis还有列表，集合，哈希等各种对象，针对这些类型，在RDB文件里面都有不同的规则定义，只需要按照RDB文件格式的协议来解读文件，就能完整无误地把文件解读成自然语言能描述的字符。
 
@@ -37,7 +37,7 @@ keywords: 'redis,redis源码,redis 4.0源码,RDB文件,读取二进制文件,Gol
     OK
 
 ### cat查看文件：
-![cat-rdb-file](http://7u2eqw.com1.z0.glb.clouddn.com/cat-rdb-file.png)
+![cat-rdb-file](http://www.hoohack.me/assets/images/2018/08/cat-rdb-file.png)
 
 可以看到是一个包含乱码的文件，因为文件是以二进制的格式保存，要想打印出人类能看出的语言，可以通过linux的od命令查看。od命令用于输出文件的八进制、十六进制或其他格式编码的字节，通常用于输出文件中不能直接显示在终端的字符，注意输出的是字节，分隔符之间的字符都是保存在一个字节的。
 
@@ -46,7 +46,7 @@ keywords: 'redis,redis源码,redis 4.0源码,RDB文件,读取二进制文件,Gol
 
 打印得出结果如下：
 
-![linux-od](http://7u2eqw.com1.z0.glb.clouddn.com/linux-od.png)
+![linux-od](http://www.hoohack.me/assets/images/2018/08/linux-od.png)
 
 从上图看到，文件打印出来的都是一些十六进制的数字，转换成十进制再去ASCII码表就能查找到对应的字符。比如第一个字符，52=5*16+2*1=82='R’。
 在这里说一句，个人觉得这od命令非常有用，在解析数据出现疑惑的时候，就是通过这个命令排查遇到的问题。把文件内容打印出来，找到当前读取的字符，对比RDB文件协议，看看究竟要解析的是什么数据，再对比代码中的解析逻辑，看看是否有问题，然后再修正代码。

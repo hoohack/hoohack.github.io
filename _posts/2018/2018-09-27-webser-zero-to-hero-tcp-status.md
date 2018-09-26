@@ -35,7 +35,7 @@ FIN : 结束标志，FINISH，用来结束一个TCP会话，但对应端口仍�
 
 整个建立连接过程至少需要三个分节，因此被称为TCP三路握手。下面是TCP三次握手的流程图：
 
-![tcp-status](http://localhost:4000/assets/images/2018/09/tcp-3shake.gif)
+![tcp-status](http://www.hoohack.me/assets/images/2018/09/tcp-3shake.gif)
 
 
 
@@ -53,7 +53,7 @@ TCP通过三次握手建立连接，然而，断开连接需要四次握手，TC
 
 整个连接过程中，每一端的关闭和确认关闭都各自需要一个FIN和ACK分节，整个过程通常共需要4个分节，因此也称为TCP四次握手。下面是TCP关闭连接四次握手的流程图：
 
-![tcp-status](http://localhost:4000/assets/images/2018/09/tcp-4shake.gif)
+![tcp-status](http://www.hoohack.me/assets/images/2018/09/tcp-4shake.gif)
 
 
 
@@ -91,7 +91,7 @@ CLOSED：连接完全关闭
 
 先来看看下面这张图，是UNIX网络编程中，TCP状态变化的经典流程图：
 
-![TCP-status](http://localhost:4000/assets/images/2018/09/tcp-classic.png)
+![TCP-status](http://www.hoohack.me/assets/images/2018/09/tcp-classic.png)
 
 在server端，调用socket函数创建一个sockect，函数返回一个socket文件描述符，调用bind函数绑定ip地址和端口，之后调用listen函数，scokect变成正在监听的socket，进入LISTEN状态，并调用accept等待请求（想要测试LISTEN状态，可以建立socket=>bind=>listen，然后sleep10秒之后退出，启动server之后马上用netstat命令可以看到）
 
@@ -117,7 +117,7 @@ CLOSED：连接完全关闭
 
 看完上面的一大段文字可能有点枯燥，甚至有点懵，来看看这张动画图：
 
-![tcp-status](http://localhost:4000/assets/images/2018/09/tcp-status.gif)
+![tcp-status](http://www.hoohack.me/assets/images/2018/09/tcp-status.gif)
 
 ### 总结
 

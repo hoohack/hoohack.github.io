@@ -77,8 +77,8 @@ mysql主从复制是一个异步的复制过程，主库发送更新事件到从
 
 原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。
 
-如果本文对你有帮助，请点下推荐吧，谢谢^_^
+如果本文对你有帮助，请点个赞吧，谢谢^_^
 
 更多精彩内容，请关注个人公众号。
 
-![](http://7u2eqw.com1.z0.glb.clouddn.com/qrcode_for_gh_4906075ba3ae_258.jpg)
+![](http://www.hoohack.me/assets/images/qrcode.jpg)

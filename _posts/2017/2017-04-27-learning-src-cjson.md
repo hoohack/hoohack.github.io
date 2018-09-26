@@ -67,12 +67,12 @@ json使用两种结构构建，对象或者数组。
 
 这就是根据json官网的定义得出解析json字符串的思路，接下来看看cJSON库是如何实现的。cJSON_Parse的实现流程图如下：
 
-![](http://images2015.cnblogs.com/blog/437647/201704/437647-20170426154406303-1729897650.png)
+![](http://www.hoohack.me/assets/images/2017/04/cjson-process.png)
 
 
 cJSON_ParseWithOpts函数里面调用了parse_value，是整个函数的核心实现。
 parse_value函数的流程图如下所示：
-![](http://images2015.cnblogs.com/blog/437647/201704/437647-20170426154431819-654359958.png)
+![](http://www.hoohack.me/assets/images/2017/04/cjson-parse-value.png)
 
 
 可以看到，parse_value是对json值的开头进行判断，然后进入相应的分支进行解析，下面对每一个分支进行分析。解析出来的值是保存在cJSON的结构体中，以下命名为item。
@@ -108,3 +108,11 @@ parse_value函数的流程图如下所示：
 ## 总结
 通过阅读这个小小的json解析库，知道了大部分的json库是如何实现的，自己对json的认识也有了一个更深刻的印象。
 学习到了一种解析某种格式的字符串的思路，要先知道该字符串格式的规范，直到它是如何组成的，有哪些规则和注意的地方，从它的组成规范中逐步分解和解析。
+
+原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。
+
+如果本文对你有帮助，请点个赞吧，谢谢^_^
+
+更多精彩内容，请关注个人公众号。
+
+![](http://www.hoohack.me/assets/images/qrcode.jpg)

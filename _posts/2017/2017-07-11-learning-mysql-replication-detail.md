@@ -54,7 +54,7 @@ mysql主从复制是一个异步的复制过程，主库发送更新事件到从
 
 整个主从复制的流程可以通过以下图示理解：
 
-![DB Replication](http://7u2eqw.com1.z0.glb.clouddn.com/DB%20replication.png)
+![DB Replication](http://www.hoohack.me/assets/images/2017/07/DB-replication.png)
 
 > * 步骤一：主库db的更新事件(update、insert、delete)被写到binlog
 > * 步骤二：从库发起连接，连接到主库

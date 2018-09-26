@@ -67,7 +67,7 @@ keywords: 'PHP大整数,number_format,PHP大整数处理,PHP源码分析,zend_st
 1、查看opcode
 
 通过vld查看PHP执行代码的opcode，可以看到，赋值的是一个ASSIGN的opcode操作
-![php整数01](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%281%29.png)
+![php整数01](http://www.hoohack.me/assets/images/2017/09/php-big-int-1.png)
 
 接下来就想看看ASSIGN是在哪里执行的。
 
@@ -75,63 +75,63 @@ keywords: 'PHP大整数,number_format,PHP大整数处理,PHP源码分析,zend_st
 
 2-1、用list查看有什么地方可以进行断点
 
-​![php整数02](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%282%29.png)
+​![php整数02](http://www.hoohack.me/assets/images/2017/09/php-big-int-2.png)
 
 2-2、暂时没有头绪，在1186断点试试
 
-![php整数03](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%283%29.png)
+![php整数03](http://www.hoohack.me/assets/images/2017/09/php-big-int-3.png)
 
 结果程序走到sapi/cli/php_cli.c文件的1200行了，按n不断下一步执行，一直到这里就走到了程序输出结果了：
-![php整数04](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%284%29.png)
+![php整数04](http://www.hoohack.me/assets/images/2017/09/php-big-int-4.png)
 
 2-4、于是可以猜测，ASSIGN操作是在do_cli函数里面进行的，因此对do_cli函数做断点：break do_cli。
 
 输入n，不断回车，在sapi/cli/php_cli.c文件的993行之后就走到程序输出结果了：
-![php整数05](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%285%29.png)
+![php整数05](http://www.hoohack.me/assets/images/2017/09/php-big-int-5.png)
 
 2-5、再对php_execute_script函数做断点：break php_execute_script
 不断逐步执行，发现在main/main.c文件的2537行就走到程序输出结果了：
 
-![php整数06](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%286%29.png)
+![php整数06](http://www.hoohack.me/assets/images/2017/09/php-big-int-6.png)
 
 2-6、继续断点的步骤：break zend_execute_scripts
 重复之前的步骤，发现在zend/Zend.c文件的1476行走到了程序输出结果的步骤：
 
-![php整数07](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%287%29.png)
+![php整数07](http://www.hoohack.me/assets/images/2017/09/php-big-int-7.png)
 
 看到这里的时候，第1475行里有一个op_array，就猜测会不会是在op_array的时候就已经有值了，于是开始打印op_array的值：
 
-![php整数08](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%288%29.png)
+![php整数08](http://www.hoohack.me/assets/images/2017/09/php-big-int-8.png)
 
 打印之后并没有看到有用的信息，但是其实这里包含有很大的信息量，比如opcode的handler: **ZEND_ASSIGN_SPEC_CV_RETVAL_CV_CONST_RETVAL_UNUSED_HANDLER**，但是当时没注意到，因为就想着看看op_array是怎么被赋值的，相关步骤做了什么，忽略了这个重要的信息，之后还是会回到这个handler。
 
 2-7、重新从2-5的断点开始，让程序逐步执行，看到op_array的赋值如下：
 
-![php整数09](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%289%29.png)
+![php整数09](http://www.hoohack.me/assets/images/2017/09/php-big-int-9.png)
 
 将zend_compile_file函数运行的结果赋值给op_array了，于是break zend_compile_file，被告知zend_compile_file未定义，通过源码工具追踪到zend_compile_file指向的是compile_file，于是break zend_compile
 
 发现是在Zend/zend_language_scanner.l 文件断点了，逐步执行，看到这行pass_two(op_array)，猜测可能会在这里就有值，所以打印看看：
 
-![php整数10](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%2810%29.png)
+![php整数10](http://www.hoohack.me/assets/images/2017/09/php-big-int-10.png)
 
 结果发现还是跟之前的一样，但是此时看到有一个opcodes的值，打印看看
 
-![php整数11](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%2811%29.png)
+![php整数11](http://www.hoohack.me/assets/images/2017/09/php-big-int-11.png)
 
-![php整数12](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%2812%29.png)
+![php整数12](http://www.hoohack.me/assets/images/2017/09/php-big-int-12.png)
 
 看到opcode = 38，网上查到38代表赋值
 
-![php整数13](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%2813%29.png)
+![php整数13](http://www.hoohack.me/assets/images/2017/09/php-big-int-13.png)
 
 2-8、于是可以知道，在这一步之前就已得到了ASSIGN的opcode，因此，不断的往前找，从op_array开始初始化时就开始，逐步打印op_array->opcodes的值，一直都是null：
 
-![php整数14](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%2814%29.png)
+![php整数14](http://www.hoohack.me/assets/images/2017/09/php-big-int-14.png)
 
 直到执行了CG(zend_lineno) = last_lineno;才得到opcode = 38 的值：
 
-![php整数15](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%2815%29.png)
+![php整数15](http://www.hoohack.me/assets/images/2017/09/php-big-int-15.png)
 
 因为这一句：CG(zend_lineno) = last_lineno;是一个宏，所以也没头绪，接近放弃状态。。。
 
@@ -141,7 +141,7 @@ keywords: 'PHP大整数,number_format,PHP大整数处理,PHP源码分析,zend_st
 
     在PHP内部有一个函数用来快速的返回特定opcode对应的opcode处理函数指针：zend_vm_get_opcode_handler()函数：
 
-![php整数16](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%2816%29.png)
+![php整数16](http://www.hoohack.me/assets/images/2017/09/php-big-int-16.png)
 
 知道其实opcode处理函数的命名是有以下规律的
 
@@ -149,14 +149,14 @@ keywords: 'PHP大整数,number_format,PHP大整数处理,PHP源码分析,zend_st
 
 根据之前调试打印出来的内容，在2-6的时候就看到了一个handler的值：
 
-![php整数17](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%2817%29.png)
+![php整数17](http://www.hoohack.me/assets/images/2017/09/php-big-int-17.png)
 
 是
 **ZEND_ASSIGN_SPEC_CV_CONST_RETVAL_UNUSED_HANDLER**，
 
 找出函数的定义如下：
 
-![php整数18](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%2818%29.png)
+![php整数18](http://www.hoohack.me/assets/images/2017/09/php-big-int-18.png)
 
 可以看到，opcode操作的时候，值是从EX_CONSTANT获取的，根据定义展开这个宏，那就是
 
@@ -169,13 +169,13 @@ keywords: 'PHP大整数,number_format,PHP大整数处理,PHP源码分析,zend_st
 
 打印结果如下：
 
-![php整数19](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%2819%29.png)
+![php整数19](http://www.hoohack.me/assets/images/2017/09/php-big-int-19.png)
 
 猜想验证正确，但是没有看到真正做转换的地方，还是不死心，继续找PHP的Zend底层做编译的逻辑代码。
 
 参考开源的[GitHub项目](https://github.com/pangudashu/php7-internal)，PHP编译阶段如下图：
 
-![php整数20](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%2820%29.png)
+![php整数20](http://www.hoohack.me/assets/images/2017/09/php-big-int-20.png)
 
 猜测最有可能的是在zendparse、zend_compile_top_stmt这两个阶段完成转换，因为这个两个阶段做的事情就是将PHP代码转换成opcode数组。
 
@@ -229,7 +229,7 @@ keywords: 'PHP大整数,number_format,PHP大整数处理,PHP源码分析,zend_st
 ## number_format失败的原因
 通过gdb调试，追查到number_format函数，在PHP底层最终会调用php_conv_fp函数对数字进行转换：
 
-![php整数21](http://7u2eqw.com1.z0.glb.clouddn.com/PHP%E5%A4%A7%E6%95%B4%E6%95%B0%20%2821%29.png)
+![php整数21](http://www.hoohack.me/assets/images/2017/09/php-big-int-21.png)
 
 函数原型如下：
 
@@ -263,8 +263,11 @@ keywords: 'PHP大整数,number_format,PHP大整数处理,PHP源码分析,zend_st
 
 回想整个解决问题的过程，个人感觉有点长，总共大约花了4个小时去定位这个问题。因为对PHP的内核只是一知半解，没有系统的把整个流程梳理下来，所以一开始也不知道从哪里开始下手，就开始根据自己的猜测来调试。现在回想起来，应该先学习PHP的编译、执行流程，然后再去猜测具体的步骤。
 
+
 原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。
+
+如果本文对你有帮助，请点个赞吧，谢谢^_^
 
 更多精彩内容，请关注个人公众号。
 
-![](http://7u2eqw.com1.z0.glb.clouddn.com/qrcode_for_gh_4906075ba3ae_258.jpg)
+![](http://www.hoohack.me/assets/images/qrcode.jpg)

@@ -79,7 +79,7 @@ keywords: 'php,c,源码分析,源码学习,PHP源码,number_format源码,number_
     }
 
 ## 代码执行流程图
-![number_format流程图](http://7u2eqw.com1.z0.glb.clouddn.com/number_format.png)
+![number_format流程图](http://www.hoohack.me/assets/images/2017/09/number_format.png)
 
 ## `_php_math_number_format_ex`
 函数实现的各种参数数量，最终都会调用_php_math_number_format_ex函数。函数主要做的是：
@@ -100,6 +100,8 @@ keywords: 'php,c,源码分析,源码学习,PHP源码,number_format源码,number_
 
 原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。
 
+如果本文对你有帮助，请点个赞吧，谢谢^_^
+
 更多精彩内容，请关注个人公众号。
 
-![](http://7u2eqw.com1.z0.glb.clouddn.com/qrcode_for_gh_4906075ba3ae_258.jpg)
+![](http://www.hoohack.me/assets/images/qrcode.jpg)

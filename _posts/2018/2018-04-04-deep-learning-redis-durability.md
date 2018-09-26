@@ -43,7 +43,7 @@ fsync函数只对由文件描述符fd指定的一个文件起作用，并且等�
 
 持久化是将程序数据在持久状态和瞬时状态间转换的机制。对于程序来说，程序运行中数据是在内存的，如果没有及时同步写入到磁盘，那么一旦断电或者程序突然奔溃，数据就会丢失了，只有把数据及时同步到磁盘，数据才能永久保存，不会因为宕机影像数据的有效性。而持久化就是将数据从程序同步到磁盘的一个动作过程。
 
-![持久化](http://7u2eqw.com1.z0.glb.clouddn.com/%E6%8C%81%E4%B9%85%E5%8C%96.png)
+![持久化](http://www.hoohack.me/assets/images/2018/04/Persistence.png)
 
 ## Redis的持久化
 redis有RDB和AOF两种持久化方式。RDB是快照文件的方式，redis通过执行SAVE/BGSAVE命令，执行数据的备份，将redis当前的数据保存到`*.rdb`文件中，文件保存了所有的数据集合。AOF是服务器通过读取配置，在指定的时间里，追加redis写操作的命令到`*.aof`文件中，是一种增量的持久化方式。
@@ -149,7 +149,7 @@ AOF重写的实现原理是先服务器中的数据库，然后遍历数据库�
 AOF的重写会执行大量的写入操作，Redis是单线程的，所以如果有服务器直接调用重写，服务器就不能处理其他命令了，因此Redis服务器新起了单独一个进程来执行AOF重写。
 
 Redis执行重写的流程：
-![redis rewrite](http://7u2eqw.com1.z0.glb.clouddn.com/redis%20rewrite.png)
+![redis rewrite](http://www.hoohack.me/assets/images/2018/04/redis-rewrite.png)
 
 在子进程执行AOF重写时，服务端接收到客户端的命令之后，先执行客户端发来的命令，然后将执行后的写命令追加到AOF缓冲区中，同时将执行后的写命令追加到AOF重写缓冲区中。
 等到子进程完成了重写工作后，会发一个完成的信号给服务器，服务器就将AOF重写缓冲区中的所有内容追加到AOF文件中，然后原子性地覆盖现有的AOF文件。
@@ -175,8 +175,9 @@ Redis的持久化方案也不是一成不变的，纸上的理论还需要结合
 
 更多精彩内容，请关注个人公众号。
 
-![](http://7u2eqw.com1.z0.glb.clouddn.com/qrcode_for_gh_4906075ba3ae_258.jpg)
+![](http://www.hoohack.me/assets/images/qrcode.jpg)
 
 参考文章：
 [http://oldblog.antirez.com/post/redis-persistence-demystified.html](http://oldblog.antirez.com/post/redis-persistence-demystified.html)
+
 [http://blog.httrack.com/blog/2013/11/15/everything-you-always-wanted-to-know-about-fsync/](http://blog.httrack.com/blog/2013/11/15/everything-you-always-wanted-to-know-about-fsync/)

@@ -221,4 +221,4 @@ count：要写入的数据字节大小
 
 更多精彩内容，请关注个人公众号。
 
-![](https://user-gold-cdn.xitu.io/2018/6/11/163ec67c55f88857?w=258&h=258&f=jpeg&s=28215)
+![](http://www.hoohack.me/assets/images/qrcode.jpg)

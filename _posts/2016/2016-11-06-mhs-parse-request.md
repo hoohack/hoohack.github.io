@@ -22,7 +22,7 @@ HTTP使用属于流入和流出来描述报文的传递方向。HTTP报文会像
 
 <!--more-->
 
-![报文向下游流动](http://7u2eqw.com1.z0.glb.clouddn.com/%E6%8A%A5%E6%96%87%E5%90%91%E4%B8%8B%E6%B5%81%E5%8A%A8.png)
+![报文向下游流动](http://www.hoohack.me/assets/images/package-float.png)
 
 ## 报文的组成
 

@@ -1,3 +1,13 @@
+---
+layout: post
+title: "［从0到1编写服务器］TCP/IP连接建立与断开状态变化"
+date: '2018-09-21 18:30:00'
+author: hoohack
+categories: Network
+excerpt: '网络编程,服务器编程,LinuxC,socket,tcp/ip,tcp status'
+keywords: '网络编程,服务器编程,LinuxC,socket,tcp/ip, tcp status'
+---
+
 紧接着上次说到的RDB文件解析功能，数据解析步骤完成后，下一个问题就是如何保存解析出来的数据，Redis有多种数据类型，string、hash、list、zset、set，一开始想到的方案是为每一种数据定义一种数据结构，根据不同的数据类型，将数据保存到不同的数据结构，但是这样的做法带来了比较多的冗余代码，以string和hash为例，一开始的代码是这样的：
 
 

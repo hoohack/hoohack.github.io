@@ -33,5 +33,4 @@ permalink: /archives/
       {% endif %}
     {% endif %}
   {% endfor %}
-</ul>
 </div>

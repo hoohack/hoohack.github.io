@@ -18,7 +18,7 @@ keywords: 'redis,redis源码,redis 4.0源码,RDB文件,读取二进制文件,Gol
 
 举个例子，redis的对象类型是特定的几个字符表示，0代表字符串，读取到字符串类型后，紧接着就是字符串的长度，保存着接下来需要读取的字节大小，读取到的字节最终构成完整字符串对象的值。对于保存了`"name" => "hoohack"`键值对的字符串对象保存到内存可以用下图表示：
 
-![redis字符串存储](http://www.hoohack.me/assets/images/2018/08/redis-string-storage.png)
+![redis字符串存储](https://www.hoohack.me/assets/images/2018/08/redis-string-storage.png)
 
 当然，除了字符串，redis还有列表，集合，哈希等各种对象，针对这些类型，在RDB文件里面都有不同的规则定义，只需要按照RDB文件格式的协议来解读文件，就能完整无误地把文件解读成自然语言能描述的字符。
 

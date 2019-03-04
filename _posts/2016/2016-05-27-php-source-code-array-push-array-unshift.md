@@ -87,4 +87,4 @@ array_unshift函数将数据元素插入到数组的头部，插入时是作为�
 我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/read-php-src/read-php-src)。可以通过[commit记录](https://github.com/read-php-src/read-php-src/commits/master)查看已添加的注解。
 
 
-更多源码文章，欢迎访问个人主页继续查看：[hoohack](http://www.hoohack.me)
+更多源码文章，欢迎访问个人主页继续查看：[hoohack](https://www.hoohack.me)

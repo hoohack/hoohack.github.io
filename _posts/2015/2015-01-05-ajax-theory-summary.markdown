@@ -21,7 +21,7 @@ categories: Javascript
 
 ####XMLHTTPRequest对象属性
 ![XMLHTTPRequest对象属性](http://7u2eqw.com1.z0.glb.clouddn.com/XMLHTTPRequest对象属性.png)
-[查看大图](http://www.hoohack.me/assets/images/2015_01_05.png)
+[查看大图](https://www.hoohack.me/assets/images/2015_01_05.png)
 
 AJAX就是把JavaScript技术与XMLHTTPRequest对象放在WEB表单和服务器间，当用户向服务器请求时，数据发送给JavaScript代码而不是直接发给服务器，JavaScript代码在幕后发送异步请求，然后服务器将数据返回给JavaScript代码。JavaScript代码接收到数据后，操作DOM来更新页面数据。
 

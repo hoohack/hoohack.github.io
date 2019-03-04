@@ -11,7 +11,7 @@ keywords: 'redis,redis源码,redis 4.0源码,RDB文件,读取二进制文件,Gol
 最近在做一个解析rdb文件的功能，途中遇到了一些问题，也解决了一些问题。具体为什么要做这件事情之后再详谈，本次主要想聊聊遇到的开始处理文件时遇到的第一个难题：理解RDB文件的协议、如何读取二进制文件。
 
 ## RDB文件
-[［Redis源码阅读］redis持久化](http://www.hoohack.me/2018/04/04/deep-learning-redis-durability)
+[［Redis源码阅读］redis持久化](https://www.hoohack.me/2018/04/04/deep-learning-redis-durability)
 文章介绍过，Redis的持久化是通过RDB和AOF实现的。Redis的RDB文件是二进制格式的文件，从这个方面再次体现了Redis是基于内存的缓存数据库，不管对于存储到硬盘还是恢复数据都十分快捷。Redis有多种数据类型：string、list、hash、set、zset，不同数据类型占用的内存大小是不一样的，解析出自然语言可以识别的数据就需要使用不同的方法，保存到文件的时候也需要一些协议或者规则。这有点类似于编程语言里面的数据类型，不同的数据类型占用的字节大小不一致，但是保存到计算机都是二进制的编码，就看是读取多少个字节，以怎样的方式解读。
 
 <!--more-->
@@ -37,7 +37,7 @@ keywords: 'redis,redis源码,redis 4.0源码,RDB文件,读取二进制文件,Gol
     OK
 
 ### cat查看文件：
-![cat-rdb-file](http://www.hoohack.me/assets/images/2018/08/cat-rdb-file.png)
+![cat-rdb-file](https://www.hoohack.me/assets/images/2018/08/cat-rdb-file.png)
 
 可以看到是一个包含乱码的文件，因为文件是以二进制的格式保存，要想打印出人类能看出的语言，可以通过linux的od命令查看。od命令用于输出文件的八进制、十六进制或其他格式编码的字节，通常用于输出文件中不能直接显示在终端的字符，注意输出的是字节，分隔符之间的字符都是保存在一个字节的。
 
@@ -46,7 +46,7 @@ keywords: 'redis,redis源码,redis 4.0源码,RDB文件,读取二进制文件,Gol
 
 打印得出结果如下：
 
-![linux-od](http://www.hoohack.me/assets/images/2018/08/linux-od.png)
+![linux-od](https://www.hoohack.me/assets/images/2018/08/linux-od.png)
 
 从上图看到，文件打印出来的都是一些十六进制的数字，转换成十进制再去ASCII码表就能查找到对应的字符。比如第一个字符，52=5*16+2*1=82='R’。
 在这里说一句，个人觉得这od命令非常有用，在解析数据出现疑惑的时候，就是通过这个命令排查遇到的问题。把文件内容打印出来，找到当前读取的字符，对比RDB文件协议，看看究竟要解析的是什么数据，再对比代码中的解析逻辑，看看是否有问题，然后再修正代码。
@@ -127,4 +127,4 @@ float64浮点数，先转为二进制的值，再调用math库的Float64frombits
 
 更多精彩内容，请关注个人公众号。
 
-![](http://www.hoohack.me/assets/images/qrcode.jpg)
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

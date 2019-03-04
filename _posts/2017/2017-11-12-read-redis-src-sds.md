@@ -261,4 +261,4 @@ sds使用了空间预分配以及惰性空间释放的策略来减少内存分�
 
 更多精彩内容，请关注个人公众号。
 
-![](http://www.hoohack.me/assets/images/qrcode.jpg)
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

@@ -8,7 +8,7 @@ excerpt: 'mysql,mysql主从延迟,mysql主从复制,mysql主从复制原理'
 keywords: 'mysql,mysql主从延迟,mysql主从复制,mysql主从复制原理'
 ---
 
-[上一篇文章](http://www.hoohack.me/2017/06/24/mark-mysql-replication-bad-case)里面，讲到了遇到mysql主从延迟的坑，对于这次的坑多说两句，以前也看过这样的例子，也知道不能够写完之后马上更新，但是真正开发的时候还是没有注意到这一点，道理大家都懂，但是还是会犯错，只有等到自己亲生体验到该错误之后，才真正的掌握到该道理。
+[上一篇文章](https://www.hoohack.me/2017/06/24/mark-mysql-replication-bad-case)里面，讲到了遇到mysql主从延迟的坑，对于这次的坑多说两句，以前也看过这样的例子，也知道不能够写完之后马上更新，但是真正开发的时候还是没有注意到这一点，道理大家都懂，但是还是会犯错，只有等到自己亲生体验到该错误之后，才真正的掌握到该道理。
 
 经历过一次mysql主从延迟之后，就开始思考，主从复制是什么东西？它是怎么实现的呢？它的原理是什么？于是乎就开始查阅资料、文章，现将自己理解到的内容总结在此，加深印象。
 
@@ -54,7 +54,7 @@ mysql主从复制是一个异步的复制过程，主库发送更新事件到从
 
 整个主从复制的流程可以通过以下图示理解：
 
-![DB Replication](http://www.hoohack.me/assets/images/2017/07/DB-replication.png)
+![DB Replication](https://www.hoohack.me/assets/images/2017/07/DB-replication.png)
 
 > * 步骤一：主库db的更新事件(update、insert、delete)被写到binlog
 > * 步骤二：从库发起连接，连接到主库
@@ -81,4 +81,4 @@ mysql主从复制是一个异步的复制过程，主库发送更新事件到从
 
 更多精彩内容，请关注个人公众号。
 
-![](http://www.hoohack.me/assets/images/qrcode.jpg)
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

@@ -230,4 +230,4 @@ opcode处理函数查找：[http://www.laruence.com/2008/06/18/221.html](http://
 
 PHPopcode深入理解及PHP代码执行步骤：[http://www.php-internals.com/book/?p=chapt02/02-03-03-from-opcode-to-handler](http://www.php-internals.com/book/?p=chapt02/02-03-03-from-opcode-to-handler)
 
-更多源码文章，欢迎访问个人主页继续查看：[hoohack](http://www.hoohack.me)
+更多源码文章，欢迎访问个人主页继续查看：[hoohack](https://www.hoohack.me)

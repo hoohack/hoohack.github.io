@@ -14,7 +14,7 @@ strlen函数说明。
 
     int strlen ( string $string )
 
-在[这篇文章](http://www.hoohack.me/2016/02/10/understanding-phps-internal-function-definitions-ch)，我们可以知道`strlen`函数是通过Zend Engine定义的。函数的定义可以在[这里](http://lxr.php.net/xref/PHP_5_4/Zend/zend_builtin_functions.c#478)查看。
+在[这篇文章](https://www.hoohack.me/2016/02/10/understanding-phps-internal-function-definitions-ch)，我们可以知道`strlen`函数是通过Zend Engine定义的。函数的定义可以在[这里](http://lxr.php.net/xref/PHP_5_4/Zend/zend_builtin_functions.c#478)查看。
 
 在这里也给出函数的源码：
 
@@ -32,7 +32,7 @@ strlen函数说明。
         RETVAL_LONG(s1_len);
     }
 
-该文章讲到，该函数很简单，并不需要进一步的解释。而[这篇文章](http://www.hoohack.me/2016/02/12/phps-source-code-for-php-developers-part3-variables-ch)也有对`zend_parse_parameters`函数做介绍。笔者较笨，于是便想理解`zend_parse_parameters`函数是怎么返回变量长度的。
+该文章讲到，该函数很简单，并不需要进一步的解释。而[这篇文章](https://www.hoohack.me/2016/02/12/phps-source-code-for-php-developers-part3-variables-ch)也有对`zend_parse_parameters`函数做介绍。笔者较笨，于是便想理解`zend_parse_parameters`函数是怎么返回变量长度的。
 
 在`zend_parse_arg_impl`函数，就是解析参数的地方，我们继续看`case 's'`的分支。这个分支是对字符串变量的解析。
 

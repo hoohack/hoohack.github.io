@@ -68,4 +68,4 @@ keywords: 'mysql,mysql主从延迟,mysql主从复制'
 
 更多精彩内容，请关注个人公众号。
 
-![](http://www.hoohack.me/assets/images/qrcode.jpg)
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

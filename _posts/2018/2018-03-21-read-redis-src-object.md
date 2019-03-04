@@ -81,7 +81,7 @@ redis对象有许多特性，比如：类型检查（通过type实现）、命�
 
 redis有五种对象，不同对象可能用到的数据结构如下图所示：
 
-![redis对象](http://www.hoohack.me/assets/images/2018/03/redis-object-type.png)
+![redis对象](https://www.hoohack.me/assets/images/2018/03/redis-object-type.png)
 
 ## 编码转换与命令多态
 同一种对象使用不同的数据结构是通过encoding来实现，而且，同一个命令的实现方法会根据对象的编码属性而变化，这是命令的多态实现。
@@ -99,11 +99,11 @@ redis有五种对象，不同对象可能用到的数据结构如下图所示：
 
 ziplist编码
 
-![ziplist编码](http://www.hoohack.me/assets/images/2018/03/hash_ziplist.png)
+![ziplist编码](https://www.hoohack.me/assets/images/2018/03/hash_ziplist.png)
 
 hashtable编码
 
-![hashtable编码](http://www.hoohack.me/assets/images/2018/03/hash_dict.png)
+![hashtable编码](https://www.hoohack.me/assets/images/2018/03/hash_dict.png)
 
 ### 编码转换
 每一种对象在使用编码的时候都有一定的条件，使用ziplist编码的哈希对象都应该满足两个条件：
@@ -199,4 +199,4 @@ redis中的很多操作都是基于上面介绍的redis对象，了解这些对�
 
 更多精彩内容，请关注个人公众号。
 
-![](http://www.hoohack.me/assets/images/qrcode.jpg)
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

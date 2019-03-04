@@ -4,7 +4,7 @@ timezone: 'Asia/Shanghai'
 site_name : Blog - hoohack
 email: hhqcontinue@gmail.com
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://www.hoohack.me" # the base hostname & protocol for your site
+url: "https://www.hoohack.me" # the base hostname & protocol for your site
 github_username:  hhqcontinue
 keywords: "hoohack, hoohack的博客"
 paginate: 10

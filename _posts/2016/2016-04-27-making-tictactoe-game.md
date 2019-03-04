@@ -11,7 +11,7 @@ keywords: '井字游戏算法,井字游戏,算法,Javascript小游戏'
 > 99% of information we read, we forget anyway. The best way to remember
 > is to "DO".
 
-体验地址：[http://www.hoohack.me/assets/tictactoe/](http://www.hoohack.me/assets/tictactoe/)
+体验地址：[https://www.hoohack.me/assets/tictactoe/](https://www.hoohack.me/assets/tictactoe/)
 
 游戏完整的代码在我的 github 上，有兴趣也可以围观一下：[TicTacToe](https://github.com/hoohack/TicTacToe)，也希望大家可以点个 star。
 

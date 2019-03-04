@@ -8,7 +8,7 @@ excerpt: 'php,c,PHP源码分析,源码学习,PHP源码,array_pop源码,array_shi
 keywords: 'php,c,PHP源码分析,源码学习,PHP源码,array_pop源码,array_shift源码,php array_pop源码,php array_shift源码,php源码阅读,PHP源码阅读'
 ---
 
-[上篇文章](http://www.hoohack.me/2016/05/27/php-source-code-array-push-array-unshift)介绍了PHP添加元素到数组的函数，那么当然有从数组中删除元素。array_pop和array_shift只从数组的头或尾删除一个元素。经过阅读源码，发现这两个函数的实现都是调用了同一个函数--_phpi_pop来实现从数组中删除一个数组元素的功能。因此解读时将这两个函数一并讲了。
+[上篇文章](https://www.hoohack.me/2016/05/27/php-source-code-array-push-array-unshift)介绍了PHP添加元素到数组的函数，那么当然有从数组中删除元素。array_pop和array_shift只从数组的头或尾删除一个元素。经过阅读源码，发现这两个函数的实现都是调用了同一个函数--_phpi_pop来实现从数组中删除一个数组元素的功能。因此解读时将这两个函数一并讲了。
 
 我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/read-php-src/read-php-src)。可以通过[commit记录](https://github.com/read-php-src/read-php-src/commits/master)查看已添加的注解。
 
@@ -90,4 +90,4 @@ array_pop和array_shift调用此函数执行的步骤都大同小异，不同之
 
 最后再安利一下，我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/read-php-src/read-php-src)。可以通过[commit记录](https://github.com/read-php-src/read-php-src/commits/master)查看已添加的注解。
 
-更多源码文章，欢迎访问个人主页继续查看：[hoohack](http://www.hoohack.me)
+更多源码文章，欢迎访问个人主页继续查看：[hoohack](https://www.hoohack.me)

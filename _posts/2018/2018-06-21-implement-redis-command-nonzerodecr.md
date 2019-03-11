@@ -121,7 +121,7 @@ void incrDecrCommand(client *c, long long incr) {
 
 函数的流程图如下：
 
-![incrDecrCommand](http://www.hoohack.me/assets/images/2018/06/incrDecrCommand.png)
+![incrDecrCommand](https://www.hoohack.me/assets/images/2018/06/incrDecrCommand.png)
 
 
 如图所示，要实现函数nonzerodecrCommand，只需要在进行增/减操作前增加一个大于等于0 的判断即可，其余的逻辑不变，实现如下：
@@ -204,4 +204,4 @@ OK
 
 更多精彩内容，请关注个人公众号。
 
-![](http://www.hoohack.me/assets/images/qrcode.jpg)
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

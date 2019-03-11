@@ -110,10 +110,10 @@ main函数会设置beforeSleep和afterSleep回调函数，然后调用aeMain函�
 
 综上所述，服务器整个启动简化流程图如下：
 
-![redisServer](http://www.hoohack.me/assets/images/2018/05/redis-start.png)
+![redisServer](https://www.hoohack.me/assets/images/2018/05/redis-start.png)
 
 原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。
 
 更多精彩内容，请关注个人公众号。
 
-![](http://www.hoohack.me/assets/images/qrcode.jpg)
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

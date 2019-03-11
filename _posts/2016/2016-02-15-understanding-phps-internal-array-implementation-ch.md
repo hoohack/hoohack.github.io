@@ -14,11 +14,11 @@ keywords: 'PHP,PHP源码,PHP源码结构,PHP源码分析,PHP数组'
 
 为了防止你错过了之前的文章，以下是链接：
 
-第一部分：[给PHP开发者的PHP源码-源码结构](http://www.hoohack.me/2016/02/04/phps-source-code-for-php-developers-ch)
+第一部分：[给PHP开发者的PHP源码-源码结构](https://www.hoohack.me/2016/02/04/phps-source-code-for-php-developers-ch)
 
-第二部分：[理解PHP内部函数的定义](http://www.hoohack.me/2016/02/10/understanding-phps-internal-function-definitions-ch)
+第二部分：[理解PHP内部函数的定义](https://www.hoohack.me/2016/02/10/understanding-phps-internal-function-definitions-ch)
 
-第三部分：[PHP的变量实现](http://www.hoohack.me/2016/02/12/phps-source-code-for-php-developers-part3-variables-ch)
+第三部分：[PHP的变量实现](https://www.hoohack.me/2016/02/12/phps-source-code-for-php-developers-part3-variables-ch)
 
 <!--more-->
 

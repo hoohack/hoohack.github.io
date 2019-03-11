@@ -142,4 +142,4 @@ array_splice函数返回的是被删除的切片。这段代码的意思是，�
 
 最后再安利一下，我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。[PHP5.4源码注解](https://github.com/hoohack/read-php-src)。可以通过[commit记录](https://github.com/hoohack/read-php-src/commits/master)查看已添加的注解。
 
-更多源码文章，欢迎访问个人主页继续查看：[hoohack](http://www.hoohack.me)
+更多源码文章，欢迎访问个人主页继续查看：[hoohack](https://www.hoohack.me)

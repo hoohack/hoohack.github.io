@@ -8,7 +8,7 @@ excerpt: 'php,c,源码分析,源码学习,PHP源码,number_format源码,,php源�
 keywords: 'php,c,源码分析,源码学习,PHP源码,number_format源码,number_format,php源码阅读,PHP源码阅读'
 ---
 
-上次讲到[PHP是如何解析大整数](http://www.hoohack.me/2017/09/14/learning-php-big-number-detail)的，一笔带过了number_format的处理，再详细阅读该函数的源码，以下是小分析。
+上次讲到[PHP是如何解析大整数](https://www.hoohack.me/2017/09/14/learning-php-big-number-detail)的，一笔带过了number_format的处理，再详细阅读该函数的源码，以下是小分析。
 
 ## 函数原型
 
@@ -79,7 +79,7 @@ keywords: 'php,c,源码分析,源码学习,PHP源码,number_format源码,number_
     }
 
 ## 代码执行流程图
-![number_format流程图](http://www.hoohack.me/assets/images/2017/09/number_format.png)
+![number_format流程图](https://www.hoohack.me/assets/images/2017/09/number_format.png)
 
 ## `_php_math_number_format_ex`
 函数实现的各种参数数量，最终都会调用_php_math_number_format_ex函数。函数主要做的是：
@@ -104,4 +104,4 @@ keywords: 'php,c,源码分析,源码学习,PHP源码,number_format源码,number_
 
 更多精彩内容，请关注个人公众号。
 
-![](http://www.hoohack.me/assets/images/qrcode.jpg)
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

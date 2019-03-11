@@ -75,7 +75,7 @@ dict是一种用于保存键值对的抽象数据结构，在redis中使用非�
 
     
 把上面的结构定义串起来，得到下面的字典数据结构：
-![dict struct](http://www.hoohack.me/assets/images/2018/01/dict.png)
+![dict struct](https://www.hoohack.me/assets/images/2018/01/dict.png)
 
 根据数据结构定义，把关联图画出来后，看代码的时候就更加清晰。
 
@@ -85,7 +85,7 @@ dict是一种用于保存键值对的抽象数据结构，在redis中使用非�
 当操作越来越多，比如不断的向哈希表添加元素，此时哈希表需要分配了更多的空间，如果接下来的操作是不断地删除哈希表的元素，那么哈希表的大小就会发生变化，更重要的是，现在的哈希表不再需要那么大的空间了，在redis的实现中，为了保证哈希表的负载因子维持在一个合理范围内，当哈希表保存的键值对太多或者太少时，redis对哈希表大小进行相应的扩展和收缩，称为rehash（重新散列）。
 
 ### 执行rehash的流程图
-![redis-dict-rehash](http://www.hoohack.me/assets/images/2018/01/redis-dict-rehash.png)
+![redis-dict-rehash](https://www.hoohack.me/assets/images/2018/01/redis-dict-rehash.png)
 
 ### 负载因子解释
 
@@ -189,4 +189,4 @@ dict是一种用于保存键值对的抽象数据结构，在redis中使用非�
 
 更多精彩内容，请关注个人公众号。
 
-![](http://www.hoohack.me/assets/images/qrcode.jpg)
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

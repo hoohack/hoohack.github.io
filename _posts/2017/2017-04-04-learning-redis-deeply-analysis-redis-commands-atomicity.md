@@ -67,4 +67,4 @@ Redis本身提供的所有API都是原子操作，Redis中的事务其实是要�
 
 更多精彩内容，请关注个人公众号。
 
-![](http://www.hoohack.me/assets/images/qrcode.jpg)
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

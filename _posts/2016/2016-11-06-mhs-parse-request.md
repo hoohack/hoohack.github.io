@@ -10,7 +10,7 @@ keywords: 'socket,socket编程,server,http server,parse request,http request lin
 
 这个http server的实现源代码我放在了[我的github上](https://github.com/hoohack/Makehttpd)，有兴趣的话可以点击查看哦。
 
-在[上一篇文章](http://www.hoohack.me/2016/10/28/lcn-simple-server)中，讲述了如何编写一个最简单的server，但该程序只是接受到请求之后马上返回响应，实在不能更简单。在正常的开发中，应该根据不同的请求做出不同的响应。要做到上述的功能，首先要解析客户端发来的请求报文。
+在[上一篇文章](https://www.hoohack.me/2016/10/28/lcn-simple-server)中，讲述了如何编写一个最简单的server，但该程序只是接受到请求之后马上返回响应，实在不能更简单。在正常的开发中，应该根据不同的请求做出不同的响应。要做到上述的功能，首先要解析客户端发来的请求报文。
 
 报文在不同的上下文情景下有不同的理解，本文所说的报文都是在HTTP上下文中描述的名词。
 
@@ -22,7 +22,7 @@ HTTP使用属于流入和流出来描述报文的传递方向。HTTP报文会像
 
 <!--more-->
 
-![报文向下游流动](http://www.hoohack.me/assets/images/package-float.png)
+![报文向下游流动](https://www.hoohack.me/assets/images/package-float.png)
 
 ## 报文的组成
 

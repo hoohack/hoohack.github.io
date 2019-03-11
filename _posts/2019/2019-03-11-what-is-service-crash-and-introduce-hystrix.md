@@ -89,6 +89,26 @@ Hystrix是一个通过增加延迟容错和容错逻辑来控制分布式服务�
 
 7、近乎实时地监控指标和配置更改。
 
+### 一段代码demo
+讲完这么多，还是看看代码更实在，从Hystrix官网上截取了一段代码如下：
+
+    public class Order {
+
+        private final int orderId;
+        private UserAccount user;
+    
+        public Order(int orderId) {
+            this.orderId = orderId;
+    
+            user = new GetUserAccountCommand(new HttpCookie("mockKey", "mockValueFromHttpRequest")).execute();
+        }
+    
+    }
+
+更多代码内容：[https://github.com/Netflix/Hystrix/tree/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/demo](https://github.com/Netflix/Hystrix/tree/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/demo)
+
+上面就是Hystrix使用的实例，在实际代码中，就是new一个Command，然后调用execute方法获取结果，那么这一个过程中Hystrix做了什么呢？
+
 ### Hystrix的工作流程
 
 ![服务部署架构](https://www.hoohack.me/assets/images/2019/03/HystrixWorkFlow.png)

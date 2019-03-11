@@ -208,4 +208,4 @@ Hystrix使用了命令模式，以Hystrix为例，再介绍一个使用示例。
 
 更多精彩内容，请关注个人公众号。
 
-![](https://user-gold-cdn.xitu.io/2018/9/27/16618367007a1173?w=258&h=258&f=jpeg&s=28215)
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

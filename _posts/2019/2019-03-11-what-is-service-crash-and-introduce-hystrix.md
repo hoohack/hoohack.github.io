@@ -62,7 +62,7 @@ Hystrix是一个通过增加延迟容错和容错逻辑来控制分布式服务�
 ### Hystrix设计原则
 1、防止单个依赖耗尽了服务容器的用户线程
 
-2、脱落负载以及快速失败，而不是排队
+2、降低负载以及快速失败，而不是排队
 
 3、当可以阻止服务的失败时提供回退策略
 
@@ -101,8 +101,8 @@ Hystrix是一个通过增加延迟容错和容错逻辑来控制分布式服务�
 
 对于使用HystrixCommand创建命令的实例，执行execute或者queue；而对于使用HystrixObservableCommand创建命令的实例，执行observe或者toObservable方法，可以请求服务然后得到执行结果。这四个方法的特性是：
 
-    execute - 会阻塞，然后返回以来服务的结果
-    queue - 返回一个Future，然后可以通过get方法获得以来服务的结果。
+    execute - 会阻塞，然后返回依赖服务的结果
+    queue - 返回一个Future，然后可以通过get方法获得依赖服务的结果。
     observe - 订阅包含依赖服务响应结果的订阅器，当有结果时返回一个订阅器。
     toObservable - 返回一个订阅器，当订阅它时，会知晓Hystrix命令并返回结果。
 

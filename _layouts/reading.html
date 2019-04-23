@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+  {% include head.html %}
+
+  <body>
+
+  <div class="container">
+    {% include reading_header.html %}
+
+
+    <div class="post">
+
+  <article class="post-content">
+    {{ content }}
+  </article>
+
+</div>
+
+    <!-- {% include footer.html %} -->
+
+  </div>
+  <script src="https://www.hoohack.me/assets/javascripts/jquery-2.1.4.min.js"></script>
+  <script>
+      $("#back-top").hide();
+      $(document).ready(function () {
+          $(window).scroll(function () {
+              if ($(this).scrollTop() > 100) {
+                  $('#back-top').fadeIn();
+              } else {
+                  $('#back-top').fadeOut();
+              }
+          });
+          $('#back-top a').click(function () {
+              $('body,html').animate({
+                  scrollTop: 0
+              }, 800);
+              return false;
+          });
+      });
+  </script>
+  {% include statistics.html %}
+  </body>
+
+</html>

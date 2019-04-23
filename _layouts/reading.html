@@ -20,6 +20,7 @@
     <!-- {% include footer.html %} -->
 
   </div>
+  <div id="comments"></div>
   <script src="https://www.hoohack.me/assets/javascripts/jquery-2.1.4.min.js"></script>
   <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
   <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
@@ -33,7 +34,7 @@
       client_secret: '7342ed2897e4bcc7793f8a4ca2e8bb6af3a78936',
     },
   })
-  gitment.render('container')
+  gitment.render('comments')
   </script>
   <script>
       $("#back-top").hide();

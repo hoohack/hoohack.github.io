@@ -28,3 +28,9 @@ permalink: /reading/
 个人觉得比较有用的就是前面四章了，后面更多的都是工具的介绍，排查问题时用到的java相关的命令、Linux命令、如何安装使用docker以及介绍敏捷开发工具。讲一句实话，后面四章跟分布式服务架构的关系有点脱节了。
 
 前面的几章谈到的理论知识值得花更多的时间去深入探讨：CAP、BASE、DTS（分布式事务处理模型）、调用链实现。
+
+190414 《Java学习笔记：JDK8》
+
+入门Java的话推荐这一本，比起《Java核心技术》，这本书更加通俗易懂，主要介绍了Java基础知识、面向对象、Java8的新特性Lambda，看完整本书，也把书上的习题代码完成了，掌握了基本的Java基础。
+
+代码链接：[https://github.com/hoohack/CodeInJavaNotes](https://github.com/hoohack/CodeInJavaNotes)

@@ -213,7 +213,7 @@ Redis会在每一次处理命令的时候（processCommand函数调用freeMemory
 
 如果当前的内存使用率较大，那么就需要查看是否有配置最大内存，如果有且内存超了，那么就可以初步判定是内存回收机制导致key设置不成功，还需要查看内存淘汰算法是否noeviction或者allkeys-random，如果是，则可以确认是redis的内存回收机制导致。如果内存没有超，或者内存淘汰算法不是上面的两者，则还需要看看key是否已经过期，通过ttl查看key的存活时间。如果运行了程序，set没有报错，则ttl应该马上更新，否则说明set失败，如果set失败了那么就应该查看操作的程序代码是否正确了。
 
-![trouble_process](https://www.hoohack.me/assets/images/2019/06/trouble_process.jpg)
+![trouble_process](https://www.hoohack.me/assets/images/2019/06/trouble_process.png)
 
 ## 总结
 Redis对于内存的回收有两种方式，一种是过期key的回收，另一种是超过redis的最大内存后的内存释放。
@@ -226,7 +226,7 @@ Redis对于内存的回收有两种方式，一种是过期key的回收，另一
 
 对于第二种情况，redis会在每次处理redis命令的时候判断当前redis是否达到了内存的最大限制，如果达到限制，则使用对应的算法去处理需要删除的key。
 
-![理解Redis内存回收机制](https://www.hoohack.me/assets/images/2019/06/understanding-redis-recall.jpg)
+![理解Redis内存回收机制](https://www.hoohack.me/assets/images/2019/06/understanding-redis-recall.png)
 
 看完这篇文章后，你能回答文章开头的面试题了吗？
 

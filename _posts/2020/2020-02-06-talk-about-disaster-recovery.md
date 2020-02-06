@@ -19,7 +19,7 @@ keywords: '服务灾备,孤岛,高可用,双活,异地多活,单点故障,高可
 2、服务依赖的数据服务（MySQL、Redis）是单点
 
 
-![](https://www.hoohack.me/assets/images/2019/02/SinglePointDeploy.png)
+![](https://www.hoohack.me/assets/images/2020/02/SinglePointDeploy.png)
 
 出现的问题表现是：时长上涨和接口失败，导致了页面不可用、服务受损。
 
@@ -134,7 +134,7 @@ keywords: '服务灾备,孤岛,高可用,双活,异地多活,单点故障,高可
 接口A，依赖服务B，B依赖服务C，部署情况如下：
 
 
-![](https://www.hoohack.me/assets/images/2019/02/MultiRetryDeploy.png)
+![](https://www.hoohack.me/assets/images/2020/02/MultiRetryDeploy.png)
 
 当时做了双活+网关重试+负载均衡的部署，出现的情况是B->C超时，导致A接口响应太慢，这里B->C有两次重试，A->B也有两次重试，接口超时时间太长，网关判断接口失败，于是也做了两次重试，最终的结果是，同一个接口，有`2*2*2=8`倍的流量，导致服务C的请求量暴涨，于是将服务C的进程池耗尽，服务499了，最终接口A一直都是失败，直到B->C之间的网络恢复才正常。
 
@@ -151,7 +151,7 @@ keywords: '服务灾备,孤岛,高可用,双活,异地多活,单点故障,高可
 有接口A，B、C两个服务，A-B之间通过外网相连，B-C之间通过内网相连。异常情况是B-C之间网络不通，外网流量通过接口A进入到B，B依赖C，但是B-C之间不通，B调用C会不断重试，直到全部重试都失败了，才会返回网络错误。这样一来，接口A并不知道B服务失败，用户侧体验是一直等待，然后显示失败。理想的做法是希望能在B-C网络不通的情况下将后续到来的流量拒绝掉，快速响应失败的结果。
 
 
-![](https://www.hoohack.me/assets/images/2019/02/IsolatedIsland.png)
+![](https://www.hoohack.me/assets/images/2020/02/IsolatedIsland.png)
 
 要做到这一点，就需要让服务B“自杀”，如果应用侧发现B-C之间的网络出现异常，就让B返回失败错误码，不再进行重试。
 

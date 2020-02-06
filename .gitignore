@@ -1,4 +1,6 @@
+.jekyll-cache/
 .idea/
 _site/
 .sass-cache
 .tags
+.DS_Store

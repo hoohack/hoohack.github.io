@@ -176,4 +176,4 @@ keywords: '服务灾备,孤岛,高可用,双活,异地多活,单点故障,高可
 
 更多精彩内容，请关注个人公众号。
 
-![](https://www.hoohack.me/assets/images/qrcode.png)
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

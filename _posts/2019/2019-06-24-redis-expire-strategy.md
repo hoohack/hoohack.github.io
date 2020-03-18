@@ -69,7 +69,7 @@ Redis的内存回收主要分为过期删除策略和内存淘汰策略两部分
 
 从结构定义中我们可以发现，对于每一个Redis数据库，都会使用一个字典的数据结构来保存每一个键值对，dict的结构图如下：
 
-![dict struct](https://user-gold-cdn.xitu.io/2019/6/24/16b885fc25256825?w=960&h=380&f=png&s=49153)
+![dict struct](https://www.hoohack.me/assets/images/2019/06/redis_dict_struct.png)
 
 以上就是过期策略实现时用到比较核心的数据结构。程序=数据结构+算法，介绍完数据结构以后，接下来继续看看处理的算法是怎样的。
 

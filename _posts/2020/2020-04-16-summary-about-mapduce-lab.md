@@ -19,6 +19,8 @@ keywords: 'MIT6.824,mapreduce,MapReduce,分布式系统,分布式课程,MIT6.824
 
 > 实际上，etcd和redis是完全不一样概念的东西，etcd主要用于分布式锁以及集群核心配置，核心特性是高可用；而Redis是内存型数据库，目的是做分布式缓存，保存数据。
 
+<!--more-->
+
 ## 准备资料
 
 学习这门课程，是先阅读了[课程主页](http://nil.csail.mit.edu/6.824/2020/index.html)的介绍，接着根据课程表去学习，课程表里说明了先阅读论文后再去上课（或者看视频），要先看论文后再去看视频，否则看视频时教授在讲什么都不知道。
@@ -39,7 +41,7 @@ MapReduce的编程模型：
 
 整个处理过程的抽象过程如下：
 
-![](https://www.hoohack.me/assets/images/2020/04/MapReduce_Abstract.jpg)
+![](https://www.hoohack.me/assets/images/2020/04/MapReduce_Abstract.png)
 
 在分布式系统中，除了程序以外还有很多需要考虑的问题，比如并发、容错处理等等，对于分布式的MapReduce，执行概览看下面这幅经典的流程图：
 
@@ -122,7 +124,7 @@ type Task struct {
 
 根据对论文以及实验题目的理解后，设计Master和Task两个结构体，要实现的功能如下图：
 
-![](https://www.hoohack.me/assets/images/2020/04/MapReduce_Procedure.jpg)
+![](https://www.hoohack.me/assets/images/2020/04/MapReduce_Procedure.png)
 
 
 1、启动Master后，Master状态为INIT，并根据启动参数初始化map任务

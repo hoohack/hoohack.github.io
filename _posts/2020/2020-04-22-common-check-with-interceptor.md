@@ -104,7 +104,7 @@ public class XXXController {
 
 整体的流程如下：
 
-// ![](https://www.hoohack.me/assets/images/2020/04/Interceptor_Procedure.png)
+![](https://www.hoohack.me/assets/images/2020/04/Interceptor_Procedure.png)
 
 核心代码：
 
@@ -145,7 +145,7 @@ boolean applyPreHandle(HttpServletRequest request, HttpServletResponse response)
 
 在这个例子里面，每个接口的核心功能是响应为业务功能提供服务，但是每个接口需要的参数检查、安全检查，都统一交给切面完成。如下图所示：
 
-// ![](https://www.hoohack.me/assets/images/2020/04/Interceptor_AOP.png)
+![](https://www.hoohack.me/assets/images/2020/04/Interceptor_AOP.png)
 
 
 ## 总结

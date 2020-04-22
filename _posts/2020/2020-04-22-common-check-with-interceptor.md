@@ -27,6 +27,7 @@ public void login(Parameter parameter) {
 
 那么，如果代码还有其他通用的校验，而且每加一个接口都要加这些校验逻辑，久而久之，代码会显得较臃肿，看起来会有很多重复的代码，那么有没有办法精简这部分代码呢？有！
 
+<!--more-->
 
 
 ## Spring的HandlerInterceptor

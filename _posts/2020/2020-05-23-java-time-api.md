@@ -22,7 +22,7 @@ keywords: 'Java,LocalTime,LocalDate,Instant,LocalDateTime,java8 time'
 
 另外一个，Date里面的很多方法都弃用了，如果新的项目还敢用这些类，那就是给自己埋坑了，还是趁早改了为好。
 
-旧的时间类`java.util.Date`和格式化类`SimpleDateFormatter`都是可变类，不是线程安全的，在多线程环境下对共享变量Date进行操作时，需要自己保证线程安全。而新的时间API`LocalTime`和`LocalDate`和格式化类`DateTimeFormatter`都是final类，不变类型，都是线程安全的。
+旧的时间类`java.util.Date`和格式化类`SimpleDateFormatter`都是可变类，不是线程安全的，在多线程环境下对共享变量Date进行操作时，需要自己保证线程安全。而新的时间API`LocalTime`和`LocalDate`和格式化类`DateTimeFormatter`都是final类(不可变)且是线程安全的。
 
 基于上面的这些原因，就没有理由不使用新的时间API了。
 

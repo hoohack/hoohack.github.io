@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Raft探索历程--Part1"
-date: '2020-06-20 00:00:00'
+date: '2020-06-21 16:00:00'
 author: hoohack
 categories: Raft
 excerpt: 'Raft,Consensus,Consensus algorithms,脑裂,Split Brain,MIT 6.824'
@@ -14,6 +14,8 @@ Raft是一个保证分布式系统数据一致性的共识算法，诞生的目�
 笔者主要是通过阅读[Raft论文](https://raft.github.io/raft.pdf)和观看[MIT 6.824的教程视频](https://www.bilibili.com/video/BV1R7411t71W?p=7)学习的。
 
 论文原文是英文版的，里面的一些专用名词笔者打算尽量保留英文的描述，因为这些关键名词对于理解概念十分重要，但是翻译过来会比较拗口，也找不到合适的中文名词代替，所以打算保留英文的描述，当然，名词的含义还是有必要先解释一下。
+
+<!--more-->
 
 ## 英文名词备注
 Consensus algorithms：共识算法，用来保证分布式系统一致性的方法。[Consensus algorithm](https://en.wikipedia.org/wiki/Consensus_algorithm)
@@ -98,112 +100,26 @@ Raft是一种用来管理复制日志的共识算法。
 
 ![raft-condense](https://www.hoohack.me/assets/images/2020/06/raft-image-2.jpg)
 
-### State
-在所有服务器稳定存在的状态有如下几种（在响应给RPC前保存到本地）：
-currentTerm：当前任期号
-votedFor：当前任期获得投票的候选者，默认为null
-log[]：日志条目集合，每一个条目包含了发送到状态机的命令、条目被当前的leader接收的任期
-
-在所有服务器不稳定存在的状态：
-commitIndex：当前最新一条被提交到日志条目索引位置（初始化为0，逐步递增）
-lastApplied：被状态机执行的最新一天日志条目的索引位置（初始化为0，逐步递增）
-
-在leader服务器不稳定存在的状态（每次选举后都需要重新初始化）：
-nextIndex[]：要发到服务器的下一个日志条目的索引集合（初始化为leader是一天日志的索引值+1）
-matchIndex[]：已经被复制到服务器的最新条目的索引
-
-### AppendEntries RPC
-在leader复制日志条目时调用，也被用作心跳包的请求
-
-**参数**
-term：leader的任期
-leaderId：follower可以将客户端的请求重定向到对应的leader
-prevLogIndex：最新日志之前的索引
-prevLogTerm：prevLogIndex条目的任期
-entries[]：日志条目，如果是心跳请求，那这个字段就为空
-leaderCommit：leader的commitIndex
-
-**响应结果**
-term：当前任期
-success：如果follower包含拥有prevLogIndex和prevLogTerm的条目，则返回true
-
-接受请求的实现：
->* 如果term < currentTerm，返回false
->* 如果在prevLogIndex位置的日志包含的任期与prevLogTerm不匹配时，返回false
->* 如果新的日志与当前存在的日志冲突（索引位置一样但是不同任期号），删掉存在的日志条目和里面的follower
->* 追加不在日志中的条目
->* 如果leaderCommit > commitIndex，设置commitIndex的值为min(leaderCommit, 最新条目的索引位置)
-
-### RequestVotes RPC
-**参数**
-
-term：候选者任期
-candidateId：请求投票的候选者
-lastLogIndex：候选者最新一条日志条目的索引
-lastLogTerm：候选者最新一条日志条目的任期
-
-**响应结果**
-
-term：当前任期
-voteGranted：投票结果，如果获得投票，返回true
-
-接受请求的实现：
->* 如果term < currentTerm，返回false
->* 如果机器的votedFor是null、candidateId和候选者的日志与接受者的一样新，获得投票
-
-### 服务器约定的一些规则
-**所有服务器**
->* 如果commitIndex > lastApplied: lastApplied+1，执行下标为lastApplied的日志到状态机
->* 如果RPC请求或响应包含的任期T > currentTerm，设置currentTerm=T，将服务器角色转换为follower
-
-**Follower**
->* 接受来自候选者和leader的请求
->* 如果选举超时后仍为接收到来自当前leader或者获得投票的候选者的AppendEntries RPC，服务器角色转换为candidate
-
-**Candidate**
- >* 如果服务器转换为candidate，开始选举，选举时执行的操作：
- >* 当前任期递增
- >* 给自己投票
- >* 重置选举定时器
- >* 发送请求投票RPC到其他服务器
- >* 如果收到大多数服务器的投票，转换为leader
- >* 如果收到新leader的AppdneEntriex RPC，转换为follower
- >* 如果选举超过超时时间，开启一个新的选举周期
-
-**Leader**
->* 在成为leader之后：发送初始的空AppendEntries RPC到所有的服务器（心跳包），在空闲的时候继续心跳包，避免选举超时
->* 如果收到客户端的指令：追加条目到本地日志，在条目到状态机执行后，返回响应结果给客户端
->* 如果lastLogIndex >= follower的nextIndex，用nextIndex初始化新的日志条目发送AppendEntries RPC
-	>* 如果发送成功，更新follower的nextIndex和matchIndex属性
-	>* 如果由于日志的不一致导致失败，nextIndex减1，然后重试
->* 如果存在一个数字N，N>commitIndex，而且大部分的matchIndex[i]>=N，而且log[N].term == currentTerm，设置commitIndex=N（这个N从哪里来？）
-
-注：
-> 上面是Raft算法的算法实现概览，代码基本上就是根据上面的定义来实现，实现代码时多看这里的定义，遵循概览的定义实现基本上就可以了。
+图里是Raft算法的实现概览，定义了一个集群中维护的状态以及两个方法。方法分别是复制日志条目和请求投票，复制日志条目是在客户端发送给服务端后，由leader复制到其他的follower时调用，可被用做leader的心跳包请求。请求投票时每一个leader的选举时，candidate向其他机器返发起的请求，如果机器被选中为leader，会马上发一个心跳包出去，那么改次term的选举就结束了。
 
 下图列举了Raft算法中的关键特性：
 
 ![raft-properties](https://www.hoohack.me/assets/images/2020/06/raft-image-3.jpg)
 
-Election Safety：在一个任期内，最多一个leader被选中
+Raft通过以上这些特性来保证集群里leader选举和日志复制的正常运行，同时也保证了运行的安全性。
 
-Leader Append Only：leader只会追加新的日志条目，不会覆盖和删除（这个属性确保了某个任期内的leader不会污染另一个任期的数据）
+接下来继续探索Raft的实现：包括leader选举、日志复制、安全性等等，全部写完的话，涉及的篇幅较长，篇幅太长的文章会影响阅读体验，也较难消化，所以笔者打算另外开一篇文章继续。
 
-Log Matching：如果两条日志包含通用的索引和任期，则这两条日志在所有的条目里都是唯一的
+到这里为止，第一次的探索历程就暂告一个段落了，笔者想留下一个在探索过程中困惑住的问题。
 
-Leader Completences：如果日志条目在某一个任期内提交了，那么这条日志在后续的任期内都会一直存在
+Q1:在leadder选举过程中，candidate是怎么决定要投票给发起RequestVote Rpc的机器？是不是接收到请求就要投票？成为leader有没有什么要求？
 
-State Machine Safety：如果服务器的状态机已经执行了某个索引的一条日志，那么其他服务器不能执行相同索引的不同日志条目
+这个问题，会在下一次探索历程中给出答案。如果你有任何问题，欢迎留言。
 
-以上两个图以及解释就是Raft的简要结构和方法定义。梳理完后发现Raft算法确实比较容易理解，将一个大的问题拆分为三个子问题，并通过一些限制保证服务器的安全性，使算法的实现变得更加可靠。
+原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。
 
-接下来继续探索Raft的实现：leader选举、日志复制、安全性等等，全部写完的话，涉及的篇幅较长，篇幅太长的文章会影响阅读体验，也较难消化，所以笔者打算另外开一篇文章继续。
+如果本文对你有帮助，麻烦顺手点个赞吧，谢谢
 
-到这里为止，第一次的探索历程就暂告一个段落了，留两个在探索过程中困惑住的问题。
+更多精彩内容，请关注个人公众号。
 
-Q1:“candidate是怎么决定要投票给发起RequestVote Rpc的机器？是不是接收到请求就要投票？成为leader有没有什么要求？”
-
-Q2:“如果日志被复制到大多数机器，但是没有提交，会不会被覆盖？如果不会，怎么保证？”
-
-这两个问题，会在下一次探索历程中给出答案。如果你有任何问题，欢迎留言。
-
+![](https://www.hoohack.me/assets/images/qrcode.jpg)

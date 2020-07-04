@@ -17,6 +17,8 @@ keywords: 'Raft,Consensus,Consensus algorithms,log replication,leader election,S
 
 每台机器都有三个状态：leader、follower、candidate，如下图所示，就是三种状态之间的转换图。
 
+<!--more-->
+
 ![Raft三种状态转换图](https://www.hoohack.me/assets/images/2020/07/raft-state-exchange.jpg)
 
 >* leader接收所有的请求，如果client请求到了follower，那么follower会将请求转发到leader

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "你手机软件上附近的人都有谁，这个功能是怎么实现的？"
+title: "你附近的人都有谁，这个功能是怎么实现的？"
 date: '2020-09-19 22:00:00'
 author: hoohack
 categories: Redis
@@ -44,7 +44,7 @@ GEORADIUSBYMEMBER：与`GEORADIUS`命令类似，给定中心位置，查询附�
 实现附近的人等方法就是通过`GEOADD`将多个用户的地理位置坐标保存到Redis，使用`GEORADIUS`就可以获得某个中心点指定范围内附近的人的所有地理位置元素及距离等信息。
 
 ## 使用示例
-来一个简单的demo看看具体是怎么使用的：
+来看看具体是怎么使用的：
 
 **使用GEOADD添加地理位置坐标**
 
@@ -61,7 +61,7 @@ GEORADIUSBYMEMBER：与`GEORADIUS`命令类似，给定中心位置，查询附�
 ## 使用注意事项
 1、异常
 
-注意在Java应用代码中调用geo指令，georadius和georadiusbymember这两个指令，在没有数据的时候，会抛异常` redis.clients.jedis.exceptions.JedisDataException`，所以在使用这个命令的时候，需要对方法进行try...catch...，或者自己封装一层，如果没有数据或者异常的时候返回空的数据。
+注意在Java应用代码中调用georadius和georadiusbymember这两个指令，在没有数据的时候，会抛异常` redis.clients.jedis.exceptions.JedisDataException`，所以在使用这个命令的时候，需要对方法进行try...catch...，或者自己封装一层，如果没有数据或者异常的时候返回空的数据。
 
 2、如何删除单个用户的位置数据
 
@@ -70,6 +70,7 @@ Redis的Geo只提供了六个命令，没有提供删除地理位置的指令，
 ![zrem-geo](https://www.hoohack.me/assets/images/2020/09/zrem-geo.jpg)
 
 3、单位
+
 查询出来的距离单位，就是查询时指定的单位，比如查询时指定了km，那么距离的单位就是km。
 
 4、经纬度1度的跨度是多少
@@ -78,7 +79,7 @@ Redis的Geo只提供了六个命令，没有提供删除地理位置的指令，
 
 在纬线上，经度每差1度,实际距离为111×cosθ千米。（其中θ表示该纬线的纬度.在不同纬线上,经度每差1度的实际距离是不相等的）。
 
-在生成测试数据时需要注意这一点，随便生成的数据在查询时可能会找不到。
+在生成测试数据时需要注意这一点，如果随便生成数据，在查询时可能会找不到。
 
 到这里为止，在Redis中使用geohash来实现附近功能的使用就介绍完了，使用起来就是这么简单，如果只是为了使用，看到这里就够了。如果你还想了解一下geohash的原理，那么请继续往下看。
 
@@ -90,8 +91,6 @@ Redis的Geo功能底层使用的数据结构是ZSET，算法是geohash算法。
 Z阶曲线如下所示，曲线看起来比较清晰，生成一个Z阶曲线只需要把每个Z的首尾相连即可。
 
 ![Z-line](https://www.hoohack.me/assets/images/2020/09/Z-line.jpg)
-
-上图就是 Z 阶曲线。这个曲线比较简单，生成它也比较容易，只需要把每个 Z 首尾相连即可。
 
 ### Geohash描述
 
@@ -138,6 +137,8 @@ Geohash有两个特点：
 | 7	| 17 | 18 | ±0.00068 | ±0.00068 | ±0.076 |
 | 8	| 20 | 20 | ±0.000085 | ±0.00017 | ±0.019 |
 
+### 编码过程示例
+
 以经纬度(23.157 113.273)为例子，二进制编码长度取10位，编码过程如下：
 
 纬度：23.157
@@ -182,7 +183,7 @@ Geohash有两个特点：
 
 ![base32](https://www.hoohack.me/assets/images/2020/09/base32.png)
 
-验证一下编码结果：
+验证编码结果：
 
 ![geohash](https://www.hoohack.me/assets/images/2020/09/geohash.jpg)
 

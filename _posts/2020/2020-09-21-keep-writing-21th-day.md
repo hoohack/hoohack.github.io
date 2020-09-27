@@ -8,7 +8,7 @@ excerpt: '如何写作,如何坚持,坚持21天,21天养成好习惯,如何坚�
 keywords: '如何写作,如何坚持,坚持21天,21天养成好习惯,如何坚持写作,如何学习写作,为什么写作'
 ---
 
-![200921](https://www.hoohack.me/assets/images/2020/09/200921_keep-writing-21th-day.jpg)
+![200921](https://www.hoohack.me/assets/images/2020/09/200921_keep-writing-21th-day.jpg){:height="30%" width="50%"}
 
 时间过的很快，转眼间，今天是开始坚持写作的第21天，一开始以为自己无法坚持下来，没想到，已经达到了一个习惯养成的时间了。
 

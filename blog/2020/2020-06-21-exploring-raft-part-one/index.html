@@ -38,57 +38,47 @@ follower：追随者，选举结束后，没有成为leader的candidate就是跟
 majority：大多数投票机制，指集群中大多数机器同意某个节点成为leader，这里的大多数机器不只是指正在运行的服务器，即使机器投票后挂了也是majority中的一部分</p>
 <h2 id="raft%E7%AE%80%E4%BB%8B" tabindex="-1">Raft简介</h2>
 <p>在MIT 6.824视频中，在Raft之前讨论了Map Reduce、GFS、VMWare FT，这些现存容错系统的处理方式</p>
-<blockquote>
 <ul>
 <li>MapReduce系统，只是复制计算，但是依赖单master</li>
 <li>GFS，复制副本数据，依赖master另外选主</li>
 <li>VMware FT复制服务依赖test-and-set选择master</li>
 </ul>
-</blockquote>
 <p>单点master可以避免“脑裂”，但是master始终是单点，无法实现分布式存储。</p>
 <p><a href="https://en.wikipedia.org/wiki/Split-brain_(computing)">脑裂</a>，是指一个集群中出现了网络异常的情况导致有两个节点各自都认为它们都是主节点，于是一个集群被拆分为两个集群，解决脑裂问题的方式就是添加majority机制，而Paxos和Raft就是这类解决方案中的其中两种。</p>
 <p>由于Paxos的晦涩难懂导致难以理解以及实现起来的难度，经过不断的挣扎，学者们就发明了Raft。Raft的目标是为了设计一种更易于理解的共识算法。</p>
 <p>为了让共识算法更容易理解，Raft将共识算法中的核心内容拆分开来实现：leader选举，日志复制，安全性，以及通过实施一个更强级别的一致性来减少需要考虑的状态数量。</p>
 <p>Raft跟现存的共识算法很相似，但是它有新增一些独特的特性：</p>
-<blockquote>
 <ul>
 <li>Strong Leader，比如日志只能由首领发送到其他的服务器</li>
 <li>Leader Election，Raft使用随机定时器进行选举，解决冲突时更简单快捷</li>
 <li>Membership changes，使用共同共识的方法来处理集群内成员变换的问题，这种方法处理时，处于调整过程中的两种不同配置的集群中的大多数机器会重叠。这样一来，集群在成员变换阶段依然能继续运行。</li>
 </ul>
-</blockquote>
 <h2 id="%E5%A4%8D%E5%88%B6%E7%8A%B6%E6%80%81%E6%9C%BA" tabindex="-1">复制状态机</h2>
 <p>Replicated state machine，状态复制机，共识算法是在复制状态机的背景下诞生的，复制状态机用于来解决分布式系统的各种容错问题。</p>
 <p><img src="https://www.hoohack.me/assets/images/2020/06/raft-RSM.jpg" alt="RSM"></p>
 <p>如图，复制状态机实现方式是使用复制日志，每份日志都使用相同顺序来保存相同的指令，服务器执行时是按照日志的顺序来执行，最终得到的结果都是一致的。</p>
 <p>共识算法在复制状态机的工作就是保证所有的复制日志都是一致的。共识实现模块（如Raft）接收来自客户端的请求后，添加到机器的日志里，使用共识模块进行通信，保证所有日志最终都包含相同顺序的请求。看到这里想起了<a href="https://www.hoohack.me/2017/07/11/learning-mysql-replication-detail">MySQL的主从复制原理</a>，有点类似复制状态机的实现方式。</p>
 <p>共识算法在实际应用中的特性：</p>
-<blockquote>
 <ul>
 <li>安全性保证，绝不返回一个错误的结果，在错误情况下都能保证正确</li>
 <li>可用性，集群中只要有大多数的机器可运行且能够相互通信，就可以保证可用。</li>
 <li>不依赖时序保证一致性</li>
 <li>通常情况下，一条指令能在集群中大多数节点响应一次远程过程调用时完成。少部分较慢的节点不会影响系统整体的性能。</li>
 </ul>
-</blockquote>
 <h2 id="paxos" tabindex="-1">Paxos</h2>
 <p>Paxos定义了一个能够达成单一决策共识的协议，比如单条的复制日志项。主要的两个缺点：</p>
-<blockquote>
 <ul>
 <li>原理很难理解，完整的解释不够透明。</li>
 <li>没有提供一个较好的基础来构建一个现实中的系统。</li>
 </ul>
-</blockquote>
 <p>注：笔者没有深入学习过Paxo，不能更多的评论，只能从论文和视频的角度做个小总结。</p>
 <h2 id="%E5%88%9D%E8%A1%B7--%E6%9B%B4%E5%AE%B9%E6%98%93%E7%90%86%E8%A7%A3%E7%9A%84%E8%AE%BE%E8%AE%A1" tabindex="-1">初衷--更容易理解的设计</h2>
 <p>Raft有很多个设计的目标：</p>
-<blockquote>
 <ul>
 <li>提供一个完整构建系统的基础</li>
 <li>高效性</li>
 <li>安全性</li>
 </ul>
-</blockquote>
 <p>而Raft最重要的目标，也是最大的挑战，就是让有一个更容易理解的设计。核心目标就是可理解性，必须是容易理解的，即使是普通开发者也能理解。</p>
 <p>Raft的学者们意识到要达到Raft的目标非常难，所以使用了<strong>问题分解</strong>和<em>通过减少状态数量</em>来达到这一目的。</p>
 <p>问题分解也是平常开发中用到的一个很重要的技能，如需求拆解、实现细节拆解，把大问题拆解为小问题，然后逐个击破，最后完成目标。</p>
@@ -99,13 +89,11 @@ majority：大多数投票机制，指集群中大多数机器同意某个节点
 <p>通过选举一个唯一的leader，Raft给予leader完整的责任去管理复制日志来实现共识。leader会接受来自客户端的日志条目，复制这些条目到其他服务器，leader自己就可以决定将日志条目放到哪台服务器，数据流的方向只能从leader到其他服务器。</p>
 <p>一个集群里有且只能有一台leader，leader拥有最大的权利。如果某一台leader当机了，会马上选出下一台leader。</p>
 <p>如前面提到过的，Raft将整个共识算法拆分为三个独立的子问题：</p>
-<blockquote>
 <ul>
 <li>leader选举：当leader挂了，会选举出新的leader</li>
 <li>日志复制：日志条目只能从leader通知到集群的其他服务器，服务器只会认leader的数据</li>
 <li>安全性：Raft的核心安全性是状态机的安全，Raft通过在选举机制增加一些限制来保证提供的状态数据都是安全的</li>
 </ul>
-</blockquote>
 <p>如图所示是Raft的数据结构和函数的定义：</p>
 <p><img src="https://www.hoohack.me/assets/images/2020/06/raft-image-2.jpg" alt="raft-condense"></p>
 <p>图里是Raft算法的实现概览，定义了一个集群中维护的状态以及两个方法。方法分别是复制日志条目和请求投票，复制日志条目是在客户端发送给服务端后，由leader复制到其他的follower时调用，可被用做leader的心跳包请求。请求投票时每一个leader的选举时，candidate向其他机器返发起的请求，如果机器被选中为leader，会马上发一个心跳包出去，其他candidate会成为follower，也意味着该次term的选举结束了。</p>

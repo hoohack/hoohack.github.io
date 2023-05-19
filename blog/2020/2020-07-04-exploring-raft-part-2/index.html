@@ -33,13 +33,11 @@
 <p>一个Raft集群通常包含多个机器，比较普遍的Raft集群组成是2F+1，F代表的是可以发生失败的机器数量。比如集群有5台机器，那么Raft只能容忍两台服务失败，如果三台服务不能工作了，那么整个集群也就失败了。大多数Raft集群的机器数量都是5个。</p>
 <p>每台机器都有三个状态：leader、follower、candidate，如下图所示，就是三种状态之间的转换图。</p>
 <p><img src="https://www.hoohack.me/assets/images/2020/07/raft-state-exchange.jpg" alt="Raft三种状态转换图"></p>
-<blockquote>
 <ul>
 <li>leader接收所有的请求，如果client请求到了follower，那么follower会将请求转发到leader</li>
 <li>follower只是接收来自leader和candidate的请求，不会主动发起请求。如果follower没有收到任何通信或信号，转变为candidate，然后重新进行一轮新的选举</li>
 <li>candidate，是在选举新leader时出现的状态，如果candidate收到来自大多数机器的投票请求(RequestVote RPC，以下称为RequestVote请求)，就会转变为leader</li>
 </ul>
-</blockquote>
 <p>Raft把时间按照term划分，每个term以一次选举开始，如果某一个candidate成为新的leader后，就进入正常运行阶段，如果没有选举出新的leader，那么就再次进行一次新的选举，这时候又是一个新的term。简单地说，在Raft中，是以term做时间单位。如下图所示：</p>
 <p><img src="https://www.hoohack.me/assets/images/2020/07/raft-time-unit.jpg" alt="Raft时间单位"></p>
 <p>每一个服务器都会保存当前的term序号，当前的term序号会在服务器通信之间传递。如果服务器收到的请求包含了旧的term，服务器会拒绝该请求。</p>
@@ -111,13 +109,11 @@ e、如果S1在挂了之前复制了当前term收到的日志数据（index=3，
 <h2 id="%E6%97%B6%E9%97%B4%E5%92%8C%E5%8F%AF%E7%94%A8%E6%80%A7" tabindex="-1">时间和可用性</h2>
 <p>为了保证Raft系统的高可用，Raft要求安全性不会受执行时间的影响，即，系统不会由于机器的响应时间出现异常的结果。因为需要一个稳定的leader来保证Raft系统的正常运行。</p>
 <p>Raft有三个时间属性</p>
-<blockquote>
 <ul>
 <li>broadcastTime: 服务器发出rpc到收到响应的时间，通常是0.5～20ms，因为rpc需要将数据持久化到本地</li>
 <li>electTimeout: 选举leader超时时间，10～500ms</li>
 <li>MTBF：机器平均故障时间，通用以月为单位</li>
 </ul>
-</blockquote>
 <p>通过以下的时间表达式，Raft可以保证leader的稳定性：</p>
 <p><code>broadcastTime&lt;=electionTimeout&lt;=MTBF</code></p>
 <p>1、因为Raft需要依赖心跳包来维持一个leader，所以broadcastTime&lt;=electionTimeout</p>

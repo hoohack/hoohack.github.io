@@ -36,13 +36,11 @@ var_dump($str);</p>
 //string 'dfadad abcasdasdas' (length=23)</p>
 <p>因为<code>&amp;nbsp;</code>是空格转义，不是字符串，直接用trim()是去不掉。刚开始看这段代码的时候没有看懂，现在理解了，下面来分析一下这个表达式是如何实现其功能的。</p>
 <p>我将整个正则表达式分为三部分</p>
-<blockquote>
 <ul>
 <li>1    <code>(&amp;nbsp;|\s)*</code></li>
 <li>2    <code>|</code></li>
 <li>3    <code>(&amp;nbsp;|\s)*</code></li>
 </ul>
-</blockquote>
 <p>1和3的括号里面的表达式都是匹配空格的正则，'*'代表0个或多个。1表示以空格开头，3表示已空格结尾。表达式中的2是一个与运算符，那么这个正则表达式的情况就有如下四种：</p>
 <p>A: 0 0</p>
 <blockquote>

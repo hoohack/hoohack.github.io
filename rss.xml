@@ -293,13 +293,11 @@
 &lt;p&gt;线程占有的资源：栈，寄存器，状态，程序计数器&lt;/p&gt;
 &lt;p&gt;进程是操作系统进行资源分配和调度的一个独立单位，不会共享资源，通过进程间通信共享资源，而线程可以共享部分资源，独自占有的资源不共享。&lt;/p&gt;
 &lt;p&gt;线程间共享的数据包括：&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;1、堆&lt;/li&gt;
 &lt;li&gt;2、进程代码段&lt;/li&gt;
 &lt;li&gt;3、进程的公有数据&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;对于线程间共享的内存区域，如果进程中的A线程操作了数据，切换到B线程执行，修改了同样的数据，回到A线程时，数据就不是A线程切换时候的样子，这样一来，数据就被污染了，我们就说这块数据在多线程环境下是不安全的，即线程不安全的。&lt;/p&gt;
 &lt;p&gt;这就是线程安全这个概念产生的背景，笔者认为，谈论线程安全性，一定需要先介绍操作系统中进程与线程操作内存的过程，否则，说一个对象是安全的还是不安全的就显得有点突兀，而且相对于什么是安全的也不知道。&lt;/p&gt;
 &lt;h2 id=&quot;%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7&quot; tabindex=&quot;-1&quot;&gt;线程安全性&lt;/h2&gt;
@@ -339,13 +337,11 @@
 &lt;p&gt;Web层:主要是对访问控制进行转发，各类基本参数校验，或者不复用的业务简单处理等。&lt;/p&gt;
 &lt;p&gt;Service 层:相对具体的业务逻辑服务层。&lt;/p&gt;
 &lt;p&gt;Manager 层:通用业务处理层，它有如下特征:&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;对第三方平台封装的层，预处理返回结果及转化异常信息;&lt;/li&gt;
 &lt;li&gt;对Service层通用能力的下沉，如缓存方案、中间件通用处理;&lt;/li&gt;
 &lt;li&gt;与DAO层交互，对DAO的业务通用能力的封装。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;DAO 层:数据访问层，与底层 MySQL、Oracle、Hbase 进行数据交互。&lt;/p&gt;
 &lt;p&gt;外部接口或第三方平台:包括其它部门 RPC 开放接口，基础平台，其它公司的 HTTP 接口。&lt;/p&gt;
 &lt;p&gt;以上图文来自于阿里开发手册，而笔者个人的理解是这样的：&lt;/p&gt;
@@ -381,13 +377,11 @@
 &lt;p&gt;一个Raft集群通常包含多个机器，比较普遍的Raft集群组成是2F+1，F代表的是可以发生失败的机器数量。比如集群有5台机器，那么Raft只能容忍两台服务失败，如果三台服务不能工作了，那么整个集群也就失败了。大多数Raft集群的机器数量都是5个。&lt;/p&gt;
 &lt;p&gt;每台机器都有三个状态：leader、follower、candidate，如下图所示，就是三种状态之间的转换图。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://www.hoohack.me/assets/images/2020/07/raft-state-exchange.jpg&quot; alt=&quot;Raft三种状态转换图&quot; /&gt;&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;leader接收所有的请求，如果client请求到了follower，那么follower会将请求转发到leader&lt;/li&gt;
 &lt;li&gt;follower只是接收来自leader和candidate的请求，不会主动发起请求。如果follower没有收到任何通信或信号，转变为candidate，然后重新进行一轮新的选举&lt;/li&gt;
 &lt;li&gt;candidate，是在选举新leader时出现的状态，如果candidate收到来自大多数机器的投票请求(RequestVote RPC，以下称为RequestVote请求)，就会转变为leader&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;Raft把时间按照term划分，每个term以一次选举开始，如果某一个candidate成为新的leader后，就进入正常运行阶段，如果没有选举出新的leader，那么就再次进行一次新的选举，这时候又是一个新的term。简单地说，在Raft中，是以term做时间单位。如下图所示：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://www.hoohack.me/assets/images/2020/07/raft-time-unit.jpg&quot; alt=&quot;Raft时间单位&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;每一个服务器都会保存当前的term序号，当前的term序号会在服务器通信之间传递。如果服务器收到的请求包含了旧的term，服务器会拒绝该请求。&lt;/p&gt;
@@ -459,13 +453,11 @@ e、如果S1在挂了之前复制了当前term收到的日志数据（index=3，
 &lt;h2 id=&quot;%E6%97%B6%E9%97%B4%E5%92%8C%E5%8F%AF%E7%94%A8%E6%80%A7&quot; tabindex=&quot;-1&quot;&gt;时间和可用性&lt;/h2&gt;
 &lt;p&gt;为了保证Raft系统的高可用，Raft要求安全性不会受执行时间的影响，即，系统不会由于机器的响应时间出现异常的结果。因为需要一个稳定的leader来保证Raft系统的正常运行。&lt;/p&gt;
 &lt;p&gt;Raft有三个时间属性&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;broadcastTime: 服务器发出rpc到收到响应的时间，通常是0.5～20ms，因为rpc需要将数据持久化到本地&lt;/li&gt;
 &lt;li&gt;electTimeout: 选举leader超时时间，10～500ms&lt;/li&gt;
 &lt;li&gt;MTBF：机器平均故障时间，通用以月为单位&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;通过以下的时间表达式，Raft可以保证leader的稳定性：&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;broadcastTime&amp;lt;=electionTimeout&amp;lt;=MTBF&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;1、因为Raft需要依赖心跳包来维持一个leader，所以broadcastTime&amp;lt;=electionTimeout&lt;/p&gt;
@@ -515,57 +507,47 @@ follower：追随者，选举结束后，没有成为leader的candidate就是跟
 majority：大多数投票机制，指集群中大多数机器同意某个节点成为leader，这里的大多数机器不只是指正在运行的服务器，即使机器投票后挂了也是majority中的一部分&lt;/p&gt;
 &lt;h2 id=&quot;raft%E7%AE%80%E4%BB%8B&quot; tabindex=&quot;-1&quot;&gt;Raft简介&lt;/h2&gt;
 &lt;p&gt;在MIT 6.824视频中，在Raft之前讨论了Map Reduce、GFS、VMWare FT，这些现存容错系统的处理方式&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;MapReduce系统，只是复制计算，但是依赖单master&lt;/li&gt;
 &lt;li&gt;GFS，复制副本数据，依赖master另外选主&lt;/li&gt;
 &lt;li&gt;VMware FT复制服务依赖test-and-set选择master&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;单点master可以避免“脑裂”，但是master始终是单点，无法实现分布式存储。&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Split-brain_(computing)&quot;&gt;脑裂&lt;/a&gt;，是指一个集群中出现了网络异常的情况导致有两个节点各自都认为它们都是主节点，于是一个集群被拆分为两个集群，解决脑裂问题的方式就是添加majority机制，而Paxos和Raft就是这类解决方案中的其中两种。&lt;/p&gt;
 &lt;p&gt;由于Paxos的晦涩难懂导致难以理解以及实现起来的难度，经过不断的挣扎，学者们就发明了Raft。Raft的目标是为了设计一种更易于理解的共识算法。&lt;/p&gt;
 &lt;p&gt;为了让共识算法更容易理解，Raft将共识算法中的核心内容拆分开来实现：leader选举，日志复制，安全性，以及通过实施一个更强级别的一致性来减少需要考虑的状态数量。&lt;/p&gt;
 &lt;p&gt;Raft跟现存的共识算法很相似，但是它有新增一些独特的特性：&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;Strong Leader，比如日志只能由首领发送到其他的服务器&lt;/li&gt;
 &lt;li&gt;Leader Election，Raft使用随机定时器进行选举，解决冲突时更简单快捷&lt;/li&gt;
 &lt;li&gt;Membership changes，使用共同共识的方法来处理集群内成员变换的问题，这种方法处理时，处于调整过程中的两种不同配置的集群中的大多数机器会重叠。这样一来，集群在成员变换阶段依然能继续运行。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;h2 id=&quot;%E5%A4%8D%E5%88%B6%E7%8A%B6%E6%80%81%E6%9C%BA&quot; tabindex=&quot;-1&quot;&gt;复制状态机&lt;/h2&gt;
 &lt;p&gt;Replicated state machine，状态复制机，共识算法是在复制状态机的背景下诞生的，复制状态机用于来解决分布式系统的各种容错问题。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://www.hoohack.me/assets/images/2020/06/raft-RSM.jpg&quot; alt=&quot;RSM&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;如图，复制状态机实现方式是使用复制日志，每份日志都使用相同顺序来保存相同的指令，服务器执行时是按照日志的顺序来执行，最终得到的结果都是一致的。&lt;/p&gt;
 &lt;p&gt;共识算法在复制状态机的工作就是保证所有的复制日志都是一致的。共识实现模块（如Raft）接收来自客户端的请求后，添加到机器的日志里，使用共识模块进行通信，保证所有日志最终都包含相同顺序的请求。看到这里想起了&lt;a href=&quot;https://www.hoohack.me/2017/07/11/learning-mysql-replication-detail&quot;&gt;MySQL的主从复制原理&lt;/a&gt;，有点类似复制状态机的实现方式。&lt;/p&gt;
 &lt;p&gt;共识算法在实际应用中的特性：&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;安全性保证，绝不返回一个错误的结果，在错误情况下都能保证正确&lt;/li&gt;
 &lt;li&gt;可用性，集群中只要有大多数的机器可运行且能够相互通信，就可以保证可用。&lt;/li&gt;
 &lt;li&gt;不依赖时序保证一致性&lt;/li&gt;
 &lt;li&gt;通常情况下，一条指令能在集群中大多数节点响应一次远程过程调用时完成。少部分较慢的节点不会影响系统整体的性能。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;h2 id=&quot;paxos&quot; tabindex=&quot;-1&quot;&gt;Paxos&lt;/h2&gt;
 &lt;p&gt;Paxos定义了一个能够达成单一决策共识的协议，比如单条的复制日志项。主要的两个缺点：&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;原理很难理解，完整的解释不够透明。&lt;/li&gt;
 &lt;li&gt;没有提供一个较好的基础来构建一个现实中的系统。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;注：笔者没有深入学习过Paxo，不能更多的评论，只能从论文和视频的角度做个小总结。&lt;/p&gt;
 &lt;h2 id=&quot;%E5%88%9D%E8%A1%B7--%E6%9B%B4%E5%AE%B9%E6%98%93%E7%90%86%E8%A7%A3%E7%9A%84%E8%AE%BE%E8%AE%A1&quot; tabindex=&quot;-1&quot;&gt;初衷--更容易理解的设计&lt;/h2&gt;
 &lt;p&gt;Raft有很多个设计的目标：&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;提供一个完整构建系统的基础&lt;/li&gt;
 &lt;li&gt;高效性&lt;/li&gt;
 &lt;li&gt;安全性&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;而Raft最重要的目标，也是最大的挑战，就是让有一个更容易理解的设计。核心目标就是可理解性，必须是容易理解的，即使是普通开发者也能理解。&lt;/p&gt;
 &lt;p&gt;Raft的学者们意识到要达到Raft的目标非常难，所以使用了&lt;strong&gt;问题分解&lt;/strong&gt;和&lt;em&gt;通过减少状态数量&lt;/em&gt;来达到这一目的。&lt;/p&gt;
 &lt;p&gt;问题分解也是平常开发中用到的一个很重要的技能，如需求拆解、实现细节拆解，把大问题拆解为小问题，然后逐个击破，最后完成目标。&lt;/p&gt;
@@ -576,13 +558,11 @@ majority：大多数投票机制，指集群中大多数机器同意某个节点
 &lt;p&gt;通过选举一个唯一的leader，Raft给予leader完整的责任去管理复制日志来实现共识。leader会接受来自客户端的日志条目，复制这些条目到其他服务器，leader自己就可以决定将日志条目放到哪台服务器，数据流的方向只能从leader到其他服务器。&lt;/p&gt;
 &lt;p&gt;一个集群里有且只能有一台leader，leader拥有最大的权利。如果某一台leader当机了，会马上选出下一台leader。&lt;/p&gt;
 &lt;p&gt;如前面提到过的，Raft将整个共识算法拆分为三个独立的子问题：&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;leader选举：当leader挂了，会选举出新的leader&lt;/li&gt;
 &lt;li&gt;日志复制：日志条目只能从leader通知到集群的其他服务器，服务器只会认leader的数据&lt;/li&gt;
 &lt;li&gt;安全性：Raft的核心安全性是状态机的安全，Raft通过在选举机制增加一些限制来保证提供的状态数据都是安全的&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;如图所示是Raft的数据结构和函数的定义：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://www.hoohack.me/assets/images/2020/06/raft-image-2.jpg&quot; alt=&quot;raft-condense&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;图里是Raft算法的实现概览，定义了一个集群中维护的状态以及两个方法。方法分别是复制日志条目和请求投票，复制日志条目是在客户端发送给服务端后，由leader复制到其他的follower时调用，可被用做leader的心跳包请求。请求投票时每一个leader的选举时，candidate向其他机器返发起的请求，如果机器被选中为leader，会马上发一个心跳包出去，其他candidate会成为follower，也意味着该次term的选举结束了。&lt;/p&gt;
@@ -658,13 +638,11 @@ majority：大多数投票机制，指集群中大多数机器同意某个节点
 &lt;p&gt;以上就是分布式系统的介绍及分布式系统诞生的原因，分布式系统的性价比很高、处理能力强、可靠性高、也有很好的扩展性，能为系统带来很好的性能和可用性。但是，分布式系统中还有很多不确定的问题存在。&lt;/p&gt;
 &lt;h3 id=&quot;%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98&quot; tabindex=&quot;-1&quot;&gt;分布式系统遇到的问题&lt;/h3&gt;
 &lt;p&gt;做了负载均衡和微服务，是不是就可以高枕无忧，安心等待下一步的扩容扩展服务？很遗憾，分布式系统中还有很多的不确定性，比如应用架构引入了分布式系统之后，还有可能带来下面这些问题：&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;系统的吞吐量会变大，但是响应时间会变长。&lt;/li&gt;
 &lt;li&gt;某个非核心服务出现故障，为了不影响主流程，要加入服务降级和熔断策略&lt;/li&gt;
 &lt;li&gt;同一个请求可能被服务集群里面的多台机器处理，然后保证幂等性&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;这些问题都需要引入其他手段解决来提高系统的稳定性，而加入了这些技术之后，还会衍生出更多的子问题，这就需要我们不断地用各式各样的技术和手段来解决这些问题。这些问题会在后面文章再做介绍。&lt;/p&gt;
 &lt;h2 id=&quot;%E6%80%BB%E7%BB%93&quot; tabindex=&quot;-1&quot;&gt;总结&lt;/h2&gt;
 &lt;p&gt;分布式系统领域里，还有一大片浩瀚的海洋可以探索，上面的例子只是从分布式应用角度介绍了这个概念，分布式系统里面还有分布式计算、分布式数据与存储等等领域。每一个领域都值得深入探索，这是一条漫长的学习之路。&lt;/p&gt;
@@ -691,13 +669,11 @@ majority：大多数投票机制，指集群中大多数机器同意某个节点
 &lt;p&gt;使用Mock对象进行单元测试，开发可以只关心要测试单元的代码。&lt;/p&gt;
 &lt;h2 id=&quot;%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B&quot; tabindex=&quot;-1&quot;&gt;使用示例&lt;/h2&gt;
 &lt;p&gt;先看看代码示例，假设有以下的场景：&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;验证获取用户信息接口：包含用户ID、用户昵称、是否vip&lt;/li&gt;
 &lt;li&gt;是否vip需要外部服务VIPService获取，通过RPC调用，测试环境如果机器性能较差或者网络不好会导致用例不稳定&lt;/li&gt;
 &lt;li&gt;编写单元测试判断用户VIP信息返回是否正确&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;需求是判断获取用户信息接口返回的格式是否正确，与vip接口的返回值无关，只要透传vip接口返回的字段即可，测试代码如下：&lt;/p&gt;
 &lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token annotation punctuation&quot;&gt;@RunWith&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;PowerMockRunner&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;br /&gt;&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;UserServiceTest&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;    &lt;span class=&quot;token annotation punctuation&quot;&gt;@InjectMocks&lt;/span&gt;&lt;br /&gt;    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;UserService&lt;/span&gt; userService&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Mock&lt;/span&gt;&lt;br /&gt;    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;VIPService&lt;/span&gt; vipService&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Test&lt;/span&gt;&lt;br /&gt;    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;getUserInfo&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br /&gt;        &lt;span class=&quot;token class-name&quot;&gt;Mockito&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;when&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;vipService&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;isVip&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Mockito&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;anyString&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;thenReturn&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;        &lt;span class=&quot;token class-name&quot;&gt;Result&lt;/span&gt; result &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; userService&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getUserInfo&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;123&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;        &lt;span class=&quot;token class-name&quot;&gt;Assert&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;assertEquals&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; result&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getData&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;isVip&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;br /&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;解释下上面代码用到的几个注解&lt;/p&gt;
@@ -9852,9 +9828,7 @@ direction : &amp;quot;up&amp;quot;(默认)或者&amp;quot;down&amp;quot;，定�
 &lt;p&gt;{do &amp;quot;foo&amp;quot;}
 {do reverse(&amp;quot;bar&amp;quot;)}
 输出：&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;em&gt;nothing&lt;/em&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;-nothing*&lt;/p&gt;
 &lt;p&gt;###docType
 输出一个有效的(X)HTML DOCTYPE&lt;/p&gt;
 &lt;p&gt;docType([$docType = &#39;&#39;])
@@ -11219,14 +11193,12 @@ other 其他用户&lt;/p&gt;
 &lt;p&gt;##命令格式&lt;/p&gt;
 &lt;p&gt;chmod [-cfvR] [--help] [--version] mode file&lt;/p&gt;
 &lt;p&gt;###参数说明&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;-c 当发生改变时，报告处理信息&lt;/li&gt;
 &lt;li&gt;-f 错误信息不输出&lt;/li&gt;
 &lt;li&gt;-R 处理指定目录以及其子目录下的所有文件&lt;/li&gt;
 &lt;li&gt;-v 运行时显示详细处理信息&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;###权限范围代号
 u ：目录或者文件的当前的用户
 g ：目录或者文件的当前的群组
@@ -11719,13 +11691,11 @@ var_dump($str);&lt;/p&gt;
 //string &#39;dfadad abcasdasdas&#39; (length=23)&lt;/p&gt;
 &lt;p&gt;因为&lt;code&gt;&amp;amp;nbsp;&lt;/code&gt;是空格转义，不是字符串，直接用trim()是去不掉。刚开始看这段代码的时候没有看懂，现在理解了，下面来分析一下这个表达式是如何实现其功能的。&lt;/p&gt;
 &lt;p&gt;我将整个正则表达式分为三部分&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;1    &lt;code&gt;(&amp;amp;nbsp;|&#92;s)*&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;2    &lt;code&gt;|&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;3    &lt;code&gt;(&amp;amp;nbsp;|&#92;s)*&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;1和3的括号里面的表达式都是匹配空格的正则，&#39;*&#39;代表0个或多个。1表示以空格开头，3表示已空格结尾。表达式中的2是一个与运算符，那么这个正则表达式的情况就有如下四种：&lt;/p&gt;
 &lt;p&gt;A: 0 0&lt;/p&gt;
 &lt;blockquote&gt;
@@ -12629,14 +12599,12 @@ PATH的值就会立即生效了。
     <updated>2014-12-28T00:00:00Z</updated>
     <id>https://hoohack.me/blog/2014/2014-12-28-read-high-performance-web-sites/</id>
     <content type="html">&lt;p&gt;&lt;strong&gt;第一章  减少HTTP请求&lt;/strong&gt;&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;使用图片地图：当导航栏包含多张图片时，可以将其合并成一张图片，再通过计算位置触发不同的链接&lt;/li&gt;
 &lt;li&gt;CSS sprites：将图标合并，引入一张背景图，通过CSS控制其位置&lt;/li&gt;
 &lt;li&gt;内联图片：将图片编码后再放到data后面。可用PHP的base64_encode对图片文件进行编码。&lt;/li&gt;
 &lt;li&gt;合并脚本和样式文件：理想情况下一个页面一个CSS文件&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;第二章  使用CDN(Content Delivery Networks)&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;http://zh.wikipedia.org/zh-cn/%E5%85%A7%E5%AE%B9%E5%82%B3%E9%81%9E%E7%B6%B2%E8%B7%AF&quot;&gt;CDN&lt;/a&gt;是指内容分发网络
 CDN的做法是指将组建分布到其他服务器上

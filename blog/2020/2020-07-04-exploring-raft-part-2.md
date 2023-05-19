@@ -22,9 +22,9 @@ keywords: 'Raft,Consensus,Consensus algorithms,log replication,leader election,S
 
 ![Raft三种状态转换图](https://www.hoohack.me/assets/images/2020/07/raft-state-exchange.jpg)
 
->* leader接收所有的请求，如果client请求到了follower，那么follower会将请求转发到leader
->* follower只是接收来自leader和candidate的请求，不会主动发起请求。如果follower没有收到任何通信或信号，转变为candidate，然后重新进行一轮新的选举
->* candidate，是在选举新leader时出现的状态，如果candidate收到来自大多数机器的投票请求(RequestVote RPC，以下称为RequestVote请求)，就会转变为leader
+- leader接收所有的请求，如果client请求到了follower，那么follower会将请求转发到leader
+- follower只是接收来自leader和candidate的请求，不会主动发起请求。如果follower没有收到任何通信或信号，转变为candidate，然后重新进行一轮新的选举
+- candidate，是在选举新leader时出现的状态，如果candidate收到来自大多数机器的投票请求(RequestVote RPC，以下称为RequestVote请求)，就会转变为leader
 
 Raft把时间按照term划分，每个term以一次选举开始，如果某一个candidate成为新的leader后，就进入正常运行阶段，如果没有选举出新的leader，那么就再次进行一次新的选举，这时候又是一个新的term。简单地说，在Raft中，是以term做时间单位。如下图所示：
 
@@ -159,9 +159,9 @@ follower或candidate崩溃处理方式是一样的，如果follower/candidate崩
 为了保证Raft系统的高可用，Raft要求安全性不会受执行时间的影响，即，系统不会由于机器的响应时间出现异常的结果。因为需要一个稳定的leader来保证Raft系统的正常运行。
 
 Raft有三个时间属性
->* broadcastTime: 服务器发出rpc到收到响应的时间，通常是0.5～20ms，因为rpc需要将数据持久化到本地
->* electTimeout: 选举leader超时时间，10～500ms
->* MTBF：机器平均故障时间，通用以月为单位
+- broadcastTime: 服务器发出rpc到收到响应的时间，通常是0.5～20ms，因为rpc需要将数据持久化到本地
+- electTimeout: 选举leader超时时间，10～500ms
+- MTBF：机器平均故障时间，通用以月为单位
 
 通过以下的时间表达式，Raft可以保证leader的稳定性：
 

@@ -269,7 +269,7 @@ direction : "up"(默认)或者"down"，定义counter是增还是减
     {do reverse("bar")}
 输出：
 
->*nothing*
+-nothing*
 
 ###docType
 输出一个有效的(X)HTML DOCTYPE

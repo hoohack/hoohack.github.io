@@ -12,6 +12,7 @@ module.exports = config => {
   config.addPlugin(rss) 
   config.addPassthroughCopy("_redirects");
   config.addPassthroughCopy("favicon.ico");
+  config.addPassthroughCopy("assets");
   
   config.addPassthroughCopy("CNAME");
 

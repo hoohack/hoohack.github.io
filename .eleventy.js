@@ -13,7 +13,7 @@ module.exports = config => {
   config.addPassthroughCopy("_redirects");
   config.addPassthroughCopy("favicon.ico");
   
-  config.addPassthroughCopy("src/CNAME");
+  config.addPassthroughCopy("CNAME");
 
   config.addShortcode("date", (content) => {
     return dayjs(content).format('YYYY/MM/DD')

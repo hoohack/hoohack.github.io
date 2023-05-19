@@ -11,5 +11,8 @@
     "dayjs": "^1.11.7",
     "eleventy-plugin-modern": "^2.0.2",
     "markdown-it-toc-done-right": "^4.2.0"
+  },
+  "scripts": {
+    "build": "eleventy"
   }
 }

@@ -2,7 +2,7 @@
 layout: post
 title: "FreeCodeCamp学习知识点汇总"
 date: 2016-04-05
-tags: blog
+tags: tech
 author: hoohack
 categories: 读书笔记
 excerpt: 'Javascript,css,learning,freecodecamp'

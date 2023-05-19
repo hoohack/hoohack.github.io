@@ -2,7 +2,7 @@
 layout: post
 title: "[深入学习Redis]RedisAPI的原子性分析"
 date: 2017-04-04
-tags: blog
+tags: tech
 author: hoohack
 categories: Redis
 excerpt: 'Redis,atomic,redis atomic,why redis can atomic,redis原子性,redis api原子性'

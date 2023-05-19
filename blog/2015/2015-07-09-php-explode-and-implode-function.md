@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP-explode以及implode函数"
 date:   '2015-07-09'
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'php,implode,explode'

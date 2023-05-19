@@ -2,7 +2,7 @@
 layout: post
 title:  "学习TCP三次握手总结"
 date:   '2015-01-13'
-tags: blog
+tags: tech
 author: hoohack
 categories: 计算机网络
 ---

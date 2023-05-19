@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP过滤器(Filter)的用法总结"
 date:   '2015-02-01'
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 ---

@@ -2,7 +2,7 @@
 layout: post
 title:  "读书笔记：高性能网站建设"
 date:   2014-12-28
-tags: blog
+tags: tech
 author: hoohack
 categories: 读书笔记
 ---

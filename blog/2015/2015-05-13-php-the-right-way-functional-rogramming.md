@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP之道--函数式编程(译)"
 date:   '2015-05-13'
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'php之道,函数式编程'

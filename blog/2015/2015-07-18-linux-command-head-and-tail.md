@@ -2,7 +2,7 @@
 layout: post
 title:  "Linux获取文件内容命令总结--tail和head"
 date:   '2015-07-18'
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'Linux,tail'

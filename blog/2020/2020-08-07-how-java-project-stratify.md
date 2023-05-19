@@ -2,7 +2,7 @@
 layout: post
 title: "Java项目如何分层"
 date: '2020-08-07'
-tags: blog
+tags: tech
 author: hoohack
 categories: Java
 excerpt: 'Java项目结构,Java项目分层,Spring,Controller,Manager,Service,Spring Boot,Spring Web,Java Web'

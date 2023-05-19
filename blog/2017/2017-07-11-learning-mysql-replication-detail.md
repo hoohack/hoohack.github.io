@@ -2,7 +2,7 @@
 layout: post
 title: "MySQL主从复制原理探索"
 date: '2017-07-11'
-tags: blog
+tags: tech
 author: hoohack
 categories: mysql
 excerpt: 'mysql,mysql主从延迟,mysql主从复制,mysql主从复制原理'

@@ -2,7 +2,7 @@
 layout: post
 title: "［深入理解Redis］读取RDB文件"
 date: '2018-08-27'
-tags: blog
+tags: tech
 author: hoohack
 categories: Redis
 excerpt: 'redis,redis源码,redis 4.0源码,RDB文件,读取二进制文件,Golang读取文件'

@@ -2,7 +2,7 @@
 layout: post
 title: "【总结】从0到1的项目经历"
 date: '2020-05-16'
-tags: blog
+tags: tech
 author: hoohack
 categories: Java
 excerpt: 'Java,项目总结,快速开发,开发习惯'

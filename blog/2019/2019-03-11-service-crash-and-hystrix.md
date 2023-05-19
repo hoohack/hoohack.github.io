@@ -2,7 +2,7 @@
 layout: post
 title: "从不可描述的服务雪崩到初探Hystrix"
 date: '2019-03-11'
-tags: blog
+tags: tech
 author: hoohack
 categories: Hystrix
 excerpt: 'Hystrix,服务雪崩,服务熔断,服务隔离,高可用分析'

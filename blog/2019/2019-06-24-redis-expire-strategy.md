@@ -2,7 +2,7 @@
 layout: post
 title: "理解Redis的内存回收机制"
 date: '2019-06-24'
-tags: blog
+tags: tech
 author: hoohack
 categories: Redis
 excerpt: 'Redis,Redis回收机制,Redis内存回收,Redis惰性删除,Redis面试题,Redis源码'

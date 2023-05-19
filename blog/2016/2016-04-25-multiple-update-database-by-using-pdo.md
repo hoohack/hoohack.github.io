@@ -2,7 +2,7 @@
 layout: post
 title: "［PDO绑定参数］使用PHP的PDO扩展进行批量更新操作"
 date: 2016-04-25
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'PDO批量更新,PDO批量操作,PDO IN 语句,PDO IN statement,绑定参数,PDO绑定参数,PHP bindParam,bindParam'

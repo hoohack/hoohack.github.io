@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP中call_user_func和call_user_func_array函数使用与比较"
 date:   '2015-05-18'
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'php,call_user_func,call_user_func_array,回调'

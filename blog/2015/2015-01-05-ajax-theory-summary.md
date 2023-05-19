@@ -2,7 +2,7 @@
 layout: post
 title:  "AJAX原理总结"
 date:   '2015-01-05'
-tags: blog
+tags: tech
 author: hoohack
 categories: Javascript
 ---

@@ -2,7 +2,7 @@
 layout: post
 title:  "JavaScript中[]==![]比较的分析"
 date:   '2015-07-30'
-tags: blog
+tags: tech
 author: hoohack
 categories: Javascript
 excerpt: 'Javascript,equal,array,[]==![]'

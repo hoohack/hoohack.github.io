@@ -2,7 +2,7 @@
 layout: post
 title: "自上而下，逐步揭开PHP解析大整数的面纱"
 date: '2017-09-14'
-tags: blog
+tags: tech
 author: hoohack
 categories: php
 excerpt: 'PHP大整数,number_format,PHP大整数处理,PHP源码分析,zend_strtod,zend源码'

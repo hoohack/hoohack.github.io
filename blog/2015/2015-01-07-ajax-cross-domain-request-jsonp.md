@@ -2,7 +2,7 @@
 layout: post
 title:  "AJAX跨域请求----JSONP"
 date:   '2015-01-07'
-tags: blog
+tags: tech
 author: hoohack
 categories: Javascript
 ---

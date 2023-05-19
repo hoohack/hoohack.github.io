@@ -2,7 +2,7 @@
 layout: post
 title: "[PHP源码阅读]trim、rtrim、ltrim函数"
 date: 2016-05-20
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'php,c,源码分析,源码学习,PHP源码,trim源码,ltrim源码,rtrim源码,php trim源码,php源码阅读,PHP源码阅读'

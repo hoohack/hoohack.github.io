@@ -2,7 +2,7 @@
 layout: post
 title: "[PHP源码阅读]array_push和array_unshift函数"
 date: 2016-05-27
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'php,c,PHP源码分析,源码学习,PHP源码,array_push源码,array_unshift源码,php array_push源码,php array_unshift源码,php源码阅读,PHP源码阅读'

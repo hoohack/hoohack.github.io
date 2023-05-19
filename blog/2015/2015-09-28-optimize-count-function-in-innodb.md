@@ -2,7 +2,7 @@
 layout: post
 title:  "在MySQL的InnoDB存储引擎中count(*)函数的优化"
 date:   '2015-09-28'
-tags: blog
+tags: tech
 author: hoohack
 categories: MySQL
 excerpt: 'mysql,innodb,count(*)'

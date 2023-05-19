@@ -2,7 +2,7 @@
 layout: post
 title: "［PHP源码阅读］strpos、strstr和stripos、stristr函数"
 date: 2016-05-10
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'php,c,源码分析,源码学习,PHP源码,strpos源码,stripos源码,strstr源码,stristr源码'

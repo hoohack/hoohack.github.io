@@ -2,7 +2,7 @@
 layout: post
 title: "［Redis源码阅读］redis持久化"
 date: '2018-04-04'
-tags: blog
+tags: tech
 author: hoohack
 categories: Redis
 excerpt: 'redis,c,源码分析,源码学习,redis源码,redis对象,redis对象源码,redis 4.0源码'

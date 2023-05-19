@@ -2,7 +2,7 @@
 layout: post
 title: "你真的知道什么是线程安全吗？"
 date: '2020-09-01'
-tags: blog
+tags: tech
 author: hoohack
 categories: Java
 excerpt: '线程安全,进程与线程的区别,线程间共享数据,进程间共享数据,什么是线程安全,线程安全性,单线程与原子性的关系,单线程'

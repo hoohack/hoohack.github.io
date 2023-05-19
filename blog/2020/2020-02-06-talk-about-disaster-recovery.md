@@ -2,7 +2,7 @@
 layout: post
 title: "聊聊服务灾备"
 date: '2020-02-06'
-tags: blog
+tags: tech
 author: hoohack
 categories: 高可用
 excerpt: '服务灾备,孤岛,高可用,双活,异地多活,单点故障,高可用架构'

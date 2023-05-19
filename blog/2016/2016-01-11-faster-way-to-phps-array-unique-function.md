@@ -2,7 +2,7 @@
 layout: post
 title:  "【译】更快的方式实现PHP数组去重"
 date: 2016-01-11
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'PHP,数组去重,`array_unique`,`array_keys`,array_flip,PHP数组去重,更快的方式实现PHP数组去重'

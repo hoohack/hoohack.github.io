@@ -2,7 +2,7 @@
 layout: post
 title: "［Redis源码阅读］dict字典的实现"
 date: '2018-01-07'
-tags: blog
+tags: tech
 author: hoohack
 categories: Redis
 excerpt: 'redis,c,源码分析,源码学习,redis源码,dict源码,dict源码阅读,dict源码阅读,redis 4.0源码'

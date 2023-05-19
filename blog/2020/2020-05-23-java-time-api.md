@@ -2,7 +2,7 @@
 layout: post
 title: "理解Java8中的时间API"
 date: '2020-05-23'
-tags: blog
+tags: tech
 author: hoohack
 categories: Java
 excerpt: 'Java,LocalTime,LocalDate,Instant,LocalDateTime,java8 time'

@@ -2,7 +2,7 @@
 layout: post
 title: "[PHP源码阅读]strtolower和strtoupper函数"
 date: 2016-06-02
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'php,c,PHP源码分析,源码学习,PHP源码,strtolower源码,strtoupper源码,php strtolower源码,php strtoupper源码,php源码阅读,PHP源码阅读'

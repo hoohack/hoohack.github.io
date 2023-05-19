@@ -2,7 +2,7 @@
 layout: post
 title: "【译】给PHP开发者的PHP源码-第一部分-源码结构"
 date: 2016-02-04
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'PHP,PHP源码,PHP源码结构,PHP源码分析'

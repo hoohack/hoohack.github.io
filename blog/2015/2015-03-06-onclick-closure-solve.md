@@ -2,7 +2,7 @@
 layout: post
 title:  "Javascript中使用onclick函数时的闭包问题解决"
 date:   '2015-03-05'
-tags: blog
+tags: tech
 author: hoohack
 categories: Javascript
 ---

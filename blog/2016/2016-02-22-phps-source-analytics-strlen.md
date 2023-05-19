@@ -2,7 +2,7 @@
 layout: post
 title: "[PHP源码阅读笔记]strlen函数"
 date: 2016-02-22
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'PHP,PHP源码,PHP源码结构,PHP源码分析,strlen函数'

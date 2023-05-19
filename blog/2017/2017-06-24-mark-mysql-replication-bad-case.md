@@ -2,7 +2,7 @@
 layout: post
 title: "【踩坑记录】记一次MySQL主从复制延迟的坑"
 date: '2017-06-24'
-tags: blog
+tags: tech
 author: hoohack
 categories: mysql
 excerpt: 'mysql,mysql主从延迟,mysql主从复制'

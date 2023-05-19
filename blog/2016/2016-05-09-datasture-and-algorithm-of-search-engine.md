@@ -2,7 +2,7 @@
 layout: post
 title: "［搜索引擎］搜索引擎索引数据结构和算法"
 date: 2016-05-09
-tags: blog
+tags: tech
 author: hoohack
 categories: 搜索引擎
 excerpt: 'sphinx,数据结构和算法,sphinx数据结果,sphinx算法,sphinx构建索引,分布式索引,sphinx如何索引,sphinx如何查询,sphinx index,sphinx搜索引擎'

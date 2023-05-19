@@ -2,7 +2,7 @@
 layout: post
 title: "[PHP源码阅读]array_pop和array_shift函数"
 date: 2016-05-30
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'php,c,PHP源码分析,源码学习,PHP源码,array_pop源码,array_shift源码,php array_pop源码,php array_shift源码,php源码阅读,PHP源码阅读'

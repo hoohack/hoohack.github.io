@@ -2,7 +2,7 @@
 layout: post
 title: "【译】PHP的变量实现（给PHP开发者的PHP源码-第三部分）"
 date: 2016-02-12
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'PHP,PHP源码,PHP源码结构,PHP源码分析,PHP变量'

@@ -2,7 +2,7 @@
 layout: post
 title: "你附近的人都有谁，这个功能是怎么实现的？"
 date: '2020-09-19'
-tags: blog
+tags: tech
 author: hoohack
 categories: Redis
 excerpt: 'redis,geo,geohash,附近的人,geoadd,georadius,SpringBoot使用RedisGeo'

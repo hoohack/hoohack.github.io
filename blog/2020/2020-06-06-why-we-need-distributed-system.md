@@ -2,7 +2,7 @@
 layout: post
 title: "为什么需要分布式系统"
 date: '2020-06-06'
-tags: blog
+tags: tech
 author: hoohack
 categories: 分布式系统
 excerpt: '分布式系统,高可用,单点故障,系统容量,单机系统,分布式系统的不确定性,分布式系统是什么,为什么需要分布式系统'

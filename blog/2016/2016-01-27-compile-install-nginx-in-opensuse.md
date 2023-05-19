@@ -2,7 +2,7 @@
 layout: post
 title:  "在OpenSUSE下编译安装Nginx"
 date: 2016-01-27
-tags: blog
+tags: tech
 author: hoohack
 categories: Nginx
 excerpt: '编译安装Nginx,安装Nginx,编译安装Nginx OpenSUSE'

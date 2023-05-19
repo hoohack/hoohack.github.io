@@ -2,7 +2,7 @@
 layout: post
 title: "［从0到1编写服务器］准备知识"
 date: '2018-09-05'
-tags: blog
+tags: tech
 author: hoohack
 categories: Network
 excerpt: '网络编程,服务器编程,LinuxC,socket,tcp/ip'

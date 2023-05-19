@@ -2,7 +2,7 @@
 layout: post
 title:  "Linux修改环境变量"
 date:   2014-12-29
-tags: blog
+tags: tech
 author: hoohack
 categories: Linux
 ---

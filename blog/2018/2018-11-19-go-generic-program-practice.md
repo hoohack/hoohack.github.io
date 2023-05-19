@@ -2,7 +2,7 @@
 layout: post
 title: "GO语言泛型编程实践"
 date: 2018-11-19
-tags: blog
+tags: tech
 author: hoohack
 categories: Redis
 excerpt: 'Go语言,泛型,泛型编程,interface,Golang,多态'

@@ -2,7 +2,7 @@
 layout: post
 title: "Mockito-提高单元测试效率利器"
 date: '2020-05-30'
-tags: blog
+tags: tech
 author: hoohack
 categories: Java
 excerpt: 'Java,Mockito,unit,JUnit,UnitTest,Mockito Exception,Mockito void,Mockito static,PowerMock'

@@ -2,7 +2,7 @@
 layout: post
 title: "［Redis源码阅读］redis对象"
 date: '2018-03-21'
-tags: blog
+tags: tech
 author: hoohack
 categories: Redis
 excerpt: 'redis,c,源码分析,源码学习,redis源码,redis对象,redis对象源码,redis 4.0源码'

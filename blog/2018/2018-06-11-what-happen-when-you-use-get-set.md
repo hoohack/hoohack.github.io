@@ -2,7 +2,7 @@
 layout: post
 title: "［Redis源码阅读］当你输入get/set命令的时候，redis做了什么"
 date: '2018-06-11'
-tags: blog
+tags: tech
 author: hoohack
 categories: Redis
 excerpt: 'redis,c,源码分析,源码学习,redis源码,redis 4.0源码,get-set调用链路'

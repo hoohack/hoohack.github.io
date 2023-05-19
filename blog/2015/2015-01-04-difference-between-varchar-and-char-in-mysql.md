@@ -2,7 +2,7 @@
 layout: post
 title:  "MySQL中VARCHAR与CHAR格式数据的区别"
 date:   '2015-01-04'
-tags: blog
+tags: tech
 author: hoohack
 categories: MySQL
 ---

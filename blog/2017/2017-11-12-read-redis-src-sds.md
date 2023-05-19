@@ -2,7 +2,7 @@
 layout: post
 title: "［Redis源码阅读］sds字符串实现"
 date: '2017-11-12'
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'redis,c,源码分析,源码学习,redis源码,sds源码,sds源码阅读,sds源码阅读,redis 4.0源码'

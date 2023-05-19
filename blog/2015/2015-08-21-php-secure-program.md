@@ -2,7 +2,7 @@
 layout: post
 title:  "读书笔记--PHP安全编程"
 date:   '2015-08-21'
-tags: blog
+tags: tech
 author: hoohack
 categories: 读书笔记
 excerpt: 'PHP安全编程,PHP,安全编程'

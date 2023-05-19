@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP中require、include、require_once和include_once的区别"
 date:   '2015-01-10'
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 ---

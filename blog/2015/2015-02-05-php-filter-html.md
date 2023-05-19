@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP过滤HTML数据"
 date:   '2015-02-05'
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 ---

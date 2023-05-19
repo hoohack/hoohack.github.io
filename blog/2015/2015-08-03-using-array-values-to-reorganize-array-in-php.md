@@ -2,7 +2,7 @@
 layout: post
 title:  "在php中使用array_values函数调整数组键值"
 date:   '2015-08-03'
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'PHP,array_values,调整数组键值'

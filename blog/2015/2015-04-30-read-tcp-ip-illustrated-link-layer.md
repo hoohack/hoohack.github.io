@@ -2,7 +2,7 @@
 layout: post
 title:  "TCP/IP详解读书笔记--链路层"
 date:   '2015-04-30'
-tags: blog
+tags: tech
 author: hoohack
 categories: 读书笔记
 excerpt: 'TCP/IP详解,TCP/IP,读书笔记'

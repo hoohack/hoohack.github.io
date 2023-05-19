@@ -2,7 +2,7 @@
 layout: post
 title:  "Redis常用命令"
 date:   '2015-03-23'
-tags: blog
+tags: tech
 author: hoohack
 categories: Redis
 excerpt: 'Redis常用命令'

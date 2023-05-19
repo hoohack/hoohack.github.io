@@ -2,7 +2,7 @@
 layout: post
 title: "使用拦截器统一处理异常"
 date: '2020-06-13'
-tags: blog
+tags: tech
 author: hoohack
 categories: Java
 excerpt: 'Java,AOP,拦截器,代码优化,整洁代码,Spring ExceptionHandler,ExceptionHandler,统一处理,统一异常处理'

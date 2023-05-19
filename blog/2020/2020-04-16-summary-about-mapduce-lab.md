@@ -2,7 +2,7 @@
 layout: post
 title: "[总结]MIT-6.824分布式课程-Mapduce实验"
 date: '2020-04-16'
-tags: blog
+tags: tech
 author: hoohack
 categories: 分布式系统
 excerpt: 'MIT6.824,mapreduce,MapReduce,分布式系统,分布式课程,MIT6.824分布式课程,MIT6.824分布式课程lab1,MIT6.824分布式课程 MapReduce'

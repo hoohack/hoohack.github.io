@@ -2,7 +2,7 @@
 layout: post
 title: "Raft探索历程--Part1"
 date: '2020-06-21'
-tags: blog
+tags: tech
 author: hoohack
 categories: Raft
 excerpt: 'Raft,Consensus,Consensus algorithms,脑裂,Split Brain,MIT 6.824'

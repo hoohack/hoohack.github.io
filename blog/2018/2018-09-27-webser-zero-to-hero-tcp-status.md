@@ -2,7 +2,7 @@
 layout: post
 title: "［从0到1编写服务器］TCP连接建立与断开状态变化"
 date: '2018-09-27'
-tags: blog
+tags: tech
 author: hoohack
 categories: Network
 excerpt: '网络编程,服务器编程,LinuxC,socket,tcp/ip'

@@ -2,7 +2,7 @@
 layout: post
 title:  "MySQL LEFT JOIN, RIGHT JOIN INNER JOIN区别分析"
 date:   '2015-07-21'
-tags: blog
+tags: tech
 author: hoohack
 categories: MySQL
 excerpt: 'mysql,join,left join,right join,inner join'

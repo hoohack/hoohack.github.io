@@ -2,7 +2,7 @@
 layout: post
 title: "［井字游戏］做一款回忆童年的游戏"
 date: 2016-04-27
-tags: blog
+tags: tech
 author: hoohack
 categories: Javascript
 excerpt: '井字游戏算法,井字游戏,算法,Javascript小游戏'

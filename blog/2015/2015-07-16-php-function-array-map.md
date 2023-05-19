@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP函数--array_map"
 date:   '2015-07-16'
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'php,array_map'

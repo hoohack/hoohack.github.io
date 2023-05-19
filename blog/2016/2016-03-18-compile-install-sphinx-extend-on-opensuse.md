@@ -2,7 +2,7 @@
 layout: post
 title: "在OpenSUSE上编译安装sphinx扩展"
 date: 2016-03-18
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'PHP,PHP扩展,sphinx php安装,sphinx,SphinxClient,sphinx扩展,Opensuse安装sphinx扩展，Unable to load dynamic library'

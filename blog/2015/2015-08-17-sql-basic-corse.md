@@ -2,7 +2,7 @@
 layout: post
 title:  "读书笔记--SQL基础教程"
 date:   '2015-08-17'
-tags: blog
+tags: tech
 author: hoohack
 categories: 读书笔记
 excerpt: 'SQL基础教程'

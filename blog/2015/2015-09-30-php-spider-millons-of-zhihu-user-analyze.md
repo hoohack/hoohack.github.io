@@ -2,7 +2,7 @@
 layout: post
 title:  "【php爬虫】百万级别知乎用户数据爬取与分析"
 date:   '2015-09-30'
-tags: blog
+tags: tech
 author: hoohack
 categories: PHP
 excerpt: 'php,网页爬虫,pcntl,curl'

@@ -2,7 +2,7 @@
 layout: post
 title: "使用拦截器统一处理通用检查"
 date: '2020-04-22'
-tags: blog
+tags: tech
 author: hoohack
 categories: Java
 excerpt: 'Java,AOP,拦截器,代码优化,整洁代码,Spring HandlerInterceptor,HandlerInterceptor,统一处理'

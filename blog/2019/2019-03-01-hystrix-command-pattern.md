@@ -2,7 +2,7 @@
 layout: post
 title: "聊聊Hystrix中的命令模式"
 date: '2019-03-02'
-tags: blog
+tags: tech
 author: hoohack
 categories: 设计模式
 excerpt: 'Hystrix,设计模式,命令模式,Command Pattern,DesignPattern'

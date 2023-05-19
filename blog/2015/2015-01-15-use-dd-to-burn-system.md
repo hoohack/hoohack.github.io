@@ -2,7 +2,7 @@
 layout: post
 title:  "在Linux中使用dd刻录系统"
 date:   '2015-01-15'
-tags: blog
+tags: tech
 author: hoohack
 categories: Linux
 ---

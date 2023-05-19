@@ -2,7 +2,7 @@
 layout: post
 title:  "父DIV浮动后无法撑开子DIV的解决方案"
 date:   '2015-01-19'
-tags: blog
+tags: tech
 author: hoohack
 categories: CSS
 ---

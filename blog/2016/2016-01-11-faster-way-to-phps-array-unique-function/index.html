@@ -1,0 +1,75 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="【译】更快的方式实现PHP数组去重" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-01-11-faster-way-to-phps-array-unique-function/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>【译】更快的方式实现PHP数组去重 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>【译】更快的方式实现PHP数组去重</h1>
+    <div class="italic text-gray-500">
+      2016/01/11
+    </div>
+    <div>
+      <p>原文:<a href="http://www.thecave.info/faster-alternative-to-phps-array-unique-function/">Faster Alternative to PHP’s Array Unique Function</a></p>
+<h2 id="%E6%A6%82%E8%BF%B0" tabindex="-1">概述</h2>
+<p>使用PHP的<code>array_unique()</code>函数允许你传递一个数组，然后移除重复的值，返回一个拥有唯一值的数组。这个函数大多数情况下都能工作得很好。但是，如果你尝试在一个大的数组里使用<code>array_unique（）</code>函数，它会运行地慢一些。</p>
+<p>有一个比较好而且更快的函数<code>array_flip()</code>来替代使用<code>array_unique()</code>函数来创建唯一的数组。这个魔法般的函数会交换数组里面每一个元素的键和值，因为键值必须唯一，因此，你会得到跟<code>array_unique()</code>函数一样的结果。</p>
+<h2 id="%E6%9B%B4%E5%BF%AB%E7%9A%84%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0php%E6%95%B0%E7%BB%84%E5%8E%BB%E9%87%8D" tabindex="-1">更快的方式实现PHP数组去重</h2>
+<p>/* 创建一个包含重复值的，一共四个元素的数组 */
+$array = array('green','blue','orange','blue');</p>
+<p>/* 翻转数组，你将会得到唯一键值的数组
+array('green'=&gt;0,'blue'=&gt;1,'orange'=&gt;2); */
+$array = array_flip($array);</p>
+<p>/* 然后再翻转一次，将键和值重新放置，然后得到数组：array(0=&gt;'green',1=&gt;'blue',2=&gt;'orange'); */
+$array = array_flip($array);</p>
+<p>因为我们已经移除了一些元素，因此数组看起来不是正常的序列。比如我们可能会得到：<code>array(0=&gt;’A’,2=&gt;’B’,5=&gt;’C’);</code>。在某些情况下，这不是一个问题，但是如果你需要数组的键值保持数字的序列，你可以使用一到两种方法解决键值乱序的问题。</p>
+<h2 id="%E4%BD%BF%E7%94%A8array_merge%E4%BF%AE%E5%A4%8D%E6%95%B0%E7%BB%84%E7%9A%84keys" tabindex="-1">使用array_merge修复数组的keys</h2>
+<p>添加array_flip之后的函数，将会对数组的键值排序并且让它们恢复到正常的序列，如：0,1,2,3...</p>
+<p>$array = array('green','blue','orange','blue');
+$array = array_flip($array);
+$array = array_flip($array);</p>
+<p>/* 使用array_merge()函数修复键值*/
+$array = array_merge($array);</p>
+<h2 id="%E7%AC%AC%E4%BA%8C%E7%A7%8D%E6%96%B9%E5%BC%8F%EF%BC%8C%E4%BD%BF%E7%94%A8array_keys" tabindex="-1">第二种方式，使用array_keys</h2>
+<p>注意，这种修复数组键值的方法比使用<code>array_merge()</code>函数稍微快了一点。你也可以在最后一步结合使用<code>array_keys()</code>函数(此函数返回翻转后的值)。然后当你翻转数组的值，键值就会根据顺序创建。</p>
+<p>$array = array('green','blue','orange','blue');
+$array = array_flip($array);
+/* 跟第一个例子一样，但是现在我们先提取数组的键值 */
+$array = array_keys($array);</p>
+<h2 id="%E7%BB%93%E8%AE%BA" tabindex="-1">结论</h2>
+<p>非常简单，比起在大数组使用array_unique函数，有了一个有效的性能提升。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

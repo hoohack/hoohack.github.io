@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="FreeCodeCamp学习知识点汇总" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-04-05-learning-on-freecodecamp-konwledge-points/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>FreeCodeCamp学习知识点汇总 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>FreeCodeCamp学习知识点汇总</h1>
+    <div class="italic text-gray-500">
+      2016/04/05
+    </div>
+    <div>
+      <p>这段时间在FreeCodeCamp这个平台上学习前端知识，上面的练习题都很不错，推荐大家去学习。学习了一段时间，记录下了一些知识点，在这里总结分享。</p>
+<h2 id="arguments%E6%95%B0%E7%BB%84" tabindex="-1">arguments数组</h2>
+<p>当需要使用arguments数组时，最好的方法就是转换成一个新数组。</p>
+<p>var args = Array.prototype.slice.call(arguments);</p>
+<h2 id="%E4%BF%AE%E6%94%B9%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6" tabindex="-1">修改字符串中的字符</h2>
+<p>_</p>
+<p>可以新生成字符串变量；或者也可以使用如下方法：</p>
+<p>String.prototype.replaceAt = function(index, character) {
+return this.substr(0, index) + character + this.substr(index + characyer.length);
+}</p>
+<h2 id="javascript%E5%8A%A0%E6%B3%95" tabindex="-1">javascript加法</h2>
+<p>遇到数字相加，应该用Number强制转换类型，不然会出现字符串连接的情况。</p>
+<h2 id="no-'access-control-allow-origin'-header-is-present-on-the-requested-resource" tabindex="-1">No 'Access-Control-Allow-Origin' header is present on the requested resource</h2>
+<p>把ajax请求的dataType改为JSONP</p>
+<h2 id="css%E7%94%BB%E5%9C%88" tabindex="-1">CSS画圈</h2>
+<p>使用一个长宽相同的div，然后border-radius画圆，设置background颜色可以画空心圆，然后绝对定位。</p>
+<h2 id="css%E7%94%BB%E6%90%9C%E7%B4%A2%E5%9B%BE%E6%A0%87" tabindex="-1">CSS画搜索图标</h2>
+<p>一个圈加一条旋转的线。</p>
+<h2 id="input%E8%83%8C%E6%99%AF%E9%80%8F%E6%98%8E" tabindex="-1">input背景透明</h2>
+<p><code>background-color:transparent;</code></p>
+<h2 id="%E5%88%A0%E9%99%A4%E7%A9%BA%E7%99%BD%E5%AD%97%E7%AC%A6" tabindex="-1">删除空白字符</h2>
+<p>可以用空字符replace。</p>
+<h2 id="%E6%9B%BF%E6%8D%A2%E6%89%80%E6%9C%89%E5%87%BA%E7%8E%B0%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%8D%95%E4%B8%AA%E5%AD%97%E7%AC%A6%EF%BC%8C" tabindex="-1">替换所有出现字符串的单个字符，</h2>
+<p>使用该字符new一个正则：new RegExp(char, 'g');</p>
+<h2 id="%E5%8E%BB%E9%99%A4%E6%95%B0%E7%BB%84%E7%9A%84%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%EF%BC%8C" tabindex="-1">去除数组的重复元素，</h2>
+<p>调用filter函数，然后过滤条件是return arr.indexOf(item) === iex;
+说明，如果元素第一次出现的位置跟当前位置不一样，说明有重复的元素，那么将其删除掉。</p>
+<h2 id="objects.keys" tabindex="-1">Objects.keys</h2>
+<p>Objects.keys只收集自身属性名，不收集继承自原继承链上的。在对象中使用this创建keys。</p>
+<h2 id="%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD" tabindex="-1">垂直居中</h2>
+<p>line-height设置为该对象的值</p>
+<h2 id="jquery-ready-%E6%96%B9%E6%B3%95" tabindex="-1">jQuery ready 方法</h2>
+<p>语法1：</p>
+<p>$(document).ready(<em>function</em>)</p>
+<p>语法2：</p>
+<p>$().ready(<em>function</em>)</p>
+<p>语法3：</p>
+<p>$(<em>function</em>)</p>
+<h2 id="%E9%98%BB%E6%AD%A2%E5%85%83%E7%B4%A0%E8%A2%AB%E9%80%89%E4%B8%AD" tabindex="-1">阻止元素被选中</h2>
+<p>-webkit-user-select: none;/-moz-user-select: none;</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

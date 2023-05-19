@@ -1,0 +1,113 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="谈谈PHP中ob_start()函数的用法" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-01-24-php-ob_start-function/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>谈谈PHP中ob_start()函数的用法 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>谈谈PHP中ob_start()函数的用法</h1>
+    <div class="italic text-gray-500">
+      2015/01/24
+    </div>
+    <div>
+      <h2 id="ob_start" tabindex="-1">ob_start</h2>
+<blockquote>
+<p>打开输出控制缓存</p>
+</blockquote>
+<h2 id="%E5%AE%98%E7%BD%91%E6%96%87%E6%A1%A3%E8%AF%B4%E6%98%8E" tabindex="-1">官网文档说明</h2>
+<p>bool ob_start ([ callback $output_callback [, int $chunk_size [, bool $erase ]]] )</p>
+<p>此函数将打开输出缓冲。当输出缓冲激活后，脚本将不会输出内容（除http标头外），相反需要输出的内容被存储在内部缓冲区中。（因此可选择回调函数用于处理输出结果信息）</p>
+<p>该函数可以让你自由地控制脚本中数据的输出。比如可以用在输出静态化页面上。而且，当你想在数据已经输出后，再输出文件头的情况。输出控制函数不对使用 header() 或 setcookie(), 发送的文件头信息产生影响,只对那些类似于 echo() 和 PHP 代码的数据块有作用。原因是当打开了缓冲区，echo后面的字符不会输出到浏览器，而是保留在服务器，直到你使用flush或者ob_end_flush才会输出，所以并不会有任何文件头输出的错误。</p>
+<h2 id="%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0" tabindex="-1">相关函数</h2>
+<p>ob_end_flush — 冲刷出（送出）输出缓冲区内容并关闭缓冲</p>
+<p>ob_clean — 清空（擦掉）输出缓冲区</p>
+<p>ob_end_clean — 清空（擦除）缓冲区并关闭输出缓冲</p>
+<p>ob_flush — 冲刷出（送出）输出缓冲区中的内容</p>
+<p>ob_get_contents — 返回输出缓冲区的内容</p>
+<h2 id="%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B%3A" tabindex="-1">使用示例:</h2>
+<p>//缓冲区F
+1.ob_start();             //缓冲区A
+2.echo 'level 1&lt;br /&gt;';
+3.ob_start();             //缓冲区B
+4.echo 'level 2&lt;br /&gt;';
+5.ob_start();             //缓冲区C
+6.echo 'level 3&lt;br /&gt;';
+7.ob_end_clean();
+8.ob_end_flush();
+9.ob_end_clean();
+10.$str = ob_get_contents();
+11.echo $str;</p>
+<p>运行结果：<code>没有输出任何东西</code></p>
+<h2 id="%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B" tabindex="-1">运行过程</h2>
+<p>可以把整个缓冲区看作一个栈，有新的缓冲区被创建，则新的缓冲区成为栈顶缓冲区。有新内容输出则输出内容会被输出到栈顶的缓冲区。</p>
+<p>本程序缓冲区层次：</p>
+<p>C-&gt;B-&gt;A-&gt;F</p>
+<p>初始F:null</p>
+<p>运行<code>1.ob_start();</code>后，新建缓冲区A，此时整个缓冲区情况</p>
+<blockquote>
+<p>A:null-&gt;F:null</p>
+</blockquote>
+<p>运行<code>2.echo 'level 1&lt;br /&gt;';</code>后</p>
+<p>内容输出到缓冲区A，此时整个缓冲区情况</p>
+<blockquote>
+<p>A:'level 1&lt;br /&gt;' -&gt; F:null</p>
+</blockquote>
+<p>运行<code>3.ob_start();</code>后，新建缓冲区B，此时整个缓冲区情况</p>
+<blockquote>
+<p>B:null -&gt; A:'level 1&lt;br /&gt;' -&gt; F:null</p>
+</blockquote>
+<p>运行<code>4.echo 'level 1&lt;br /\&gt;';</code>后</p>
+<p>内容输出到缓冲区B，此时整个缓冲区情况</p>
+<blockquote>
+<p>B:'level 2&lt;br /&gt;' -&gt; A: 'level 1&lt;br /&gt;' -&gt; F:null</p>
+</blockquote>
+<p>以此类推建立缓冲区C，运行到<code>6.echo 'level 3&lt;br /&gt;';</code>后，此时整个缓冲区情况</p>
+<blockquote>
+<p>C:'level 3&lt;br /&gt;' -&gt; B:'level 2&lt;br /&gt;' -&gt; A: 'level 1&lt;br /&gt;' -&gt; F:null</p>
+</blockquote>
+<p>接着运行<code>7.ob_end_clean();</code>，缓冲区C被清空且关闭，此时缓冲区情况</p>
+<blockquote>
+<p>B:'level 2&lt;br /&gt;' -&gt; A: 'level 1&lt;br /&gt;' -&gt; F:null</p>
+</blockquote>
+<p>接着运行<code>8.ob_end_flush();</code>，缓冲区B的内容输出到上一级的缓冲区且缓冲区B被关闭。此时缓冲区情况</p>
+<blockquote>
+<p>A: 'level 2&lt;br /&gt; level 1&lt;br /&gt;' -&gt; F:null</p>
+</blockquote>
+<p>接着运行<code>9.ob_end_clean();</code>，缓冲区A被情况且关闭。A的内容还没有真正输出到缓冲区F中就被关闭了，最后只剩F:null，因此程序就没有任何输出了。</p>
+<h2 id="%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9" tabindex="-1">注意事项</h2>
+<p>当在输出图片前使用了ob_start()函数，由于有缓冲的缘故所以图片无法正常显示，应该先清除缓冲区再输出图片。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

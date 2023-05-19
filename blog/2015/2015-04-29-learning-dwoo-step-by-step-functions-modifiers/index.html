@@ -1,0 +1,1011 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="一步步学习Dwoo模板引擎--函数/修饰符" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-04-29-learning-dwoo-step-by-step-functions-modifiers/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>一步步学习Dwoo模板引擎--函数/修饰符 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>一步步学习Dwoo模板引擎--函数/修饰符</h1>
+    <div class="italic text-gray-500">
+      2015/04/29
+    </div>
+    <div>
+      <p>###assign
+赋值一个变量</p>
+<p>assign(mixed $value, string $var)</p>
+<blockquote>
+<ul>
+<li>value : 你想要保存的值</li>
+<li>var : 变量名称 (除了$开头的字符)</li>
+</ul>
+</blockquote>
+<p>例子 :</p>
+<p>{assign 'test string' myVar}
+Variable contains: {$myVar}</p>
+<p>输出:</p>
+<blockquote>
+<p>Variable contains: test string</p>
+</blockquote>
+<p>注意：</p>
+<p>这个组件为了smarty的兼容性而提供，使用=操作符会更简单，就像在各种语言上的赋值一样：</p>
+<p>{$myVar='test string'}</p>
+<p>###capitalize(转成大写)
+把字符串的每一个单词的首字母转成大写。</p>
+<p>capitalize(string $value [, bool $numwords = false ] )</p>
+<blockquote>
+<ul>
+<li>value : 需要转成大写的字符串</li>
+<li>numwords : 是否要转换带有数字的单词</li>
+</ul>
+</blockquote>
+<p>例子:</p>
+<p>{capitalize('this is a string what2')}
+输出:</p>
+<blockquote>
+<p>This Is A String what2</p>
+</blockquote>
+<p>###cat
+连接任意数量的变量或字符串</p>
+<p>cat(array $rest)</p>
+<blockquote>
+<ul>
+<li>rest : 两个或多个字符串会被合并成一个。</li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{$a='abc'}
+{$d='def'}
+{$g='ghi'}
+{cat $a $d $g}</p>
+<p>输出</p>
+<blockquote>
+<p>abcdefghi</p>
+</blockquote>
+<p>###countCharacters
+计算在字符串中的字符数量</p>
+<p>countCharacters(string $value, [ bool $count_spaces = false ])</p>
+<blockquote>
+<ul>
+<li>value : 进行运输的字符串</li>
+<li>count_spaces : 如果为true，那么空格的个数也会被计算进去</li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{countCharacters('ab cd')}
+{countCharacters('ab cd', true)}</p>
+<p>输出</p>
+<blockquote>
+<p>4</p>
+</blockquote>
+<blockquote>
+<p>5</p>
+</blockquote>
+<p>###countParagraphs
+计算字符串中的段落数</p>
+<p>countParagraphs(string $value)</p>
+<blockquote>
+<ul>
+<li>value : 需要计算的字符串</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{countParagraphs('ab cd')}
+{countParagraphs('ab\n cd')}</p>
+<p>输出</p>
+<blockquote>
+<p>1</p>
+</blockquote>
+<blockquote>
+<p>2</p>
+</blockquote>
+<p>###countSentences
+计算字符串的句子数</p>
+<p>countSentences(string $value)</p>
+<blockquote>
+<ul>
+<li>value : the string to process</li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{countSentences('ab cd')}
+{countSentences('ab. cd')}</p>
+<p>输出</p>
+<blockquote>
+<p>1</p>
+</blockquote>
+<blockquote>
+<p>2</p>
+</blockquote>
+<p>###countWords
+计算字符串中的单词个数</p>
+<p>countWords(string $value)</p>
+<blockquote>
+<ul>
+<li>value : 需要计算的字符串</li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{countWords('ab cd')}</p>
+<p>输出：</p>
+<blockquote>
+<p>2</p>
+</blockquote>
+<p>###counter
+初始化一个计数器，在每次调用中递增</p>
+<p>counter([ string $name = 'default', [ int $start = 1, [ int $skip = 1, [ string $direction = &quot;up&quot;, [ bool $print = true, [ string $assign = null ]]]]]])</p>
+<blockquote>
+<ul>
+<li>name : 计数器名字，如果你需要多个计数器的话就定义它吧</li>
+<li>start : 初始值，如果设置了，那么它会被重置为这个值，默认是1</li>
+<li>skip : 在每一次调用中counter的增量，默认是1
+direction : &quot;up&quot;(默认)或者&quot;down&quot;，定义counter是增还是减</li>
+<li>print : 如果为false，counter的值不会被输出。默认是true</li>
+<li>assign : 如果设置了，counter的值会被保存到所给的变量中而不会输出任何东西，重写了print变量</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{counter start=10 skip=5}
+{counter}
+{counter}
+{counter start=10 direction=down}
+{counter}</p>
+<p>输出</p>
+<blockquote>
+<p>10</p>
+</blockquote>
+<blockquote>
+<p>15</p>
+</blockquote>
+<blockquote>
+<p>20</p>
+</blockquote>
+<blockquote>
+<p>10</p>
+</blockquote>
+<blockquote>
+<p>5</p>
+</blockquote>
+<p>###cycle
+几个值之间的轮询，每次返回它们当中的一个值</p>
+<p>cycle([ string $name = 'default', [ mixed $values = null, [ bool $print = true, [ bool $advance = true, [ string $delimiter = ',', [ string $assign = null, [ bool $reset = false ]]]]]]])</p>
+<blockquote>
+<ul>
+<li>name : 轮询名称，如果你需要多个轮询，那你就定义一个变量</li>
+<li>values : 一个包含所有值的数组或使用$delimiter分隔的字符串</li>
+<li>print : 如果是false，当前指针会继续指向下一位，但是不会输出任何内容</li>
+<li>advance : 如果为false，指针不会指向下一个值</li>
+<li>delimiter : 用来分隔是字符串的值的分隔符</li>
+<li>assign : 如果设置了，那么该值会被保存到变量中而不是输出</li>
+<li>reset : 如果是true，指针会被从新指向第一个值</li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{cycle values=array(&quot;1red&quot;,&quot;2blue&quot;,&quot;3green&quot;)}
+{cycle}
+{cycle advance=false}
+{cycle}
+{cycle}
+{cycle}
+{cycle reset=true}</p>
+<p>输出：</p>
+<blockquote>
+<p>1red</p>
+</blockquote>
+<blockquote>
+<p>2blue</p>
+</blockquote>
+<blockquote>
+<p>3green</p>
+</blockquote>
+<blockquote>
+<p>3green</p>
+</blockquote>
+<blockquote>
+<p>1red</p>
+</blockquote>
+<blockquote>
+<p>2blue</p>
+</blockquote>
+<blockquote>
+<p>1red</p>
+</blockquote>
+<p>###dateFormat
+格式化日期</p>
+<p>dateFormat([string $value = 'now', [ string $format = 'M n, Y', [ int $timestamp = 0, [int $timeZone = 2047, [string $modify = '']]]]])</p>
+<blockquote>
+<ul>
+<li>value : 任何时间格式或DateTime类能支持的日期/时间字符串</li>
+<li>format : 输出的格式，更多详情请见<a href="http://www.php.net/manual/en/function.date.php">http://www.php.net/manual/en/function.date.php</a></li>
+<li>timestamp : 一个有效的时间戳</li>
+<li>timeZone : DateTimeZone类支持的地区值</li>
+<li>modify : 修改时间戳，更多详情见<a href="http://www.php.net/manual/en/datetime.modify.php">http://www.php.net/manual/en/datetime.modify.php</a></li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{$.now}
+{dateFormat value=&quot;now&quot; format=&quot;Y-m-j&quot;}
+{dateFormat format=&quot;m/d/y&quot; timestamp=$.now modify=&quot;+150 day&quot;}
+{dateFormat &quot;1994-3-15 10:24:22&quot;}</p>
+<p>输出</p>
+<blockquote>
+<p>1382017201.358</p>
+</blockquote>
+<blockquote>
+<p>2013-10-17</p>
+</blockquote>
+<blockquote>
+<p>03/16/14</p>
+</blockquote>
+<blockquote>
+<p>Mar 3, 1994</p>
+</blockquote>
+<p>###default
+返回一个值，如果是空的话就返回默认值</p>
+<p>default(mixed $value, [ mixed $default = &quot;&quot;])</p>
+<blockquote>
+<ul>
+<li>value : 需要检查的变量</li>
+<li>default : 后备值，如果第一个为空就返回它</li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{$var1=&quot;foo&quot;}
+{$var2=&quot;&quot;}
+{default $var1 &quot;bar&quot;}
+{default $var2 &quot;bar&quot;}
+{default $var3 &quot;bar&quot;}</p>
+<p>输出：</p>
+<blockquote>
+<p>foo</p>
+</blockquote>
+<blockquote>
+<p>bar</p>
+</blockquote>
+<blockquote>
+<p>bar</p>
+</blockquote>
+<p>###do
+执行一些语句，但不会输出。这是一个简单的可选清洁器，执行如<code>{assign func(&quot;foo&quot;) var}</code>或使用<code>{capture}</code>这样的语句而不输出。
+我暂时还想不到模板中任何使用它的原因，但是基于一些内部原因，它存在了，因此你可以在你需要的时候使用它。</p>
+<p>例子：</p>
+<p>{do &quot;foo&quot;}
+{do reverse(&quot;bar&quot;)}
+输出：</p>
+<blockquote>
+<p><em>nothing</em></p>
+</blockquote>
+<p>###docType
+输出一个有效的(X)HTML DOCTYPE</p>
+<p>docType([$docType = ''])
+docType : doctype的名称, 默认为HTML5如果该值无法识别或没有给以下的有效值:</p>
+<p>HTML5</p>
+<p>XHTML11</p>
+<p>XHTML1_STRICT</p>
+<p>XHTML1_TRANSITIONAL</p>
+<p>XHTML1_FRAMESET</p>
+<p>XHTML_BASIC1</p>
+<p>HTML4_STRICT</p>
+<p>HTML4_LOOSE</p>
+<p>HTML4_FRAMESET</p>
+<p>例子：</p>
+<p>{docType XHTML1_STRICT}
+{docType}</p>
+<p>输出</p>
+<blockquote>
+<p><code>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;</code></p>
+</blockquote>
+<blockquote>
+<p><code>&lt;!DOCTYPE html&gt;</code></p>
+</blockquote>
+<p>###dump
+输出变量的值，就像PHP里的var_dump()函数</p>
+<p>dump($value)</p>
+<blockquote>
+<ul>
+<li>value : 需要展示的值</li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{dump $}</p>
+<p>输出</p>
+<blockquote>
+<p>Will output an array of all variables global.</p>
+</blockquote>
+<p>###escape
+为字符串提供多种过滤模式</p>
+<p>escape([ $value = &quot;&quot;, [ $format = 'html', [ $charset = null ]]])</p>
+<blockquote>
+<ul>
+<li>value : 需要处理的字符串</li>
+<li>format : 使用的过滤格式,有效的格式有 : html, htmlall, url, urlpathinfo, quotes, hex, hexentity, javascript 以及 mail</li>
+<li>charset : 转换所使用的编码(只提供给某些格式)，默认是当前Dwoo的编码</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{&quot;some &lt;strong&gt;html&lt;/strong&gt; tags&quot;|escape}</p>
+<p>输出</p>
+<blockquote>
+<p><code>some &amp;lt;strong&amp;gt;html&amp;lt;/strong&amp;gt; tags</code></p>
+</blockquote>
+<p>###eval</p>
+<p>执行一个所给的模板字符串</p>
+<p>eval(string $var, [ $assign = null ])</p>
+<blockquote>
+<ul>
+<li>var : 用于作为模板的字符串</li>
+<li>assign : 如果设置了，那模板的输出将会被保存到改变了而不是输出
+尽管这个组件有点像优化而且不会重新编译你的字符串，但还是不建议使用它。如果你希望你的模板被保存到数据库或其他地方，你应该使用Dwoo\Template\String 类或集成它来实现。</li>
+</ul>
+</blockquote>
+<p>###exectime
+返回php程序的执行时间</p>
+<p>exectime([$precision = 0])</p>
+<blockquote>
+<ul>
+<li>$precision : 一个十进制的数字，用于表示程序执行次数。</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{exectime 3}ms
+输出</p>
+<blockquote>
+<p>62.064ms</p>
+</blockquote>
+<p>###extends
+继承一个模板</p>
+<p>extends(string $file)</p>
+<blockquote>
+<ul>
+<li>file : 继承的模板(资源名称)</li>
+</ul>
+</blockquote>
+<p>注: 你不能使用<code>../</code>等路径来继承父模板。但是如果是根目录的话可以使用<code>./</code>。</p>
+<p>例子：</p>
+<p>{extends &quot;base.tpl&quot;}</p>
+<p>###fetch
+读取一个文件</p>
+<p>fetch(string $file, [ string $assign = null ])</p>
+<blockquote>
+<ul>
+<li>file : 需要读取的文件的路径或URI (但是为了性能问题，不推荐读取其他网站的文件)</li>
+<li>assign : 如果设置了，文件将会被保存到该变量而不会输出</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{fetch '<a href="http://php.net">http://php.net</a>'}</p>
+<p>输出</p>
+<blockquote>
+<p>把网站内容输出到你的模板中(没有展示任何iframe)</p>
+</blockquote>
+<p>###formatSize
+格式化一个给定的字节大小的文件为人类可阅读的文件大小</p>
+<p>formatSize($size)</p>
+<blockquote>
+<ul>
+<li>size : 文件的字节大小</li>
+<li>unit : 输出的单元大小</li>
+<li>decimals : 展示的次数</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{&quot;123&quot;|formatSize}
+{&quot;2049&quot;|formatSize}
+{&quot;123456&quot;|formatSize}
+{&quot;5000000&quot;|formatSize}
+{&quot;1572864&quot;|formatSize}
+{formatSize(&quot;1572864&quot;, &quot;KB&quot;, 3)}</p>
+<p>输出</p>
+<blockquote>
+<p>123.00 B</p>
+</blockquote>
+<blockquote>
+<p>2.00 KB</p>
+</blockquote>
+<blockquote>
+<p>120.56 KB</p>
+</blockquote>
+<blockquote>
+<p>4.77 MB</p>
+</blockquote>
+<blockquote>
+<p>1.50 MB</p>
+</blockquote>
+<blockquote>
+<p>1536.000 KB</p>
+</blockquote>
+<p>###googleAnalytics
+生成谷歌分析脚本</p>
+<p>googleAnalytics($code, [$domain = ''])</p>
+<blockquote>
+<ul>
+<li>$code : 谷歌分析的代码</li>
+<li>$domain : 定义一个主机名</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{googleAnalytics code=&quot;UA-xxxxxxxx-1&quot;}</p>
+<p>输出</p>
+<p>&lt;script&gt;
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-xxxxxxxx-1']);</p>
+<p>_gaq.push(['_setAllowLinker', true]);
+_gaq.push(['_trackPageview']);</p>
+<p>(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript';
+ga.async = true;
+ga.src = ('https:' == document.location.protocol ? '<a href="https://ssl">https://ssl</a>' :
+'<a href="http://www">http://www</a>') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(ga, s);
+})();
+&lt;/script&gt;</p>
+<p>###gravatar(Globally Recognized Avatar:全球通用头像)
+根据一个人的邮箱地址返回某个用户的头像，如果你不知道是什么的话，那就查看Grabatar网站。</p>
+<p>gravatar(string $email, [ int $size = 80, [ string $default = &quot;&quot;, [ string $rating = &quot;g&quot; ]]] )</p>
+<blockquote>
+<ul>
+<li>email : 你需要头像的用户的email地址</li>
+<li>size : 图片的像素大小，默认为80</li>
+<li>default : ，默认展示的图片的URL, 或者下面三种图片生成器的一种: identicon(Hash值的默认表示), monsterid 或者 wavatar, 点击这里<a href="http://en.gravatar.com/site/implement/url">查看更多</a>, 这个默认为gravator的logo</li>
+<li>rating : 图片的最高访问级别, 默认为g (普通级) 以及其他值 (按顺序) pg (家长指引), r (限制级) and x (成人级)</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>&lt;img src=&quot;{gravatar &quot;<a href="mailto:test@gravatar.com">test@gravatar.com</a>&quot; 20 &quot;identicon&quot; &quot;x&quot;}&quot; alt=&quot;Test gravatar&quot; /&gt;</p>
+<p>输出</p>
+<p>&lt;img src=&quot;<a href="http://www.gravatar.com/avatar/df3d4780faaf2446a65ce39eafdfe1c0?s=20&amp;r=x">http://www.gravatar.com/avatar/df3d4780faaf2446a65ce39eafdfe1c0?s=20&amp;r=x</a>&quot; alt=&quot;T</p>
+<p>###htmlStateSelect
+返回简单的包含所有美国城市的HTML的select元素</p>
+<p>htmlStateSelect(string $name, [ string $width = &quot;100%&quot;, [int $size = false, [bool $multiselect = false]]])</p>
+<blockquote>
+<ul>
+<li>name : select元素的id和名字</li>
+<li>width : select元素垂直展示的大小</li>
+<li>size : 大小，默认为false</li>
+<li>multiselect : 多选标志，默认为false</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{htmlStateSelect name=&quot;state&quot; width=&quot;200px&quot;}</p>
+<p>输出</p>
+<p>&lt;select name=&quot;state&quot; id=&quot;state&quot; style=&quot;width:200px;&quot;&gt;
+&lt;option value=&quot;AL&quot;&gt;Alabama&lt;/option&gt;
+...
+&lt;option value=&quot;WY&quot;&gt;Wyoming&lt;/option&gt;
+&lt;/select&gt;</p>
+<p>例子</p>
+<p>{htmlStateSelect name=&quot;state&quot; size=&quot;5&quot; multiselect=&quot;true&quot;}</p>
+<p>输出</p>
+<p>&lt;select name=&quot;state&quot; id=&quot;state&quot; style=&quot;width:100%;&quot; size=&quot;5&quot; multiple=&quot;multiple&quot;&gt;
+&lt;option value=&quot;AL&quot;&gt;Alabama&lt;/option&gt;
+...
+&lt;option value=&quot;WY&quot;&gt;Wyoming&lt;/option&gt;
+&lt;/select&gt;</p>
+<p>###htmlSelectTime
+为时，分，秒和子午线创建一个select框。</p>
+<p>htmlSelectTime( [$prefix = &quot;Time_&quot;, [$time = null, [$display_hours = true, [$display_minutes = true, [$display_seconds = true, [$display_meridian = true, [$use_24_hours = true, [$minute_interval = 1, [$second_interval = 1, [$field_array = null, [$all_extra = &quot;&quot;, [$hour_extra = &quot;&quot;, [$minute_extra = &quot;&quot;, [$second_extra = &quot;&quot;, [$meridian_extra = &quot;&quot;]]]]]]]]]]]]]]] )</p>
+<blockquote>
+<ul>
+<li>prefix : 名字前缀</li>
+<li>time : 使用的时间，可以是任何可被strtotime()函数处理的值，mysql或unix的时间戳</li>
+<li>display_hours : 显示小时选择框的标志</li>
+<li>display_minutes : 显示分钟选择框的标志</li>
+<li>display_seconds : 显示秒选择框的标志</li>
+<li>display_meridian : 显示子午线选择框(am/pm)的标志</li>
+<li>use_24_hours : 使用24小时制</li>
+<li>minute_interval : 分钟选择框的间隔</li>
+<li>second_interval : 秒选择框的间隔</li>
+<li>field_array : 使用命名数组。如： foo[hour], foo[minute]...</li>
+<li>all_extra : 添加到所有选择框的附件属性</li>
+<li>hour_extra : 添加到小时选择框的附件属性</li>
+<li>minute_extra : 添加到分钟选择框的附件属性</li>
+<li>second_extra : 添加到秒选择框的附件属性</li>
+<li>meridian_extra : 添加到子午线选择框的附件属性</li>
+</ul>
+</blockquote>
+<p>基本使用</p>
+<p>{htmlSelectTime}</p>
+<p>输出</p>
+<p>&lt;select name='Time_Hour'&gt;
+&lt;option value='0'&gt;0&lt;/option&gt;
+&lt;option value='1'&gt;1&lt;/option&gt;
+...
+&lt;option value='22'&gt;22&lt;/option&gt;
+&lt;option value='23' selected='selected'&gt;23&lt;/option&gt;
+&lt;/select&gt;
+&lt;select name='Time_Minute'&gt;
+&lt;option value='0'&gt;0&lt;/option&gt;
+&lt;option value='1'&gt;1&lt;/option&gt;
+...
+&lt;option value='35' selected='selected'&gt;35&lt;/option&gt;
+&lt;option value='36'&gt;36&lt;/option&gt;
+...
+&lt;option value='58'&gt;58&lt;/option&gt;
+&lt;option value='59'&gt;59&lt;/option&gt;
+&lt;/select&gt;
+&lt;select name='Time_Second'&gt;
+&lt;option value='0'&gt;0&lt;/option&gt;
+&lt;option value='1'&gt;1&lt;/option&gt;
+...
+&lt;option value='14' selected='selected'&gt;14&lt;/option&gt;
+&lt;option value='15'&gt;15&lt;/option&gt;
+...
+&lt;option value='58'&gt;58&lt;/option&gt;
+&lt;option value='59'&gt;59&lt;/option&gt;
+&lt;/select&gt;</p>
+<p>扩展例子</p>
+<p>{htmlSelectTime prefix=&quot;MyTime_&quot; display_seconds=false use_24_hours=false}</p>
+<p>输出</p>
+<p>&lt;select name='MyTime_Hour'  &gt;
+&lt;option value='1'&gt;1&lt;/option&gt;
+...
+&lt;option value='11' selected='selected'&gt;11&lt;/option&gt;
+&lt;option value='12'&gt;12&lt;/option&gt;
+&lt;/select&gt;
+&lt;select name='MyTime_Minute'  &gt;
+&lt;option value='0'&gt;0&lt;/option&gt;
+&lt;option value='1'&gt;1&lt;/option&gt;
+...
+&lt;option value='38'&gt;38&lt;/option&gt;
+&lt;option value='39' selected='selected'&gt;39&lt;/option&gt;
+...
+&lt;option value='58'&gt;58&lt;/option&gt;
+&lt;option value='59'&gt;59&lt;/option&gt;
+&lt;/select&gt;
+&lt;select name='MyTime_Meridian'&gt;
+&lt;option value='am'&gt;AM&lt;/option&gt;
+&lt;option value='pm' selected='selected'&gt;PM&lt;/option&gt;
+&lt;/select&gt;</p>
+<p>###include
+include允许你插入其他模板到当前模板中</p>
+<p>include(string $file [, int $cache_time = null [, string $cache_id = null [, string $compile_id = null [, mixed $data = '_root' [, string $assign = null [, array $rest = array() ]]]]]])</p>
+<blockquote>
+<ul>
+<li>file : include的资源名称</li>
+<li>cache_time : 模板缓存时间，单位是秒，默认为null (= 会使用Dwoo对象的缓存时间)</li>
+<li>cache_id : 模板的cache_id</li>
+<li>compile_id : 模板的编译id</li>
+<li>data : 这是一个包含数据的数组，会作为被引入模板的根数据，默认为当前传送的数据</li>
+<li>assign : 如果设置了，引入进来的文件会被赋值到该变量中而不会输出</li>
+<li>rest : 会覆盖$data参数的值 (详情见下面)</li>
+</ul>
+</blockquote>
+<p>注: 所有的赋值变量都是从引入文件来的旧的且有效的数据！</p>
+<p>注: 你不能使用<code>../</code>等路径来引入模板。但是如果是根目录的话可以使用<code>./</code>。</p>
+<p>如例子所示，你要有一个被引入到你的所有页面中的公用的头部。可以通过这样来实现：</p>
+<p>index.html:</p>
+<p>&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Some awesome website&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;</p>
+<p>{include file=&quot;header.html&quot;}</p>
+<p>&lt;/body&gt;
+&lt;/html&gt;</p>
+<p>header.html:</p>
+<p>&lt;h1&gt;Some awesome website&lt;/h1&gt;
+&lt;div id=&quot;menu&quot;&gt;
+{loop $menuItems}&lt;a href=&quot;{$url}&quot;&gt;{$title}&lt;/a&gt;{/loop}
+&lt;/div&gt;</p>
+<p>输出：</p>
+<p>&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Some awesome website&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;</p>
+<p>&lt;h1&gt;Some awesome website&lt;/h1&gt;
+&lt;div id=&quot;menu&quot;&gt;
+&lt;a href=&quot;index.html&quot;&gt;Home&lt;/a&gt;
+&lt;a href=&quot;products.html&quot;&gt;Products&lt;/a&gt;
+&lt;a href=&quot;contact.html&quot;&gt;Contact&lt;/a&gt;
+&lt;/div&gt;</p>
+<p>&lt;/body&gt;
+&lt;/html&gt;</p>
+<p>重写或解析模板变量</p>
+<p>有时你需要在不引入使用Dwoo类的get/output方法得到的变量的模板的情况下解析变量。下面的例子可以帮你实现：</p>
+<p>site_header.tpl:</p>
+<p>&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;{$title} - Awesome Inc.&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;</p>
+<p>page_about.tpl:</p>
+<p>{include file=&quot;site_header.tpl&quot; title=&quot;About Us&quot;}</p>
+<p>&lt;!-- 公司的About us的页面内容如下 --&gt;
+在上面的例子中有两个文件，一个是头部和一些'关于我们'的片段的页面。page_about.tpl文件是在include语句中用title变量解析和传递它的标题--'About Us'以输出下面的内容：</p>
+<p>&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;About Us - Awesome Inc.&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;</p>
+<p>###indent
+在每一行的开头插入给定数量的字符</p>
+<p>indent(string $value, [ int $by = 4, [ string $char = ' ' ]])</p>
+<blockquote>
+<ul>
+<li>value : 要缩进的字符串</li>
+<li>by : 需要在每一行的头部插入的字符数</li>
+<li>char : 需要插入的字符</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>baseline
+{indent &quot;foo bar baz
+qux and then what was it
+again? quux quuux and so on I think&quot;}</p>
+<p>输出</p>
+<p>baseline</p>
+<p>foo bar baz</p>
+<p>qux and then what was it</p>
+<p>again? quux quuux and so on I think</p>
+<p>###isset
+检查变量是否非空</p>
+<p>isset(mixed $var)</p>
+<blockquote>
+<ul>
+<li>var : 需要检查的变量</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{if isset($foo)}SET{else}not set or null{/if}
+{$foo=1}
+{if isset($foo)}SET{else}not set or null{/if}
+{$bar=null}
+{if isset($bar)}SET{else}not set or null{/if}</p>
+<p>输出结果：</p>
+<p>not set or null
+SET
+not set or null</p>
+<p>注意下面这句：</p>
+<p><code>{if $foo}{$foo}{/if}</code></p>
+<p>是跟下面的这句一样作用的：</p>
+<p><code>{if isset($foo)}{$foo}{/if}</code></p>
+<p>###loadTemplates
+在当前模板中加载其他模板，当前模板的任何有效变量在被引入的模板中也是有效的。</p>
+<p>loadTemplates(string $file)</p>
+<blockquote>
+<ul>
+<li>file : 需要被子模板(使用{template}定义)解析的资源/模板名称。模板只在它们被引入的情况下可见，因此，如果你需要引入其他文件的话你需要调用load_templates函数。</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{loadTemplates &quot;subtemplates.tpl&quot;}</p>
+<p>###lower
+将所给的字符串转换成小写</p>
+<p>lower(string $value)</p>
+<blockquote>
+<ul>
+<li>value : 需要转换的字符串</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{lower('ThiS IS a STRING')}</p>
+<p>输出结果</p>
+<blockquote>
+<p>this is a string</p>
+</blockquote>
+<p>###mailto
+使用可选的垃圾邮件证明(可能失效)编码输出邮件地址</p>
+<p>mailto(string $address, [ string $text = null, [ string $subject = null, [ string $encode = null, [ string $cc = null, [ string $bcc = null, [ string $newsgroups = null, [ string $followupto = null, [ string $extra = null ]]]]]]]])</p>
+<blockquote>
+<ul>
+<li>address : 目标邮件地址</li>
+<li>text : 链接的展示文本，默认为邮箱地址</li>
+<li>subject : 邮件主题</li>
+<li>encode : 有效的编码方式(none, js, jscharcode or hex)</li>
+<li>cc : 抄送地址, 用逗号分隔</li>
+<li>bcc : 密件抄送地址, 用逗号分隔</li>
+<li>newsgroups : 发送到新闻组邮箱地址, 用逗号分隔</li>
+<li>followupto : 跟进的邮箱地址, 用逗号分隔</li>
+<li>extra : 添加到标签的附加属性</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{mailto &quot;<a href="mailto:test@gmail.com">test@gmail.com</a>&quot; &quot;Name&quot; &quot;subject&quot;}</p>
+<p>输出结果</p>
+<p>&lt;a <a href="mailto:href=%22mailto:test@gmail.com">href=&quot;mailto:test@gmail.com</a>?subject=subject&quot; &gt;Name&lt;/a&gt;</p>
+<p>###math
+计算一个数学方程式</p>
+<p>math(string $equation, [ string $format = &quot;&quot;, [ string $assign = &quot;&quot;, [ array $rest = array() ]]])</p>
+<blockquote>
+<ul>
+<li>equation : 需要计算的方程式，可以使用$foo或特殊的数学变量来包含一些基本的变量</li>
+<li>format : 输出的结果的格式，与printf的相似</li>
+<li>assign : 如果设置了，结果会被赋值到该变量中而不会输出</li>
+<li>rest : 你所用到的数学变量都需要被定义，见例子</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{$c=2}
+{math &quot;(a+b)<em>$c/4&quot; a=3 b=5} {</em> which translates to: ((3+5)*2/4) *}</p>
+<p>输出</p>
+<blockquote>
+<p>4</p>
+</blockquote>
+<p>###nl2br
+转换换行为<code>&lt;br /&gt;</code>标签</p>
+<p>nl2br(string $value)</p>
+<blockquote>
+<ul>
+<li>value : 需要处理的字符串</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{nl2br(&quot;string
+breaking&quot;)}</p>
+<p>输出</p>
+<p>string<code>&lt;br /&gt;</code></p>
+<p>breaking</p>
+<p>###optional
+输出一个变量，如果不存在的话不给予任何提示</p>
+<p>optional(mixed $value)</p>
+<blockquote>
+<ul>
+<li>value : 要输出的变量</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{optional $var}</p>
+<p>输出</p>
+<p>(如果$var没有定义的话，没有任何输出，也没有warning提示)</p>
+<p>###regexReplace
+使用正则表达式搜索和替换字符串</p>
+<p>regexReplace(string $value, string $search, string $replace)</p>
+<blockquote>
+<ul>
+<li>value : 搜索的字符串</li>
+<li>search : 使用的搜索字符串</li>
+<li>replace : 用于替换的内容，必须为完整的正则表达式</li>
+</ul>
+</blockquote>
+<p>注意，如果你想使用反向应用的话，使用<code>\$1</code>、<code>\$2</code>而不是<code>$1</code>、<code>$2</code>，Dwoo会替换掉$1如果$1是一个变量的话。</p>
+<p>例子</p>
+<p>{regexReplace &quot;abcdABCD&quot; &quot;/([a-z])/&quot; &quot;$1*&quot;}</p>
+<p>输出</p>
+<blockquote>
+<p>a*b*c*d*ABCD</p>
+</blockquote>
+<p>###replace
+字符串替换</p>
+<p>replace(string $value, mixed $search, mixed $replace)</p>
+<blockquote>
+<ul>
+<li>value : 被搜索的字符串</li>
+<li>search : 需要搜索的内容或一个数组</li>
+<li>replace : 用于替换的字符串或者一个字符串数组(与搜索的数组一一对应)</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{replace &quot;abc&quot; &quot;b&quot; &quot;B&quot;} or {&quot;abc&quot;|replace:array(a,c):array(A,C)}</p>
+<p>输出</p>
+<blockquote>
+<p>aBc or AbC</p>
+</blockquote>
+<p>###reverse
+逆转字符串或者数组</p>
+<p>reverse(string $value, [ bool $preserve_keys = false ])</p>
+<blockquote>
+<ul>
+<li>value : 需要逆转的字符串或者数组</li>
+<li>preserve_keys : 如果value是一个数组而且这个值是true，那么数组的键值会在左边</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{loop reverse(array('a', 'b', 'c'))}{$} {/loop}
+{&quot;abc&quot;|reverse}</p>
+<p>输出</p>
+<blockquote>
+<p>c b a</p>
+</blockquote>
+<blockquote>
+<p>cba</p>
+</blockquote>
+<p>###safe
+标记变量为安全的且移除自动转义函数，当且仅当你开启了自动转义函数时有效</p>
+<p>safe(mixed $var)</p>
+<blockquote>
+<ul>
+<li>var : 需要处理的变量</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{auto_escape on}
+{safe $user}
+{/auto_escape}</p>
+<p>###spacify
+在字符串的每一个字符之间增加空格(或者给定的字符)</p>
+<p>spacify(string $value, [ $space_char = ' ' ])</p>
+<blockquote>
+<ul>
+<li>value : 字符串</li>
+<li>space_char : 插入的字符</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{spacify 'abcd'}
+{spacify 'abcd' '-'}</p>
+<p>输出</p>
+<blockquote>
+<p>a b c d</p>
+</blockquote>
+<blockquote>
+<p>a-b-c-d</p>
+</blockquote>
+<p>###stringFormat
+使用springf函数格式化字符串</p>
+<p>stringFormat(string $value, string $format)</p>
+<blockquote>
+<ul>
+<li>value : 需要格式化的字符串</li>
+<li>format : 使用的格式，详情见sprintf函数</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{stringFormat('23.5787446', &quot;%.2f&quot;)}
+{stringFormat('23.5787446', &quot;%d&quot;)}</p>
+<p>输出</p>
+<blockquote>
+<p>23.58</p>
+</blockquote>
+<blockquote>
+<p>23</p>
+</blockquote>
+<p>###stripTags
+移除所有的html标签</p>
+<p>stripTags(string $value, [ bool $addspace = true ])</p>
+<blockquote>
+<ul>
+<li>value : 处理的字符串</li>
+<li>addspace : 如果是true，每个被移除的标签都会加上空格</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{stripTags &quot;foo&lt;strong&gt;bold&lt;/strong&gt;bar&quot;}
+{stripTags &quot;foo&lt;strong&gt;bold&lt;/strong&gt;bar&quot; false}</p>
+<p>输出</p>
+<blockquote>
+<p>foo bold bar</p>
+</blockquote>
+<blockquote>
+<p>fooboldbar</p>
+</blockquote>
+<p>###tif
+三元if运算符。</p>
+<p>tif(array $rest)</p>
+<blockquote>
+<ul>
+<li>rest : 你不能使用命名参数来调用此函数，必须是三个按顺序排列的参数(表达式，true的值，false的值) or 或者使用PHP的语法 (expression ? true result : false result)</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{$foo = &quot;foo&quot;}
+{tif $foo == &quot;bar&quot; ? &quot;true&quot; : &quot;false&quot;} {* full syntax <em>}
+{tif $foo ?: &quot;false&quot;} {</em> 你可以忽略true的值，expression部分会被重用为true的结果 <em>}
+{tif $foo ? &quot;true&quot;} {</em> 你可以忽略false的值，expression部分会被重用为false的结果 <em>}
+{tif $foo} {</em> 你可以忽略两个值，这种情况下，如果是true，那将输出$foo，否者没有任何输出 *}</p>
+<p>{$foo = null}
+{tif $foo == &quot;bar&quot; ? &quot;true&quot; : &quot;false&quot;}
+{tif $foo ?: &quot;false&quot;}
+{tif $foo ? &quot;true&quot;}
+{tif $foo}</p>
+<p>输出</p>
+<p>true</p>
+<p>foo</p>
+<p>true</p>
+<p>foo</p>
+<p>false</p>
+<p>false</p>
+<p>(empty)</p>
+<p>(empty)</p>
+<p>###truncate
+截断字符串</p>
+<p>truncate(string $value, [ int $length = 80, [ string $etc = '...', [ bool $break = false, [ bool $middle = false ]]]])</p>
+<blockquote>
+<ul>
+<li>value : 字符串</li>
+<li>length : 字符串的最大长度</li>
+<li>etc : 当字符串被截断后，添加到字符串后面的字符</li>
+<li>break : 如果是true，在精确的长度位置开始截断，而不是从最近的空间了</li>
+<li>middle : 如果是true，那么会从中间截断字符</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{truncate &quot;this text is really too long, or let's just pretend it is will you?&quot; 30 middle=true}
+{strlen truncate(&quot;this text is really too long, or let's just pretend it is will you?&quot; 30 middle=true)} {* 检查是否为30个字符 *}</p>
+<p>输出</p>
+<blockquote>
+<p>this text is r... is will you?</p>
+</blockquote>
+<blockquote>
+<p>30</p>
+</blockquote>
+<p>###upper
+转换成大写</p>
+<p>upper(string $value)</p>
+<blockquote>
+<ul>
+<li>value : 字符串</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{upper('This is a String')}</p>
+<p>输出</p>
+<blockquote>
+<p>THIS IS A STRING</p>
+</blockquote>
+<p>###whitespace
+替换所有字符串的空格</p>
+<p>whitespace(string $value, [ string $with = ' '])</p>
+<blockquote>
+<ul>
+<li>value : 字符串</li>
+<li>with : 替换到被移除位置的字符，注意，每一个连续的空格都会被一个字符串替换</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{&quot;a    b  c        d\ne&quot;|whitespace}</p>
+<p>输出</p>
+<blockquote>
+<p>a b c d e</p>
+</blockquote>
+<p>###wordwrap
+将字符串包成给定长度</p>
+<p>wordwrap(string $value, [ int $length = 80, [ string $break = &quot;\n&quot;, [ bool $cut = false ]]])</p>
+<blockquote>
+<ul>
+<li>value : 字符串</li>
+<li>length : 最大长度</li>
+<li>break : 用于分行的字符</li>
+<li>cut : 如果是true，将会从某长度的位置开始截断</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{wordwrap &quot;abcdefghijklmnopqrstuvwxyz&quot; 8 cut=true}</p>
+<p>输出</p>
+<blockquote>
+<p>abcdefgh</p>
+</blockquote>
+<blockquote>
+<p>ijklmnop</p>
+</blockquote>
+<blockquote>
+<p>qrstuvwx</p>
+</blockquote>
+<blockquote>
+<p>yz</p>
+</blockquote>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="[PHP源码阅读]count函数" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-05-31-php-source-code-count/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>[PHP源码阅读]count函数 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>[PHP源码阅读]count函数</h1>
+    <div class="italic text-gray-500">
+      2016/05/31
+    </div>
+    <div>
+      <p>在PHP编程中，在遍历数组的时候经常需要先计算数组的长度作为循环结束的判断条件，而在PHP里面对数组的操作是很频繁的，因此count也算是一个常用函数，下面研究一下count函数的具体实现。</p>
+<p>我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。<a href="https://github.com/read-php-src/read-php-src">PHP5.4源码注解</a>。可以通过<a href="https://github.com/read-php-src/read-php-src/commits/master">commit记录</a>查看已添加的注解。</p>
+<h2 id="count" tabindex="-1">count</h2>
+<p>int count ( mixed $array_or_countable [, int $mode = COUNT_NORMAL ] )</p>
+<p>count函数计算数组或者对象里面的所有元素个数。</p>
+<p>对于对象来说，如果你安装了SPL扩展，可以通过实现Countable接口来调用count函数。Countable接口有且仅有一个方法Countable::count()，该方法的返回count()函数的返回值。</p>
+<h2 id="%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E" tabindex="-1">参数说明</h2>
+<p><strong>mode</strong></p>
+<p>如果参数mode设为COUNT_RECURSIVE(或1)，count()会递归地计算该数组。在计算多维数组的时候特别有用。</p>
+<p>如果第一个参数不是数组或者实现Countable接口的对象，count函数将返回1。</p>
+<p>注意：count函数可以检测递归避免无限循环，但会在遇到无限递归或得到比期望值大的时候返回E_WARNING提示。</p>
+<h2 id="%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B" tabindex="-1">运行示例</h2>
+<h3 id="%E6%99%AE%E9%80%9A%E5%BA%94%E7%94%A8" tabindex="-1">普通应用</h3>
+<p>$arr1 = array(1, 2, 3, 4, 5);
+$val1 = count($arr1); // 5</p>
+<h3 id="%E5%A4%9A%E7%BB%B4%E6%95%B0%E7%BB%84" tabindex="-1">多维数组</h3>
+<p>$arr2 = array('apple', 'banana', array('cat', 'camel'), 'dog');
+$val2_1 = count($arr2); // 4
+$val2_2 = count($arr2, 1); // 6</p>
+<h3 id="%E6%95%B0%E5%AD%97%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2" tabindex="-1">数字和字符串</h3>
+<p>$str = &quot;hello world&quot;;
+$int_val = 1;
+$val3 = count($str); // 1
+$val4 = count($int_val); // 1</p>
+<h3 id="%E6%99%AE%E9%80%9A%E5%AF%B9%E8%B1%A1" tabindex="-1">普通对象</h3>
+<p>class User {
+private $name;
+private $address;
+}</p>
+<p>$user = new User();
+$val5 = count($user); // 1
+$val6 = count((array) $user); // 2</p>
+<h3 id="array-like%E5%AF%B9%E8%B1%A1" tabindex="-1">array-like对象</h3>
+<p>class User extends ArrayObject {
+private $name;</p>
+<p>public function __construct() {
+$this-&gt;name = 'hhq';
+}</p>
+<p>public function getName() {
+return $this-&gt;name;
+}</p>
+<p>public function count() {
+return 2;
+}</p>
+<p>}</p>
+<p>$user2 = new User();
+$val7 = count($user2); // 2</p>
+<h3 id="%E5%AE%9E%E7%8E%B0countable%E6%8E%A5%E5%8F%A3%E5%AF%B9%E8%B1%A1" tabindex="-1">实现Countable接口对象</h3>
+<p>class User implements Countable {
+public function count() {
+return 3;
+}
+}</p>
+<p>$user3 = new User();
+$val8 = count($user3); // 3</p>
+<h3 id="%E8%BF%90%E8%A1%8C%E6%AD%A5%E9%AA%A4" tabindex="-1">运行步骤</h3>
+<blockquote>
+<p>进入switch语句检测参数类型</p>
+<p>如果是NULL，直接返回0</p>
+<p>如果是数组，调用php_count_recursive函数机选数组元素个数</p>
+<p>如果是对象，先检查是否为数组对象（array-like object），如果是，则计算数组对象的数量</p>
+<p>否则，如果对象实现了Countable接口，则调用Countable的count方法</p>
+<p>最后，其他类型比如整型数组或字符串，都返回1。</p>
+</blockquote>
+<h2 id="%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB" tabindex="-1">源码解读</h2>
+<p>如果是普通数组，count函数会调用php_count_recursive函数实现其功能的运行步骤如下：</p>
+<p>如果当前hash Bucket被递归访问的次数大于1，说明重复递归，染回E_WARNING错误</p>
+<p>否则计算当前数组层数的数组元素个数</p>
+<p>如果有递归参数选项，则继续递归访问</p>
+<p>如果参数是对象类型，实现时会先判断handler是否被定义。而handler是PHP内核中对象的结构体，其中包含有<strong>count_elements</strong>字段，实际上是一个函数。如果某个对象表现得想数组一样，即通常说的<strong>array-like object</strong>，那么就会执行count_elements函数。具体实现是类继承PHP的ArrayObject，并在类里面实现count函数，具体调用的就是count函数，如果类没有实现count函数，则count返回0，否则返回对象的count函数的返回值。</p>
+<p>如果是其他的数据类型
+1、字符串</p>
+<p>2、数字</p>
+<p>3、对象分支中两个if判断都为false的情况，即没有继承ArrayObject且没有实现Countable接口。</p>
+<p>这些类型通通返回1。</p>
+<p>需要注意的是，如果需要计算的是对象的属性数量，可以先将对象转换成数组，然后调用count函数。如：
+$count_value = count((array) $user);</p>
+<h2 id="%E5%B0%8F%E7%BB%93" tabindex="-1">小结</h2>
+<p>阅读count函数的源码过程中，在其中一步卡住了，就是if (Z_OBJ_HT_P(array)-&gt;count_elements)这一步，因为始终无法写出进入这个分支的demo，在网上搜索了很多资料也未果，因此请教了TIPI的reeze，最终得到了想要的答案。不懂就要问，哈哈。</p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+<p>如果本文对你有帮助，请点下推荐吧，谢谢^_^</p>
+<p>最后再安利一下，我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。<a href="https://github.com/read-php-src/read-php-src">PHP5.4源码注解</a>。可以通过<a href="https://github.com/read-php-src/read-php-src/commits/master">commit记录</a>查看已添加的注解。</p>
+<p>更多源码文章，欢迎访问个人主页继续查看：<a href="https://www.hoohack.me">hoohack</a></p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

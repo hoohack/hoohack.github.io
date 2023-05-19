@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="Redis常用命令" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-03-23-redis-common-command/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>Redis常用命令 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>Redis常用命令</h1>
+    <div class="italic text-gray-500">
+      2015/03/23
+    </div>
+    <div>
+      <p>##Redis常用命令</p>
+<p>###SET 建立一个名为mykey的键，设置其键值为2
+127.0.0.1:6379&gt;set mykey 2</p>
+<p>OK</p>
+<p>###KEYS 获取Redis所有键(当前库只有一个键)
+127.0.0.1:6379&gt;KEYS *</p>
+<p>1)&quot;mykey&quot;</p>
+<p>注：KEYS * 会遍历Redis中所有键，当键的数量多时会影响性能，不建议在生产环境使用。</p>
+<p>###EXISTS 判断一个键是否存在
+127.0.0.1:6379&gt;EXISTS mykey</p>
+<p>(integer)1</p>
+<p>如果键存在则返回整数类型1，否则返回0</p>
+<p>127.0.0.1:6379&gt;EXISTS var</p>
+<p>(integer)0</p>
+<p>###DEL 删除键
+127.0.0.1:6379&gt;DEL mykey</p>
+<p>(integer)1</p>
+<p>127.0.0.1:6379&gt;DEL mykey</p>
+<p>(integer)0</p>
+<p>返回值是删除的键的个数。第二次执行DEL命令是因为bar键被删除了，实际上并没有删除任何键，所以返回值是0。</p>
+<p>###TYPE 获得键值的数据类型
+127.0.0.1:6379&gt;TYPE mykey</p>
+<p>String</p>
+<p>可能的类型有：string字符串类型、hash散列类型、list列表类型、set集合类型、zset有序集合类型等</p>
+<p>###INCR 递增数字
+127.0.0.1:6379&gt;INCR mykey</p>
+<p>(integer)2</p>
+<p>127.0.0.1:6379&gt;INCR mykey</p>
+<p>(integer)3</p>
+<p>###DECR 减少数字
+127.0.0.1:6379&gt;DECR mykey
+(integer)5</p>
+<p>###APPEND 向尾部增加值
+127.0.0.1:6379&gt;APPEND mykey a</p>
+<p>(integer)6</p>
+<p>返回值是追加后字符串的总长度</p>
+<p>###STRLEN 获取字符串长度
+127.0.0.1:6379&gt;STRLEN mykey</p>
+<p>(integer)6</p>
+<p>###EXPIRE 设置键的过期时间
+在实际开发中经常会遇到一些有时效的数据，如限时优惠活动、连续签到等，过了一定时间就需要删除这些数据。在关系数据库中一般需要额外的一个字段记录到期时间，然后定期检测删除过期数据。
+而在Redis中可以使用EXPIRE命令来设置一个键的生存时间，过了生存时间后它会被Redis自动删除。</p>
+<p>127.0.0.1:6379&gt;SET session:12306 uid12306</p>
+<p>OK</p>
+<p>127.0.0.1:6379&gt;EXPIRE session:12306 60</p>
+<p>(integer)1</p>
+<p>设置session:12306键在60s后过期。返回值为1表示设置成功，返回值为0表示设置失败。</p>
+<p>###TTL 查询一个键还有多长的生存时间，也就是多久后会被删除。</p>
+<p>返回值的单位为秒。</p>
+<p>127.0.0.1:6379&gt;SET mykey hello</p>
+<p>OK</p>
+<p>127.0.0.1:6379&gt;EXPIRE mykey 20</p>
+<p>(integer)2</p>
+<p>127.0.0.1:6379&gt;TTL mykey</p>
+<p>(integer)16</p>
+<p>127.0.0.1:6379&gt;TTL mykey</p>
+<p>(integer)2</p>
+<p>127.0.0.1:6379&gt;TTL mykey</p>
+<p>(integer)-2</p>
+<p>随着时间推移，mykey键的生存时间越来越少，20s后mykey键会被删除。当 key 不存在时，返回 -2 。当 key 存在但没有设置剩余生存时间（即该键永久存在）时，返回 -1 。否则，以秒为单位，返回 key 的剩余生存时间。</p>
+<p>###PERSIST 取消键的生存时间设置（即将键恢复为永久）。</p>
+<p>返回1表示成功清除生存时间，否则返回0（即键不存在或者键本来就是永久的）：</p>
+<p>127.0.0.1:6379&gt;SET mykey &quot;hello&quot;</p>
+<p>OK</p>
+<p>127.0.0.1:6379&gt;EXPIRE mykey 20</p>
+<p>(integer)1</p>
+<p>127.0.0.1:6379&gt;PERSIST mykey</p>
+<p>(integer)1</p>
+<p>127.0.0.1:6379&gt;TTL mykey</p>
+<p>(integer)-1</p>
+<p>除了PERSIST命令之外，使用SET命令为键赋值同时也会清除键的生存时间；或者使用对一个已经带有生存时间的键执行EXPIRE命令，新指定的生存时间会取代旧的生存时间。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

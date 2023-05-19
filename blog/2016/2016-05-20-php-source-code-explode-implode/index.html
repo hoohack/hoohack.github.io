@@ -1,0 +1,198 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="［PHP源码阅读］explode和implode函数" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-05-20-php-source-code-explode-implode/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>［PHP源码阅读］explode和implode函数 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>［PHP源码阅读］explode和implode函数</h1>
+    <div class="italic text-gray-500">
+      2016/05/20
+    </div>
+    <div>
+      <p>explode和implode函数主要用作字符串和数组间转换的操作，比如获取一段参数后根据某个字符分割字符串，或者将一个数组的结果使用一个字符合并成一个字符串输出。在PHP中经常会用到这两个函数，因此有必要了解一下其原理。</p>
+<p>我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。<a href="https://github.com/read-php-src/read-php-src">PHP5.4源码注解</a>。可以通过<a href="https://github.com/read-php-src/read-php-src/commits/master">commit记录</a>查看已添加的注解。</p>
+<h2 id="explode" tabindex="-1">explode</h2>
+<p>array explode ( string $delimiter, string $string, [ , $limit ] )</p>
+<p>函数返回由字符串组成的数组，每个元素都是string的一个子串，被字符串$delimiter作为边界点分割出来。</p>
+<h3 id="%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E" tabindex="-1">参数说明</h3>
+<p><strong>limit</strong></p>
+<p>如果设置了limit，且为正数，则返回的数组最多包含limit个元素，最后的那个元素将包含string的剩余部分。</p>
+<p>如果limit是负数，则返回除了最后的-$limit个元素外的所有元素。</p>
+<p>如果limit是0，则会被当做1。</p>
+<p><strong>delimiter</strong></p>
+<p>如果delimiter为空，则函数返回FALSE。如果delimiter不在string中，且limit为负数，则返回空数组。</p>
+<h3 id="%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B" tabindex="-1">运行示例</h3>
+<p>$str = 'hello,world,heiheihei,php';</p>
+<p>先来看看不设置limit的情况</p>
+<p>$arr = explode(',', $str);
+print_r($arr);</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/6796-30c49b2b3d81bfb051e254017e4d76c4.jpg" alt="运行结果1"></p>
+<p>limit为正数时，limit设为1，最多返回1个元素。</p>
+<p>$arr = explode(',', $str, 1);
+print_r($arr);</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/4358-6ad1b98442b3ef5ea3d67b674b125713.jpg" alt="运行结果2"></p>
+<p>limit为负数，limit为-1，返回最后的1个元素外的所有元素。</p>
+<p>$arr = explode(',', $str, -1);
+print_r($arr);</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/4967-2e536e38a07189ef6dfc98509247c2c7.jpg" alt="运行结果3"></p>
+<p>limit为0，当作1处理。</p>
+<p>$arr = explode(',', $str, 0);
+print_r($arr);</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/4358-6ad1b98442b3ef5ea3d67b674b125713.jpg" alt="运行结果4"></p>
+<h3 id="explode%E6%89%A7%E8%A1%8C%E6%AD%A5%E9%AA%A4" tabindex="-1">explode执行步骤</h3>
+<blockquote>
+<p>1、接收参数，处理参数为空的情况</p>
+<p>2、创建函数中使用的局部变量</p>
+<p>3、根据limit的值调用不同的函数分隔字符串</p>
+</blockquote>
+<p><a href="https://github.com/read-php-src/read-php-src/blob/master/ext/standard/string.c#L1094">explode</a>函数的核心实现是<a href="https://github.com/read-php-src/read-php-src/blob/master/ext/standard/string.c#L1015">php_explode</a>函数，下面是该函数的执行流程图：</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/explode.png" alt="explode流程"></p>
+<p>php_explode函数核心代码：</p>
+<p>if (p2 == NULL) {
+// 找不到分隔符，直接返回整个字符串
+add_next_index_stringl(return_value, p1, Z_STRLEN_P(str), 1);
+} else {
+do {
+// 将p1添加到return_value数组中
+add_next_index_stringl(return_value, p1, p2 - p1, 1);
+p1 = p2 + Z_STRLEN_P(delim);
+} while ((p2 = php_memnstr(p1, Z_STRVAL_P(delim), Z_STRLEN_P(delim), endp)) != NULL &amp;&amp;
+--limit &gt; 1);</p>
+<p>// 将最后一个值添加到return_value
+if (p1 &lt;= endp)
+add_next_index_stringl(return_value, p1, endp-p1, 1);
+}</p>
+<h3 id="%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB" tabindex="-1">源码解读</h3>
+<p><strong>sizeof(&quot;&quot;) == 0</strong>。sizeof有两种用法，<strong>sizeof(typename)<strong>和</strong>sizeof(expression)</strong>，当参数为typename是，即类型名称，sizeof返回类型对应对象的大小；当参数为表达式时，sizeof计算表达式的返回类型对应对象的大小。此处，&quot;&quot;是表达式，sizeof计算编译时编译器分配给&quot;&quot;的空间，此时要算上\0的长度，因此是1，而strlen函数不会计算<code>\0</code>。</p>
+<p>如果不设置limit，limit的默认值是<strong>LONG_MAX</strong>。在php.h文件中，LONG_MAX定义为2147483647L。</p>
+<p>在实现里面，如果limit大于1，则调用<strong>php_explode</strong>函数；如果limit小于0，则调用<strong>php_explode_negative_limit</strong>函数；如果limit等于0，则被当做1处理，此时调用<strong>add_index_stringl</strong>函数将str添加到数组return_value中。</p>
+<p>在查找分隔符delimiter时，调用了<strong>php_memnstr</strong>函数
+php_memnstr(Z_STRVAL_P(str), Z_STRVAL_P(delim), Z_STRLEN_P(delim), endp);
+而php_memnstr是<strong>zend_memnstr</strong>的宏定义，zend_memnstr实现里面，因此实际上是调用了C里面的memchr来查找字符delimiter。</p>
+<p>找到分隔符的位置之后，就调用<strong>add_next_index_stringl</strong>函数将分隔得到的字符串插入到返回数组里。</p>
+<h2 id="implode" tabindex="-1">implode</h2>
+<p>string implode ( string $glue, array $pieces )
+string implode ( array $pieces )</p>
+<p>将一个一维数组的值转换为字符串</p>
+<h3 id="%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E-1" tabindex="-1">参数说明</h3>
+<p>implode函数可以接收两种参数顺序。另外，如果第一个参数为数组而第二个参数为空，则第二个参数为默认值''。此函数可以看作是explode的逆向过程。</p>
+<p>当然，使用文档规定的顺序可避免混淆。</p>
+<h3 id="%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B-1" tabindex="-1">运行示例</h3>
+<p>$arr = array('hello', 'world');</p>
+<p>按照文档顺序参数</p>
+<p>$str = implode('-‘, $arr);// 输出&quot;hello-world&quot;</p>
+<p>第一个参数为数组</p>
+<p>$str = implode($arr); // 输出&quot;helloworld&quot;
+$str = implode($arr, '-'); // 输出&quot;hello-world&quot;</p>
+<h3 id="implode%E6%89%A7%E8%A1%8C%E6%AD%A5%E9%AA%A4" tabindex="-1">implode执行步骤</h3>
+<blockquote>
+<p>1、接收参数并赋值</p>
+</blockquote>
+<blockquote>
+<p>2、如果第二个参数为空，则判断第一个参数的类型是否为数组，如果不是，则报错。否则，则使用&quot;&quot;对glue赋值，使用其作为连接符。</p>
+</blockquote>
+<blockquote>
+<p>3、如果第二个参数不为空，那么，如果第一个参数是数组类型，则将第二个参数转换成字符串类型；否则，如果第二个参数是数组类型，则将第一个参数转换成字符串类型。</p>
+</blockquote>
+<blockquote>
+<p>4、调用php_implode函数做字符串的连接。</p>
+</blockquote>
+<p>在<a href="https://github.com/read-php-src/read-php-src/blob/master/ext/standard/string.c#L1235">implode</a>函数设置完参数之后，底层就调用<a href="https://github.com/read-php-src/read-php-src/blob/master/ext/standard/string.c#L1143">php_implode</a>函数进行字符串连接，php_implode函数的执行流程图如下：</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/implode.png" alt="implode流程"></p>
+<p>php_implode函数核心代码：</p>
+<p>// 遍历数组的每一个元素，判断其类型，然后调用smart_str_appendl函数将值追加到字符串中
+while (zend_hash_get_current_data_ex(Z_ARRVAL_P(arr), (void **) &amp;tmp, &amp;pos) == SUCCESS) {
+switch ((*tmp)-&gt;type) {
+case IS_STRING:
+smart_str_appendl(&amp;implstr, Z_STRVAL_PP(tmp), Z_STRLEN_PP(tmp));
+break;</p>
+<p>case IS_LONG: {
+char stmp[MAX_LENGTH_OF_LONG + 1];
+str_len = slprintf(stmp, sizeof(stmp), &quot;%ld&quot;, Z_LVAL_PP(tmp));
+smart_str_appendl(&amp;implstr, stmp, str_len);
+}
+break;</p>
+<p>case IS_BOOL:
+if (Z_LVAL_PP(tmp) == 1) {
+smart_str_appendl(&amp;implstr, &quot;1&quot;, sizeof(&quot;1&quot;)-1);
+}
+break;</p>
+<p>case IS_NULL:
+break;</p>
+<p>case IS_DOUBLE: {
+char *stmp;
+str_len = spprintf(&amp;stmp, 0, &quot;%.*G&quot;, (int) EG(precision), Z_DVAL_PP(tmp));
+smart_str_appendl(&amp;implstr, stmp, str_len);
+efree(stmp);
+}
+break;</p>
+<p>case IS_OBJECT: {
+int copy;
+zval expr;
+zend_make_printable_zval(*tmp, &amp;expr, &amp;copy);
+smart_str_appendl(&amp;implstr, Z_STRVAL(expr), Z_STRLEN(expr));
+if (copy) {
+zval_dtor(&amp;expr);
+}
+}
+break;</p>
+<p>default:
+tmp_val = **tmp;
+zval_copy_ctor(&amp;tmp_val);
+convert_to_string(&amp;tmp_val);
+smart_str_appendl(&amp;implstr, Z_STRVAL(tmp_val), Z_STRLEN(tmp_val));
+zval_dtor(&amp;tmp_val);
+break;</p>
+<p>}</p>
+<p>// 添加glue字符
+if (++i != numelems) {
+smart_str_appendl(&amp;implstr, Z_STRVAL_P(delim), Z_STRLEN_P(delim));
+}
+zend_hash_move_forward_ex(Z_ARRVAL_P(arr), &amp;pos);
+}
+// 在尾部添加结束字符0
+smart_str_0(&amp;implstr);</p>
+<h3 id="%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB-1" tabindex="-1">源码解读</h3>
+<p><code>php_implode</code>会逐个获取数组里面的内容，然后判断每个元素的类型，再做必要的数据类型转换之后，调用smart_str_appendl函数将值追加到返回的字符串后面。最后，还要在字符串后面加上结束符，这是个必须的操作，以后编程时也应注意。</p>
+<p><a href="https://github.com/read-php-src/read-php-src/blob/master/ext/standard/php_smart_str.h#L85">smart_str_appendl</a>是函数<a href="https://github.com/read-php-src/read-php-src/blob/master/ext/standard/php_smart_str.h#L112">smart_str_appendl_ex</a>的宏定义，该函数调用了<strong>memcpy</strong>做字符串的复制。</p>
+<h2 id="%E5%B0%8F%E7%BB%93" tabindex="-1">小结</h2>
+<p>暂且写这么多，还有更多的优化和PHP源码中常用的函数，将会在以后的源码阅读中慢慢讲述。</p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+<p>如果本文对你有帮助，请点下推荐吧，谢谢^_^</p>
+<p>最后再安利一下，我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。<a href="https://github.com/read-php-src/read-php-src">PHP5.4源码注解</a>。可以通过<a href="https://github.com/read-php-src/read-php-src/commits/master">commit记录</a>查看已添加的注解。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

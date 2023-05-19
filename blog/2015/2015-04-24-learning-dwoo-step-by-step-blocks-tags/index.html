@@ -1,0 +1,381 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="一步步学习Dwoo模板引擎--块和标签" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-04-24-learning-dwoo-step-by-step-blocks-tags/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>一步步学习Dwoo模板引擎--块和标签 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>一步步学习Dwoo模板引擎--块和标签</h1>
+    <div class="italic text-gray-500">
+      2015/04/24
+    </div>
+    <div>
+      <p>##Blocks（块）</p>
+<p>###a
+输出HTML的&lt;a&gt;标签</p>
+<p>a($href, [array $rest = array()])</p>
+<blockquote>
+<ul>
+<li>href:指定的目标URI</li>
+<li>rest:任何你想添加到标签的属性都可以作为命名参数被添加到标签中</li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{* 创建一个简单的外部链接以及添加一个class属性: *}
+{a $url class=&quot;external&quot; /}</p>
+<p>{* 根据其他变量标记链接为可触发变量: *}
+{a $link.url class=tif($link.active &quot;active&quot;); $link.title /}</p>
+<p>{* 同上: &lt;a href=&quot;{$link.url}&quot; class=&quot;{if $link.active}active{/if}&quot;&gt;{$link.title}&lt;/a&gt; *}</p>
+<p>###autoEscape(自动转义)
+在这个块元素里可以重写自动转义编译器:</p>
+<p>autoEscape(mixed $enabled)</p>
+<blockquote>
+<ul>
+<li>enabled : 如果设为&quot;on&quot;，&quot;enable&quot;, true或1，那么自动转义编译器就会使用这个块。设为&quot;off&quot;，&quot;disable&quot;，false或者0，那么就不会启用这个块。</li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{$user=&quot;&lt;a href=\&quot;javascript:jsAttack()\&quot;&gt;EvilTroll&lt;/a&gt;&quot;}
+{$user} {* =&gt; 不转义，如果你在PHP端没有哦过滤你的数据的话，那么这可能会对用户的输入造成伤害 *}</p>
+<p>{autoEscape on}
+{$user} {* 这里任何注入的HTML都被转义了，所以是安全的 *}
+{/autoEscape}</p>
+<p>输出结果</p>
+<p>&lt;a href=&quot;javascript:jsAttack()&quot;&gt;EvilTroll&lt;/a&gt;
+&lt;a href=&quot;javascript:jsAttack()&quot;&gt;EvilTroll&lt;/a&gt;</p>
+<p>第一个结果会被浏览器解析为HTML标签，第二个结果会被浏览器解析为文本。</p>
+<p>###block(块)
+定义一个可以被子模板集成的块</p>
+<p>block(string $name)</p>
+<blockquote>
+<ul>
+<li>name : 块名字，可以在子模板中创建一个使用相同名字的新块可以重写它。</li>
+</ul>
+</blockquote>
+<p>###capture(捕获)
+默认会捕获块里面的所有输出然后保存到{$.capture.default}中，如果你提供一个变量名，那将保存到{$.capture.name}中。</p>
+<p>capture([ string $name = 'default', [ string $assign = null, [ bool $cat = false ]]])</p>
+<blockquote>
+<ul>
+<li>name : 捕获名，用于后面的读取变量</li>
+<li>assign : 如果有设置了，这个值也会被保存到所给的变量中</li>
+<li>cat : 如果为true，这个值会被追加到之前的那一个(如果有的话)而不是覆盖它</li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{capture &quot;foo&quot;}
+所有在这里的内容都不会展示，会被保存起来日后使用
+{/capture}
+捕获到的内容: {$.capture.foo}</p>
+<p>输出结果：</p>
+<p>捕获到的内容: 所有在这里的内容都不会展示，会被保存起来日后使用</p>
+<p>###注释(comment)
+注释插件允许你在模板文件中放入注释。这些注释有Dwoo处理，而且不像HTML注释那样，Dwoo的注释不会被输出到浏览器。注释使用{* 和 *}标签分隔，可以单行注释，也可以多行注释。</p>
+<p>{* 这是一个Dwoo注释 *}</p>
+<p>{*
+- 这是多行的
+- Dwoo 注释!
+*}</p>
+<p>{*
+这也是一个注释
+*}</p>
+<p>###else
+通用的else块，它支持所有建于选择性展示的块，如：if,loop,for,foreach以及with。</p>
+<p>如果有一个块包含else语句，那么如果块的条件不满足的话，在{else}以及{/*blockname*}(你不需要关闭else标签)之间的内容就不会被显示。</p>
+<p>例子：</p>
+<p>{foreach $array val}
+$array 非空，展示它的值 : {$val}
+{else}
+如果这里有数据，说明$array是空的或者不存在。
+{/foreach}</p>
+<p>###for
+与PHP的for语句十分相似：</p>
+<p>for(string $name, mixed $from, [ int $to = null, [ int $step = 1, [ int $skip = 0 ]]])</p>
+<blockquote>
+<ul>
+<li>name : 访问迭代器变量的名字</li>
+<li>from : 迭代数组的开始位置(从0开始)或者一个数字的开始值</li>
+<li>to : 迭代数组的结束位置 (如果你在$from里设置一个数组，那么这个值会自动设置为count($array))</li>
+<li>step : 定义每一次遍历过程的增量</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>注： 这个插件支持从其它命名参数传递过来的迭代器，也支持其它语句传递过来的迭代器</p>
+</blockquote>
+<p>例子：</p>
+<p>{for i 0 5} {$i} {/for}</p>
+<p>{for i 0 5 2} {$i} {/for}</p>
+<p>{$arr=array(&quot;Bob&quot;,&quot;John&quot;,&quot;Jim&quot;)}
+{for i $arr}
+{$i} -&gt; {$arr.$i} {* or $arr[$i] *}
+{/for}</p>
+<p>输出:</p>
+<p>0  1  2  3  4  5
+0  2  4
+0 -&gt; Bob
+1 -&gt; John
+2 -&gt; Jim</p>
+<p>###foreach
+与PHP的foreach块相似，遍历一个数组</p>
+<p>foreach(array $from, [ string $key = null, [ string $item = null, [ string $name = 'default', [ string $implode = null ]]]])</p>
+<blockquote>
+<ul>
+<li>from : 你想遍历的数组</li>
+<li>key : 键值的变量名 (如果某项没有定义的话就是该项的变量名)</li>
+<li>item : 每项的变量名</li>
+<li>name : 访问迭代器变量的名字</li>
+<li>implode : 分隔符，如果提供了，那么将会插入到每项之间</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>注：这个插件支持从其它命名参数传递过来的迭代器，也支持其它语句传递过来的迭代器</p>
+</blockquote>
+<p>例子：</p>
+<p>PHP 数据</p>
+<p>&lt;?php
+array(
+'arr' =&gt; array(
+array('id'=&gt;1, 'name'=&gt;'Jim'),
+array('id'=&gt;2, 'name'=&gt;'John'),
+array('id'=&gt;3, 'name'=&gt;'Bob'),
+)
+)</p>
+<p>HTML</p>
+<p>{foreach $arr val implode=&quot;, &quot;}
+{$<a href="http://val.id">val.id</a>} - {$<a href="http://val.name">val.name</a>}
+{/foreach}</p>
+<p>输出：</p>
+<p>1 - Jim,
+2 - John,
+3 - Bob
+分隔符参数允许你使用逗号或者任何你想使用来分隔每一项的符号，这比在foreach块中使用{if $.foreach.name.last}, {/if}来分隔更简单。</p>
+<p>###function
+在模板文件中创建一个函数</p>
+<p>function(string $name [, array $rest = array() ])</p>
+<blockquote>
+<ul>
+<li>name : 子模板的名称，你调用时使用的名字，如果你使用一个现有的插件名，那它将会覆盖它</li>
+<li>rest : 一系列的参数以及可选参数(参数名被模板自己保存下来)</li>
+</ul>
+</blockquote>
+<p>看看{load_templates}函数，允许你从一个文件中加载多个模板，就像你在php中从外部文件include一个方法或者类。</p>
+<p>注意：不能创建相同名字的函数。</p>
+<p>递归输出菜单例子：</p>
+<p>$menuTree为一个数组：</p>
+<p>&lt;?php
+$menuTree = array(
+array('name'=&gt;'Foo', 'children'=&gt;array(
+array('name'=&gt;'Foo-Sub', 'children'=&gt;array()),
+array('name'=&gt;'Foo-Sub2', 'children'=&gt;array()),
+)),
+array('name'=&gt;'Bar', 'children'=&gt;array()),
+array('name'=&gt;'Baz', 'children'=&gt;array()),
+);
+{function menu data tick=&quot;-&quot; indent=&quot;&quot;}
+{foreach $data entry}
+{$indent}{$tick} {$<a href="http://entry.name">entry.name</a>}&lt;br /&gt;</p>
+<p>{if $entry.children}
+{* 递归调用让子模板更好地输出树状结构 *}
+{menu $entry.children $tick cat(&quot;  &quot;, $indent)}
+{/if}
+{/foreach}
+{/function}</p>
+<p>{menu $menuTree &quot;&gt;&quot;}</p>
+<p>输出</p>
+<p>&gt; Foo</p>
+<p>&gt; Foo-Sub</p>
+<p>&gt; Foo-Sub2</p>
+<p>&gt; Bar</p>
+<p>&gt; Baz</p>
+<p>###if
+条件块，语法跟PHP的十分相似，允许使用() || &amp;&amp;以及其他php操作符。下面是其他Dwoo操作符以及它们对应的php操作符：</p>
+<blockquote>
+<ul>
+<li>eq → ==</li>
+<li>neq or ne → !=</li>
+<li>gte or ge → &gt;=</li>
+<li>lte or le → &lt;=</li>
+<li>gt → &gt;</li>
+<li>lt → &lt;</li>
+<li>mod → %</li>
+<li>not → !</li>
+<li>X is [not] div by Y → (X % Y) == 0</li>
+<li>X is [not] even [by Y] → (X % 2) == 0 or ((X/Y) % 2) == 0</li>
+<li>X is [not] odd [by Y] → (X % 2) != 0 or ((X/Y) % 2) != 0</li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{if 3 == 5}
+不会发生
+{elseif 3 == 3}
+一定发生
+{else}
+这永远不会展现
+{/if}</p>
+<p>输出：</p>
+<p>一定发生</p>
+<p>#literal(字面量)
+不把它们当做模板代码输出整个块的内容</p>
+<p>literal()</p>
+<blockquote>
+<p>这个块必须使用{/literal}作为结束，使用{/}或关闭父块无效。</p>
+</blockquote>
+<p>例子：</p>
+<p>{$var=3}
+{literal}
+{$var} {* 注释和条件功能在literal会出现异常，因为它们在literal中依然是有效的行为 *}
+{/literal}
+{$var}</p>
+<p>输出：</p>
+<p>{$var}</p>
+<p>3</p>
+<p>###loop
+循环遍历数组和通过自动移动作用域到每一个元素实现真正的简单/小的结构。实际上它是foreach和with的内部结合。</p>
+<p>loop(array $from [, $name = &quot;default ] )</p>
+<p>例子：</p>
+<p>PHP 数据</p>
+<p>&lt;?php
+array('users' =&gt; array(
+array( 'id' =&gt; 1, 'name' =&gt; 'Bob'),
+array( 'id' =&gt; 2, 'name' =&gt; 'John' )
+)</p>
+<p>HTML显示</p>
+<p>{loop $users}
+{$id}-{$name}
+{/loop}</p>
+<p>输出</p>
+<p>1-Bob</p>
+<p>2-John</p>
+<p>访问数组键值</p>
+<p>你可以在loop里面使用<code>{$_key}</code>变量来访问数组Ian之，为了保持loop的简单性，它的名字不能自定义。</p>
+<p>##strip
+删除头和尾的空格，还有去除分行。</p>
+<p>strip(string $mode = 'default')</p>
+<p>mode : mode定义了一些规则来保护某些内容不受伤害，现在只有js/javascript，保证JavaScript的注释不会使脚本失效。</p>
+<p>例子：</p>
+<p>{strip}
+spaces between words in a same line<br>
++ are not removed -<br>
+but<br>
+everything<br>
+else<br>
+is<br>
+{/strip}</p>
+<p>输出：</p>
+<p>spaces between words in a same line- are not removed -buteverythingelseis</p>
+<p>如果你在模板中嵌入了JavaScript，如果代码中包含注释的话，{strip}组件可能会打断你的JavaScript。看个例子：</p>
+<p>{strip}
+&lt;script type=&quot;text/javascript&quot;&gt;
+// say hello!
+alert(&quot;hello!&quot;);
+&lt;/script&gt;
+{/strip}
+这将会输出：</p>
+<p>&lt;script type=&quot;text/javascript&quot;&gt; // say hello! alert(&quot;hello!&quot;); &lt;/script&gt;
+脚本现在在一行了，因为第一行是注释，所以全部内容被解析为注释里。为了避免这种情况，可以在{strip}组件中使用js参数。</p>
+<p>{strip js}
+&lt;script type=&quot;text/javascript&quot;&gt;
+// say hello!
+alert(&quot;hello!&quot;);
+&lt;/script&gt;
+{/strip}
+这样做会移除脚本里的所有注释。</p>
+<p>##textformat(文本格式化)</p>
+<p>使用所给的格式来格式化字符串，你可以限定一行字符串的长度或者使其缩进。</p>
+<p>textformat([ int $wrap = 80, [ string $wrap_char = &quot;\r\n&quot;, [ string $wrap_cut = false, [ int $indent = 0, [ string $indent_char = &quot; &quot;, [ int $indent_first = 0, [ string $style = &quot;&quot;, [ string $assign = &quot;&quot; ]]]]]]]])</p>
+<blockquote>
+<ul>
+<li>wrap : 一行最大的长度</li>
+<li>wrap_char : 用于分行的字符</li>
+<li>wrap_cut : 如果是true，超过$wrap的部分将会被删除掉而不是溢出</li>
+<li>indent : 插入到每一行的缩进字符的个数</li>
+<li>indent_char : 插入到每一行的缩进字符</li>
+<li>indent_first : 每个段落第一行需要插入缩进字符的个数</li>
+<li>style : 为一些必要的变量设置了的预定义格式样式，如：email或者html</li>
+<li>assign : 如果设置了，那么格式化之后的文本会被复制到该变量而不会输出</li>
+</ul>
+</blockquote>
+<p>例子</p>
+<p>{textformat 10}here is some text that should wrap{/textformat}</p>
+<p>{textformat 10 wrap_cut=true}and this one should cut words that go beyoooooooond 10 chars{/textformat}</p>
+<p>输出：</p>
+<p>here is
+some text
+that
+should
+wrap</p>
+<p>and this
+one should
+cut words
+that go
+beyooooooo
+ond 10
+chars</p>
+<p>##with
+移动作用域到数组里面的元素，在{with}块里面，允许使用{$var}代替{$array.var}</p>
+<p>with(array $var)</p>
+<blockquote>
+<ul>
+<li>var : 需要移动作用域的数组</li>
+</ul>
+</blockquote>
+<p>例子：</p>
+<p>{$arr.foo}
+{with $arr} {$foo} / {$arr.foo} {/with}</p>
+<p>数据</p>
+<blockquote>
+<p>'arr' =&gt; array( 'foo' =&gt; 'bar' )</p>
+</blockquote>
+<p>输出</p>
+<p>bar
+bar /</p>
+<p>这个组件比较狡猾的地方是，一旦你移动了作用域到其他地方，你就不能访问全局变量了。
+正如你看到的上个例子，在{with}里面的{$arr.foo}是无效的并返回null。你可以使用<code>_parent_and_root</code>解决这个问题。<code>$_root</code>链接到最顶部的作用域，<code>$_parent</code>是上一级作用域。$dwoo的魔法变量不会被这个影响，它们可以在任何作用域中使用相同方式访问。</p>
+<p>例子</p>
+<p>{with $arr.sub}
+{$foo} / {$_root.arr.sub.foo} / {$_parent.foo}
+{$_root.url} / {$_parent._parent.url}
+{$dwoo.version}
+{/with}
+数据</p>
+<p>'arr' =&gt; array( 'sub' =&gt; array( 'foo' =&gt; 'bar' ) )</p>
+<p>'url' =&gt; '<a href="http://example.org">example.org</a>'</p>
+<p>输出</p>
+<p>bar / bar / bar</p>
+<p><a href="http://example.org">example.org</a> / <a href="http://example.org">example.org</a></p>
+<p>0.3.3</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

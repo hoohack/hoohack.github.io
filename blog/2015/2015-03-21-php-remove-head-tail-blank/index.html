@@ -1,0 +1,84 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="在PHP中使用正则表达式去除字符串首尾的空格" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-03-21-php-remove-head-tail-blank/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>在PHP中使用正则表达式去除字符串首尾的空格 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>在PHP中使用正则表达式去除字符串首尾的空格</h1>
+    <div class="italic text-gray-500">
+      2015/03/21
+    </div>
+    <div>
+      <p>最近在网上，看到一个有趣的正则表达式如下</p>
+<p><code>/^(&amp;nbsp;|\s)*|(&amp;nbsp;|\s)*$/</code></p>
+<p>这个正则表达式的用途是匹配字符串头或尾含有空格的字符串。</p>
+<p>下面是实现去掉字符串头尾空格的PHP代码</p>
+<p>$str = &quot; dfadad abcasdasdas   &quot;;<br>
+$str = preg_replace('/^( |\s)<em>|( |\s)</em>$/', '', $str);<br>
+var_dump($str);</p>
+<p>//输出结果如下：
+//string 'dfadad abcasdasdas' (length=23)</p>
+<p>因为<code>&amp;nbsp;</code>是空格转义，不是字符串，直接用trim()是去不掉。刚开始看这段代码的时候没有看懂，现在理解了，下面来分析一下这个表达式是如何实现其功能的。</p>
+<p>我将整个正则表达式分为三部分</p>
+<blockquote>
+<ul>
+<li>1    <code>(&amp;nbsp;|\s)*</code></li>
+<li>2    <code>|</code></li>
+<li>3    <code>(&amp;nbsp;|\s)*</code></li>
+</ul>
+</blockquote>
+<p>1和3的括号里面的表达式都是匹配空格的正则，'*'代表0个或多个。1表示以空格开头，3表示已空格结尾。表达式中的2是一个与运算符，那么这个正则表达式的情况就有如下四种：</p>
+<p>A: 0 0</p>
+<blockquote>
+<p>首尾都没有空格</p>
+</blockquote>
+<p>B: 0 1</p>
+<blockquote>
+<p>以空格结尾的字符串</p>
+</blockquote>
+<p>C: 1 0</p>
+<blockquote>
+<p>以空格开头的字符串</p>
+</blockquote>
+<p>D: 1 1</p>
+<blockquote>
+<p>开头和结尾都有空格的字符串</p>
+</blockquote>
+<p>也可以直接从与逻辑的定义去理解，只要有一个为真那么值就为真。</p>
+<p>在这里分享下自己的理解。如有错误之处或更多建议，请指出，谢谢。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

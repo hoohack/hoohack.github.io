@@ -1,0 +1,190 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="[LeetCode]字符翻转--多种解法分析" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-03-28-rotate-array-algorithm-Analysis/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>[LeetCode]字符翻转--多种解法分析 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>[LeetCode]字符翻转--多种解法分析</h1>
+    <div class="italic text-gray-500">
+      2015/03/28
+    </div>
+    <div>
+      <p>最近在LeetCode网站上学习算法，记录一下学到的东西。</p>
+<p>##问题描述</p>
+<blockquote>
+<p>Rotate an array of n elements to the right by k steps.</p>
+<p>For example, with n = 7 and k = 3, the array [1,2,3,4,5,6,7] is rotated to [5,6,7,1,2,3,4].</p>
+<p>Note:
+Try to come up as many solutions as you can, there are at least 3 different ways to solve this problem.</p>
+</blockquote>
+<p>##解法一：一个一个地移动
+刚开始看到这道题，题目说有很多种解法，当时我的第一个想法就是一个一个地移动。于是就有下面的解法：</p>
+<p>void rotate(int nums[], int n, int k) {
+int cursor = 0;
+for (int i = 0; i &lt; k; ++i) {
+cursor = nums[n - 1];
+for (int j = 0; j &lt; n - 1; ++j) {
+nums[n-j-1] = nums[n-j-2];
+}
+nums[0] = cursor;
+}
+}</p>
+<p>这个算法的时间复杂度是O(n*k)，空间复杂度是O(1)。提交的时候超时了，So，不能用这种方法。</p>
+<p>##解法二：杂耍算法
+这个算法是比较难想到的，这个算法优点是在执行了GCD(n, k)次后即可停止，程序的走向我是明白的，至于为什么能够如此，还是上网查了很多资料才弄明白了，现在通过自己的语言描述一遍。加深理解。</p>
+<p>GCD(Greatest Common Divisor)--最大公约数</p>
+<p>###辗转相除法求最大公约数。
+两个整数的最大公约数是能够同时整除它们的最大的正整数。辗转相除法基于以下原理</p>
+<blockquote>
+<p>两个整数的最大公约数等于其中较小的数和两数的差的最大公约数。</p>
+</blockquote>
+<p>先来了解一些数论知识（以下内容摘自《初等数论》，潘承洞著）：</p>
+<p>####同余</p>
+<blockquote>
+<p>设m不等于0, 若<code>m|a-b</code>,即<code>a-b=km</code>, 则称m为模，a同余于b模m，以及b是a对模m的剩余。记作<code>a≡b(mod m)</code></p>
+</blockquote>
+<p>####同余类</p>
+<blockquote>
+<p>对给定的模m，有且恰有m个不同的模m的同余类，他们是
+0 mod m，1 mod m，…，（m-1）mod m。</p>
+</blockquote>
+<p>####完全剩余系</p>
+<blockquote>
+<p>一组数y1,y2,…，ys称为是模m的完全剩余系，如果对任意的a有且仅有一个yj是a对模m的剩余，即a同余于yj模m。
+由此可见0,1,2，…，m-1是一个完全剩余系。因此，如果m个数是两两不同余的，那么这m个数便是完全剩余系。</p>
+</blockquote>
+<p>基于以上知识，我们可以证明这样一个事实，即如果i和n互质的话，那么序列：
+<code>0     i mod n  2i mod n       3i mod n       ….   (n-1)*i mod n</code>
+就包括了集合{0,1,2 … n-1}的所有元素。（下一个元素(n)*i mod n 又是0）
+为什么呢？</p>
+<p>证明：
+由于0,1,2，…，n-1本身是一个完全剩余系，即它们两两互不同余。设此序列为Xi（0&lt;=i&lt;=n-1），可得下式：
+Xi≠Xj (mod n)
+<code>注：这里由于不能打出不同余字符因此用不等于替代</code></p>
+<p>由于i与n是互质的，所以
+Xi<em>i ≠i</em>Xj (mod n)
+因此i*Xi是m个互不同余数，那么可断定它们是完全剩余系。得证。</p>
+<p>有了上面的结论，那么，如果n与k互质，下面的赋值过程就能完成所有值的赋值(设数组为X[0...n-1],长度为n)：
+t = X[0]</p>
+<p>X[0] = X[i mod n]</p>
+<p>X[i mod n] = X[2i mod n]</p>
+<p>……</p>
+<p>X[(n-2)*i mod n] = X[(n-1)*i mod n]</p>
+<p>X[(n-1)*i mod n] = t</p>
+<p>以上操作已经把包括{0,1,…,n-1}所有元素放到了最终位置上，每次完成一个元素的放置。
+根据以上我们得到了一个中间结论，如果n和k互质，我们就可以一次完成所有元素的纺织。那么如果n和k不是互质的呢？</p>
+<p>那就是让n和k互质。即让k'=k/gcd(k, n),n'=n/gcd(k,n)。这样就构成了一对互质的数。这就意味着需要把整个数组的每g(g=gcd(k,n))个元素组成块，每个块的k'和n'就互质了。每次相当于把g中的一个元素移到最终的位置，由于g是块元素，每个块含有g个元素，所以总共需要g次移动。</p>
+<p>int gcd(int m, int n) {
+if (m % n == 0)
+{
+return n;
+}
+else
+{
+return gcd(n, m%n);
+}
+}</p>
+<p>void rotate(int nums[], int n, int k)
+{
+if (k &gt; n) {
+k %= n;
+}
+if (k % n == 0) return;
+int count = gcd(n, k);
+for(int j = 0; j &lt; count;j++) {
+int temp = nums[n - j - 1];
+int current = n - j - 1;
+int previous = (current - k) % n;
+for (;previous != n - j - 1;previous = (previous - k + n) % n) {
+nums[current] = nums[previous];
+current = previous;
+}
+previous = (previous + k) % n;
+nums[previous] = temp;
+}
+}</p>
+<p>##解法三 以n-k为界，分别对数组的两边进行逆置，然后再对整个数组进行一次逆置
+这个算法的实现原理我能理解，但是为什么要这样做呢？推导过程是从以结果为导向来推导。</p>
+<p>以数组arr[5] = {1, 2, 3, 4, 5};为例。</p>
+<p>如果n=5，k=2，则旋转结果为{4, 5, 1, 2, 3}</p>
+<p>看上去很像整个数组的逆置{5, 4, 3, 2, 1}</p>
+<p>但是还需要变换一下才能得到想要的结果：</p>
+<p>发现如果将前面(0,k)和后面(k,n)的两部分分别逆置之后就会得到最终的结果。</p>
+<p>即</p>
+<p>{5, 4} =&gt; {4, 5}</p>
+<p>{1, 2, 3} =&gt; {3, 2, 1}</p>
+<p>于是就有了先将数组前后两部分逆置，然后再将整个数组逆置的解法。</p>
+<p>void swap(int arr[], int a, int b) {
+int temp = arr[a];
+arr[a] = arr[b];
+arr[b] = temp;
+}</p>
+<p>void reverse(int arr[], int begin, int end)
+{
+int mid = (begin + end) / 2;
+for (int i = begin, j = 0; i &lt; mid; i++, ++j) {
+swap(arr, i, end - j - 1);
+}
+}</p>
+<p>void rotate(int nums[], int n, int k)
+{
+if (k &gt;= n) k %= n;
+reverse(nums, 0, n - k);
+reverse(nums, n - k, n);
+reverse(nums, 0, n);
+}</p>
+<p>也可以先逆置整个数组，然后在逆置前后两部分。</p>
+<p>##解法四 开辟新空间
+这个解法就是开辟一个新的空间p保存需要移动的值，然后将原数组移动k位，最后在将p中的值插入到原数组中。</p>
+<p>void rotate(int nums[], int n, int k) {
+if (k &gt;= n) {
+k = k % n;
+}</p>
+<p>int *p = new int[k];
+for (int i = 0; i &lt; k; ++i) {
+p[i] = nums[n - k + i];
+}
+for (int j = 0; j &lt; n - k; ++j) {
+nums[n - j - 1] = nums[n - k - j - 1];
+}
+for (int i = 0; i &lt; k; ++i) {
+nums[i] = p[i];
+}
+}</p>
+<p>记录下自己的分析，如果错误和更多建议，欢迎指出。谢谢阅读。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

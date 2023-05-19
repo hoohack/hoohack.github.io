@@ -1,0 +1,244 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="[计算机网络]简易http server程序" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-10-28-lcn-simple-server/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>[计算机网络]简易http server程序 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>[计算机网络]简易http server程序</h1>
+    <div class="italic text-gray-500">
+      2016/10/28
+    </div>
+    <div>
+      <p>这个http server的实现源代码我放在了<a href="https://github.com/hoohack/Makehttpd">我的github上</a>，有兴趣的话可以点击查看哦。</p>
+<p>好久没输出了，知识还是要写下总结才能让思路更加清晰。最近在学习计算机网络相关的知识，来聊聊如何编写一个建议的HTTP服务器。</p>
+<h2 id="http-%E6%9C%8D%E5%8A%A1%E5%99%A8" tabindex="-1">HTTP 服务器</h2>
+<p>HTTP服务器，就是一个运行在主机上的程序。程序启动了之后，会一直在等待其他所有客户端的请求，接收到请求之后，处理请求，然后发送响应给客户端。客户端和服务器之间使用HTTP协议进行通信，所有遵循HTTP协议的程序都可以作为客户端。</p>
+<p>先直接上代码，然后再详细说明实现细节。</p>
+<p>#include &lt;stdio.h&gt;
+#include &lt;ctype.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/stat.h&gt;</p>
+<p>#define PORT 9001
+#define QUEUE_MAX_COUNT 5
+#define BUFF_SIZE 1024</p>
+<p>#define SERVER_STRING &quot;Server: hoohackhttpd/0.1.0\r\n&quot;</p>
+<p>int main()
+{
+/* 定义server和client的文件描述符 */
+int server_fd = -1;
+int client_fd = -1;</p>
+<p>u_short port = PORT;
+struct sockaddr_in client_addr;
+struct sockaddr_in server_addr;
+socklen_t client_addr_len = sizeof(client_addr);</p>
+<p>char buf[BUFF_SIZE];
+char recv_buf[BUFF_SIZE];
+char hello_str[] = &quot;Hello world!&quot;;</p>
+<p>int hello_len = 0;</p>
+<p>/* 创建一个socket <em>/
+server_fd = socket(AF_INET, SOCK_STREAM, 0);
+if (server_fd == -1) {
+perror(&quot;socket&quot;);
+exit(-1);
+}
+memset(&amp;server_addr, 0, sizeof(server_addr));
+/</em> 设置端口，IP，和TCP/IP协议族 */
+server_addr.sin_family = AF_INET;
+server_addr.sin_port = htons(PORT);
+server_addr.sin_addr.s_addr = htonl(INADDR_ANY);</p>
+<p>/* 绑定套接字到端口 */
+if (bind(server_fd, (struct sockaddr *)&amp;server_addr,
+sizeof(server_addr)) &lt; 0) {
+perror(&quot;bind&quot;);
+exit(-1);
+}</p>
+<p>/* 启动socket监听请求，开始等待客户端发来的请求 */
+if (listen(server_fd, QUEUE_MAX_COUNT) &lt; 0) {
+perror(&quot;listen&quot;);
+exit(-1);
+}</p>
+<p>printf(&quot;http server running on port %d\n&quot;, port);</p>
+<p>while (1) {
+/* 调用了accept函数，阻塞了程序，直到接收到客户端的请求 */
+client_fd = accept(server_fd, (struct sockaddr *)&amp;client_addr,
+&amp;client_addr_len);
+if (client_fd &lt; 0) {
+perror(&quot;accept&quot;);
+exit(-1);
+}
+printf(&quot;accept a client\n&quot;);</p>
+<p>printf(&quot;client socket fd: %d\n&quot;, client_fd);
+/* 调用recv函数接收客户端发来的请求信息 */
+hello_len = recv(client_fd, recv_buf, BUFF_SIZE, 0);</p>
+<p>printf(&quot;receive %d\n&quot;, hello_len);</p>
+<p>/* 发送响应给客户端 */
+sprintf(buf, &quot;HTTP/1.0 200 OK\r\n&quot;);
+send(client_fd, buf, strlen(buf), 0);
+strcpy(buf, SERVER_STRING);
+send(client_fd, buf, strlen(buf), 0);
+sprintf(buf, &quot;Content-Type: text/html\r\n&quot;);
+send(client_fd, buf, strlen(buf), 0);
+strcpy(buf, &quot;\r\n&quot;);
+send(client_fd, buf, strlen(buf), 0);
+sprintf(buf, &quot;Hello World\r\n&quot;);
+send(client_fd, buf, strlen(buf), 0);</p>
+<p>/* 关闭客户端套接字 */
+close(client_fd);
+}</p>
+<p>close(server_fd);</p>
+<p>return 0;
+}</p>
+<h2 id="%E6%B5%8B%E8%AF%95%E8%BF%90%E8%A1%8C" tabindex="-1">测试运行</h2>
+<p>代码写好之后，运行测试一下，将上面代码保存到server.c，然后编译程序：</p>
+<p>gcc server.c -o server</p>
+<p>./server运行</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/runserver.jpg" alt="runserver"></p>
+<p>服务器运行，监听9001端口。再用<code>netstat</code>命令查看：
+<img src="http://7u2eqw.com1.z0.glb.clouddn.com/server_netstat.jpg" alt="server_netstat"></p>
+<p>server程序在监听9001端口，运行正确。接着用浏览器访问http://localhost:9001</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/browser_server.jpg" alt="browser_server"></p>
+<p>成功输出了Hello World</p>
+<p>再尝试用<code>telnet</code>去模拟HTTP请求：</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/telnet_http.jpg" alt="telnet_http"></p>
+<ul>
+<li>1、成功连接</li>
+<li>2、发送HTTP请求</li>
+<li>3、HTTP响应结果</li>
+</ul>
+<p>上面是一个最简单的server程序，代码比较简单，省去一些细节，下面通过代码来学习一下socket的编程细节。</p>
+<h2 id="%E5%90%AF%E5%8A%A8server%E7%9A%84%E6%B5%81%E7%A8%8B" tabindex="-1">启动server的流程</h2>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/server.png" alt="server流程"></p>
+<h2 id="socket-%E5%87%BD%E6%95%B0" tabindex="-1">socket 函数</h2>
+<p>创建一个套接字，通过各参数指定套接字的类型。</p>
+<p>int socket(int family, int type, int protocol);</p>
+<ul>
+<li>family：协议族。AF_INET：IPV4协议；AF_INET6：IPv6协议；AF_LOCAL：Unix域协议；AF_ROUTE：路由套接字；AF_KEY：密钥套接字</li>
+<li>type：套接字类型。SOCK_STREAM ： 字节流套接字；SOCK_DGRAM：数据包套接字；SOCK_SEGPACKET：有序分组套接字；SOCK_RAW：原始套接字</li>
+<li>protocol：某个协议类型常量。TCP：0，UDP ：1， SCTP ：2</li>
+</ul>
+<h3 id="%E5%A5%97%E6%8E%A5%E5%AD%97%E5%9C%B0%E5%9D%80%E7%BB%93%E6%9E%84" tabindex="-1">套接字地址结构</h3>
+<p>在socket编程中，大部分函数都用到一个指向套接字地址结构的指针作为参数。针对不同的协议类型，会有不同的结构体定义格式，对于ipv4，结构如下所示：</p>
+<p>struct sockaddr_in {
+uint8_t            sin_len;        /* 结构体的长度 <em>/
+sa_family_t        sin_family;     /</em> IP协议族，IPV4是AF_INET <em>/
+in_port_t          sin_port;       /</em> 一个16比特的TCP/UDP端口地址 <em>/
+struct in_addr     sin_addr;       /</em> 32比特的IPV4地址，网络字节序 <em>/
+char               sin_zero[8];    /</em> 未使用字段 */
+};
+注：sockaddr_in是<strong>Internet socket address structure</strong>的缩写。</p>
+<h3 id="ip%E5%9C%B0%E5%9D%80%E7%BB%93%E6%9E%84" tabindex="-1">ip地址结构</h3>
+<p>struct in_addr {
+in_addr_t      s_addr;
+};</p>
+<p>套接字地址结构的作用是为了将ip地址和端口号传递到socket函数，写成结构体的方式是为了抽象。当作为一个参数传递进任何套接字函数时，套接字地址结构总是以引用方式传递。然而，协议族有很多，因此以这样的指针作为参数之一的任何套接字函数必须处理来自所有支持的任何协议族的套接字地址结构。使用<code>void *</code>作为通用的指针类型，因此，套接字函数被定义为以指向某个通用套接字结构的一个指针作为其参数之一，正如下面的bind函数原型一样。</p>
+<p>int bind(int, struct sockaddr *, socklen_t);</p>
+<p>这就要求，对这些函数的任何调用都必须要将指向特定于协议的套接字地址结构的指针进行强制类型转换，变成某个通用套接字地址结构的指针。例如：</p>
+<p>struct sockaddr_in addr;
+bind(sockfd, (struct sockaddr *)&amp;addr , sizeof(addr));</p>
+<p>对于所有socket函数而言，sockaddr的唯一用途就是对指向特定协议的套接字地址结构的指针执行强制类型转换，指向要绑定给sockfd的协议地址。</p>
+<h2 id="bind%E5%87%BD%E6%95%B0" tabindex="-1">bind函数</h2>
+<p>将套接字地址结构绑定到套接字</p>
+<p>int bind(sockfd, (struct sockaddr *)&amp;addr, sizeof(addr));</p>
+<ul>
+<li>sockfd：socket描述符，唯一标识一个socket。bind函数就是将这个描述字绑定一个名字。</li>
+<li>addr：一个sockaddr指针，指向要绑定给sockfd的协议地址。一个socket由ip和端口号唯一确定，而sockaddr就包含了ip和端口的信息
+地址的长度</li>
+</ul>
+<p>绑定了socket之后，就可以使用该socket开始监听请求了。</p>
+<h2 id="listen%E5%87%BD%E6%95%B0" tabindex="-1">listen函数</h2>
+<p>将sockfd从未连接的套接字转换成一个被动套接字，指示内核应接受指向该套接字的连接请求。</p>
+<p>int listen(int sockfd, int backlog);
+listen函数会将套接字从CLOSED状态转换到LISTEN状态，第二个参数规定内核应该为相应套接字排队的最大连接个数。</p>
+<p>关于backlog参数，内核为任何一个给定的监听套接字维护两个队列：</p>
+<blockquote>
+<ul>
+<li>1、未完成连接队列，在队列里面的套接字处于SYN_RCVD状态</li>
+<li>2、已完成队列，处于ESTABLISHED状态</li>
+</ul>
+</blockquote>
+<p>两个队列之和不超过backlog的大小。</p>
+<p>listen完成之后，socket就处于LISTEN状态，此时的socket调用accept函数就可以接受客户端发来的请求了。</p>
+<h2 id="accept%E5%87%BD%E6%95%B0" tabindex="-1">accept函数</h2>
+<p>int accept(int sockfd, struct sockaddr *cliaddr, socklen_t *addrlen);
+用于从已完成连接队列头返回下一个已完成连接，如果已完成连接队列为空，那么进程就会被阻塞。因此调用了accept函数之后，进程就会被阻塞，直到有新的请求到来。</p>
+<p>第一个参数sockfd是客户端的套接字描述符，第二个是客户端的套接字地址结构，第三个是套接字地址结构的长度。</p>
+<p>如果accept成功，那么返回值是由内核自动生成的全新描述符，代表所返回的客户端的TCP连接。</p>
+<p>对于accept函数，第一个参数称为监听套接字描述符，返回值称为已连接套接字。服务器仅创建监听套接字，它一直存在。已连接套接字由服务器进程接受的客户连接创建，当服务器完成某个连接的响应后，相应的已连接套接字就被关闭了。</p>
+<p>accept函数返回时，会返回套接字描述符或出错指示的整数，以及引用参数中的套接字地址和该地址的大小。如果对返回值不感兴趣，可以把两个引用参数设为空。</p>
+<p>accept之后，一个TCP连接就建立起来了，接着，服务器就接受客户端的请求信息，然后做出响应。</p>
+<h2 id="recv%E5%92%8Csend%E5%87%BD%E6%95%B0" tabindex="-1">recv和send函数</h2>
+<p>ssize_t recv(int sockfd, void *buff, size_t nbytes, int flags);
+ssize_t send(int sockfd, const void *buff, size_t nbytes, int flags);</p>
+<p>分别用于从客户端读取信息和发送信息到客户端。在此不做过多的解释。</p>
+<h2 id="%E5%A5%97%E6%8E%A5%E5%AD%97%E5%9C%B0%E5%9D%80%E7%BB%93%E6%9E%84%E5%A4%A7%E5%B0%8F%E5%92%8C%E5%80%BC-%E7%BB%93%E6%9E%9C%E5%8F%82%E6%95%B0" tabindex="-1">套接字地址结构大小和值-结果参数</h2>
+<p>可以看到，在bind函数和accept函数里面，都有一个套接字地址结构长度的参数，区别在于一个是值形式，另一个是引用形式。套接字地址结构的传递方式取决于该结构的传递方向：是从进程到内核，还是从内核到进程。</p>
+<p>1、从进程到内核：bind、connect、sendto。
+函数将指针和指针所指内容的大小都传给了内核，于是内核知道到底需要从进程复制多少数据进来。</p>
+<p>2、从内核到进程：
+accept、recvfrom、getsockname、getperrname。
+这四个函数的结构大小是以只引用的方式传递。
+因为当函数被调用时，结构大小是一个值，它告诉内核该结构的大小，这样内核在写该结构时不至于越界；当函数返回时，结构大小又是一个结果，它告诉内核在该结构中究竟存储了多少信息。</p>
+<h2 id="http%E5%93%8D%E5%BA%94%E6%8A%A5%E6%96%87" tabindex="-1">HTTP响应报文</h2>
+<p>发送响应给客户端时，发送的报文要遵循HTTP协议，HTTP的响应报文格式如下：</p>
+<p>&lt;status-line&gt;
+&lt;headers&gt;
+&lt;blank line&gt;
+[&lt;response-body&gt;]</p>
+<p>第一行status-line，状态栏，格式：<code>HTTP版本 状态码 状态码代表文字</code>headers是返回报文的类型，长度等信息，接着是一个空行，然后是响应报文的实体。</p>
+<p>一个HTTP响应报文例子：</p>
+<p>HTTP/1.1 200 OK
+Content-Type: text/html;charset=utf-8
+Content-Length: 122</p>
+<p>&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Hello Server&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+Hello Server
+&lt;/body&gt;
+&lt;/html&gt;</p>
+<p>最后close函数关闭套接字，时刻保持关闭文件描述符是一个很好的编程习惯。</p>
+<h2 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h2>
+<p>虽然很多东西看起来很简单，但只有自己真正动手做一遍，才发现其中的简单，之后才能说这些基础是最简单的。要更好和更深入地理解系统的知识，你必须重新一点一点地重新构建一次。</p>
+<p>这个http server的实现源代码我放在了<a href="https://github.com/hoohack/Makehttpd">我的github上</a>，有兴趣的话可以点击查看哦。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

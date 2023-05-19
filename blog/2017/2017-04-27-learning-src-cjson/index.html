@@ -1,0 +1,112 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="[源码学习]cjson库学习" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2017/2017-04-27-learning-src-cjson/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>[源码学习]cjson库学习 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>[源码学习]cjson库学习</h1>
+    <div class="italic text-gray-500">
+      2017/04/27
+    </div>
+    <div>
+      <h2 id="cjson%E5%BA%93%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F" tabindex="-1">cJSON库是什么？</h2>
+<p>cJSON是一个轻量级的json解析库。使用起来非常简单，整个库非常地简洁，核心功能的实现都在cJSON.c文件，非常适合阅读源代码来学习C语言。最近读完这个库的源码，分享自己收获的一些心得。</p>
+<h2 id="%E4%BB%80%E4%B9%88%E6%98%AFjson%EF%BC%8C%E7%85%A7%E6%90%ACjson%E5%AE%98%E7%BD%91%E7%9A%84%E8%AF%B4%E6%B3%95%EF%BC%9A" tabindex="-1">什么是json，照搬json官网的说法：</h2>
+<blockquote>
+<p>JSON(JavaScript Object Notation) 是一种轻量级的数据交换格式。 易于人阅读和编写。同时也易于机器解析和生成。 它基于JavaScript Programming Language, Standard ECMA-262 3rd Edition - December 1999的一个子集。 JSON采用完全独立于语言的文本格式，但是也使用了类似于C语言家族的习惯（包括C, C++, C#, Java, JavaScript, Perl, Python等）。 这些特性使JSON成为理想的数据交换语言。</p>
+</blockquote>
+<h2 id="cjson%E5%BA%93%E9%87%8C%E9%9D%A2%E6%9C%89%E4%BB%80%E4%B9%88%EF%BC%9F" tabindex="-1">cJSON库里面有什么？</h2>
+<p>cjson库github地址：<a href="https://github.com/DaveGamble/cJSON">https://github.com/DaveGamble/cJSON</a>
+整个库包含cJSON.h和cJSON.c两个文件，头文件定义了一系列的API。这个库最基本也最重要的功能就是解析一个json字符串，使用的API是cJSON_Parse。cJSON_Parse函数调用了cJSON_ParseWithOpts函数，该函数实现了具体的逻辑。</p>
+<p>两个函数的原型如下：</p>
+<p>CJSON_PUBLIC(cJSON *) cJSON_Parse(const char *value);
+CJSON_PUBLIC(cJSON *) cJSON_ParseWithOpts(const char *value, const char **return_parse_end, cJSON_bool require_null_terminated);</p>
+<p>函数接收一段字符串，然后进行解析后返回。解析完返回的是一个cjson结构，cJSON结构的定义如下：</p>
+<p>typedef struct cJSON
+{
+struct cJSON *next; // 向后指针
+struct cJSON *prev; // 向前指针</p>
+<p>struct cJSON *child; // 指向子元素，比如子数组或者子对象</p>
+<p>int type; // 元素的类型</p>
+<p>char *valuestring; // 元素的字符串值，如果type == cJSON_String 或者 type == cJSO_Raw</p>
+<p>int valueint; // 已废弃，现在使用cJSON_SetNumberValue设置整型值</p>
+<p>double valuedouble; // 元素的整型值，如果type == cJSON_Number</p>
+<p>char *string; // 表示元素键值的值，如果它有子元素的话
+} cJSON;</p>
+<h2 id="%E5%A6%82%E4%BD%95%E8%A7%A3%E6%9E%90%E4%B8%80%E4%B8%AAjson%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%9F" tabindex="-1">如何解析一个json字符串？</h2>
+<p>json的官网在这里，<a href="http://www.json.org">http://www.json.org</a>
+网站首页描述了json是什么以及它的格式规范，有了规范之后，可以知道json是如何构成的，因此就有了如何解析json数据的方向。</p>
+<p>json使用两种结构构建，对象或者数组。</p>
+<p>对象使用<code>{</code>作开头，<code>}</code>作结尾，里边的每一个元素都是键值对的无序集合，键名和值使用<code>:</code>分隔，使用<code>,</code>分隔每一个元素；数组使用[作开头，]作结尾，里面的元素都是有序的值组成的集合，且使用<code>,</code>做分隔符。</p>
+<p>每一个值可以是字符串，整型，也可以是true，false，null等常量，还可以是对象或数组，因为json结构是可嵌套的。</p>
+<p>因此，我们可以得知：</p>
+<p>1、可以根据json的首字母判断整个json的类型，如果json以<code>'{'</code>开头时，就是对象，以<code>'['</code>开头时，就是数组，否则就是字符串或者其他常量。</p>
+<p>2、如果是对象，那么它的一定有键名，先解析它的键名，然后解析它的值，解析值的过程与第一步一样，递归解析</p>
+<p>3、如果是数组，则逐个解析数组内的元素，直到遇到<code>]</code>为止，解析数组里面的元素的过程也是与第一步一致，递归解析。</p>
+<p>这就是根据json官网的定义得出解析json字符串的思路，接下来看看cJSON库是如何实现的。cJSON_Parse的实现流程图如下：</p>
+<p><img src="https://www.hoohack.me/assets/images/2017/04/cjson-process.png" alt=""></p>
+<p>cJSON_ParseWithOpts函数里面调用了parse_value，是整个函数的核心实现。
+parse_value函数的流程图如下所示：
+<img src="https://www.hoohack.me/assets/images/2017/04/cjson-parse-value.png" alt=""></p>
+<p>可以看到，parse_value是对json值的开头进行判断，然后进入相应的分支进行解析，下面对每一个分支进行分析。解析出来的值是保存在cJSON的结构体中，以下命名为item。</p>
+<h3 id="%E5%B8%B8%E9%87%8F" tabindex="-1">常量</h3>
+<p>如果json值是以'null','true','false',则分别将item的type设置为cJSON_NULL、cJSON_TRUE、cJSON_FALSE。然后继续解析剩下的json值。</p>
+<h3 id="string" tabindex="-1">string</h3>
+<p>如果遇到&quot;开头，则说明json值是字符串，就解析它的值，此时只需要拿到两个&quot;之间的值即可。保存字符串也是一个结构体，需要申请内存，计算长度的过程中，当遇到转义字符时，需要记录，因为转义符不保存。</p>
+<h3 id="number" tabindex="-1">number</h3>
+<p>当遇到数字开头时，将其后面的数字字符记录起来，然后转成整型数字，然后做值的范围检查。</p>
+<h3 id="array" tabindex="-1">array</h3>
+<p>解析数组时，为数组的元素创建一个新的json结构体new_item，然后继续解析数组里面的值，用','判断下一个元素的位置，得到的值保存到结构体中，并将多个元素用链表连接起来。一直解析，直到遇到']'符号。</p>
+<h3 id="object" tabindex="-1">object</h3>
+<p>解析对象的过程与数组的类似，为对象的元素创建一个新的json结构体new_item，然后继续解析对象里面的值，对象是有键值对组成的，因此先得到键的值，然后用':'判断值的位置，进而继续解析得到值，多个键值对之间用','分隔开，最后用链表连接起来。一直解析，直到遇到'}'符号。</p>
+<h2 id="%E5%85%B6%E4%BB%96" tabindex="-1">其他</h2>
+<p>在解析所有值之前，会调用skip_whitespace函数过滤字符串两边的所有空白字符。此处是ASCII码小于等于32的字符，如：\t、\n。函数如下：</p>
+<p>static const unsigned char *skip_whitespace(const unsigned char *in)
+{
+while (in &amp;&amp; *in &amp;&amp; (*in &lt;= 32))
+{
+in++;
+}</p>
+<p>return in;
+}</p>
+<h2 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h2>
+<p>通过阅读这个小小的json解析库，知道了大部分的json库是如何实现的，自己对json的认识也有了一个更深刻的印象。
+学习到了一种解析某种格式的字符串的思路，要先知道该字符串格式的规范，直到它是如何组成的，有哪些规则和注意的地方，从它的组成规范中逐步分解和解析。</p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+<p>如果本文对你有帮助，请点个赞吧，谢谢^_^</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

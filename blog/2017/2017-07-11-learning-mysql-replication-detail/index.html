@@ -1,0 +1,92 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="MySQL主从复制原理探索" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2017/2017-07-11-learning-mysql-replication-detail/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>MySQL主从复制原理探索 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>MySQL主从复制原理探索</h1>
+    <div class="italic text-gray-500">
+      2017/07/11
+    </div>
+    <div>
+      <p><a href="https://www.hoohack.me/2017/06/24/mark-mysql-replication-bad-case">上一篇文章</a>里面，讲到了遇到mysql主从延迟的坑，对于这次的坑多说两句，以前也看过这样的例子，也知道不能够写完之后马上更新，但是真正开发的时候还是没有注意到这一点，道理大家都懂，但是还是会犯错，只有等到自己亲生体验到该错误之后，才真正的掌握到该道理。</p>
+<p>经历过一次mysql主从延迟之后，就开始思考，主从复制是什么东西？它是怎么实现的呢？它的原理是什么？于是乎就开始查阅资料、文章，现将自己理解到的内容总结在此，加深印象。</p>
+<h2 id="%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%81%9A%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%EF%BC%9F" tabindex="-1">为什么要做主从复制？</h2>
+<p>1、在业务复杂的系统中，有这么一个情景，有一句sql语句需要锁表，导致暂时不能使用读的服务，那么就很影响运行中的业务，使用主从复制，让主库负责写，从库负责读，这样，即使主库出现了锁表的情景，通过读从库也可以保证业务的正常运作。</p>
+<p>2、做数据的热备</p>
+<p>3、架构的扩展。业务量越来越大，I/O访问频率过高，单机无法满足，此时做多库的存储，降低磁盘I/O访问的频率，提高单个机器的I/O性能。</p>
+<h2 id="mysql%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E7%9A%84%E5%8E%9F%E7%90%86%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F" tabindex="-1">mysql主从复制的原理是什么？</h2>
+<p>binlog: binary log，主库中保存所有更新事件日志的二进制文件。</p>
+<p>主从复制的基础是主库记录数据库的所有变更记录到binlog。binlog是数据库服务器启动的那一刻起，保存所有修改数据库结构或内容的一个文件。</p>
+<p>mysql主从复制是一个异步的复制过程，主库发送更新事件到从库，从库读取更新记录，并执行更新记录，使得从库的内容与主库保持一致。</p>
+<p>在主库里，只要有更新事件出现，就会被依次地写入到binlog里面，之后会推到从库中作为从库进行复制的数据源。</p>
+<p>**binlog输出线程。**每当有从库连接到主库的时候，主库都会创建一个线程然后发送binlog内容到从库。
+对于每一个即将发送给从库的sql事件，binlog输出线程会将其锁住。一旦该事件被线程读取完之后，该锁会被释放，即使在该事件完全发送到从库的时候，该锁也会被释放。</p>
+<p>在从库里，当复制开始的时候，从库就会创建两个线程进行处理：</p>
+<p>**从库I/O线程。**当START SLAVE语句在从库开始执行之后，从库创建一个I/O线程，该线程连接到主库并请求主库发送binlog里面的更新记录到从库上。
+从库I/O线程读取主库的binlog输出线程发送的更新并拷贝这些更新到本地文件，其中包括relay log文件。</p>
+<p>**从库的SQL线程。**从库创建一个SQL线程，这个线程读取从库I/O线程写到relay log的更新事件并执行。</p>
+<p>可以知道，对于每一个主从复制的连接，都有三个线程。拥有多个从库的主库为每一个连接到主库的从库创建一个binlog输出线程，每一个从库都有它自己的I/O线程和SQL线程。</p>
+<p>从库通过创建两个独立的线程，使得在进行复制时，从库的读和写进行了分离。因此，即使负责执行的线程运行较慢，负责读取更新语句的线程并不会因此变得缓慢。比如说，如果从库有一段时间没运行了，当它在此启动的时候，尽管它的SQL线程执行比较慢，它的I/O线程可以快速地从主库里读取所有的binlog内容。这样一来，即使从库在SQL线程执行完所有读取到的语句前停止运行了，I/O线程也至少完全读取了所有的内容，并将其安全地备份在从库本地的relay log，随时准备在从库下一次启动的时候执行语句。</p>
+<h2 id="%E6%9F%A5%E7%9C%8B%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E7%9A%84%E7%8A%B6%E6%80%81" tabindex="-1">查看主从复制的状态</h2>
+<p>当主从复制正在进行中时，如果想查看从库两个线程运行状态，可以通过执行在从库里执行”show slave status\G”语句，以下的字段可以给你想要的信息：</p>
+<p>Master_Log_File — 上一个从主库拷贝过来的binlog文件
+Read_Master_Log_Pos — 主库的binlog文件被拷贝到从库的relay log中的位置
+Relay_Master_Log_File — SQL线程当前处理中的relay log文件
+Exec_Master_Log_Pos — 当前binlog文件正在被执行的语句的位置</p>
+<p>整个主从复制的流程可以通过以下图示理解：</p>
+<p><img src="https://www.hoohack.me/assets/images/2017/07/DB-replication.png" alt="DB Replication"></p>
+<blockquote>
+<ul>
+<li>步骤一：主库db的更新事件(update、insert、delete)被写到binlog</li>
+<li>步骤二：从库发起连接，连接到主库</li>
+<li>步骤三：此时主库创建一个binlog dump thread，把binlog的内容发送到从库</li>
+<li>步骤四：从库启动之后，创建一个I/O线程，读取主库传过来的binlog内容并写入到relay log</li>
+<li>步骤五：还会创建一个SQL线程，从relay log里面读取内容，从<strong>Exec_Master_Log_Pos</strong>位置开始执行读取到的更新事件，将更新内容写入到slave的db</li>
+</ul>
+</blockquote>
+<p>注：上面的解释是解释每一步做了什么，整个mysql主从复制是异步的，不是按照上面的步骤执行的。</p>
+<h2 id="%E5%85%B6%E4%BB%96" tabindex="-1">其他</h2>
+<p>关于主从复制架构的搭建，可以参考网上更多的文档，文笔有限，不做更多的介绍。</p>
+<p>作为一名开发，这些基础的mysql知识还是需要多多学习。</p>
+<h2 id="%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99" tabindex="-1">参考资料</h2>
+<p><a href="http://dbadiaries.com/what-is-mysql-replication-and-how-does-it-work">What is MySQL Replication and How Does It Work?</a></p>
+<p><a href="https://dev.mysql.com/doc/refman/5.6/en/replication-implementation-details.html">Replication Implementation Details</a></p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+<p>如果本文对你有帮助，请点个赞吧，谢谢^_^</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

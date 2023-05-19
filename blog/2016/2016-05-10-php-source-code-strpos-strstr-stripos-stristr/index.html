@@ -1,0 +1,184 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="［PHP源码阅读］strpos、strstr和stripos、stristr函数" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-05-10-php-source-code-strpos-strstr-stripos-stristr/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>［PHP源码阅读］strpos、strstr和stripos、stristr函数 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>［PHP源码阅读］strpos、strstr和stripos、stristr函数</h1>
+    <div class="italic text-gray-500">
+      2016/05/10
+    </div>
+    <div>
+      <p>我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。<a href="https://github.com/read-php-src/read-php-src">PHP5.4源码注解</a>。可以通过<a href="https://github.com/read-php-src/read-php-src/commits/master">commit记录</a>查看已添加的注解。</p>
+<h1 id="strpos" tabindex="-1">strpos</h1>
+<p>mixed strpos ( string $haystack, mixed $needle [, int $offset = 0 ] )</p>
+<p>如果offset指定了，查找会从offset的位置开始。offset不能为负数。</p>
+<p>返回needle第一次出现在haystack的位置。如果在haystack中找不到needle，则返回FALSE。</p>
+<p>needle，如果needle不是字符串，它会被转换成整型数值并赋值为该数值的ASCII字符。请看下面例子。</p>
+<h2 id="%E4%BE%8B%E5%AD%90" tabindex="-1">例子</h2>
+<p>$str = &quot;hello&quot;;
+$pos = strpos($str, 111);
+// 111的ASCII值是o，因此$pos = 4</p>
+<h2 id="strpos%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81" tabindex="-1">strpos核心源码</h2>
+<p>if (Z_TYPE_P(needle) == IS_STRING) {
+if (!Z_STRLEN_P(needle)) {
+php_error_docref(NULL TSRMLS_CC, E_WARNING, &quot;Empty needle&quot;);
+RETURN_FALSE;
+}</p>
+<p>// 调用php_memnstr函数查找needle
+found = php_memnstr(haystack + offset,
+Z_STRVAL_P(needle),
+Z_STRLEN_P(needle),
+haystack + haystack_len);
+} else {
+// 如果不是字符串，转换成数字并赋值为该数字的ASCII字符。
+if (php_needle_char(needle, needle_char TSRMLS_CC) != SUCCESS) {
+RETURN_FALSE;
+}
+//设置结束字符
+needle_char[1] = 0;
+found = php_memnstr(haystack + offset,
+needle_char,
+1,
+haystack + haystack_len);
+　　  }
+}</p>
+<p>有一点要注意的是，如果needle不是字符串的话，会调用<strong>php_needle_char</strong>函数将needle转成整型数字并转换为其ASCII值。</p>
+<h2 id="%E6%9F%A5%E6%89%BE%E5%87%BD%E6%95%B0" tabindex="-1">查找函数</h2>
+<p>函数最后返回的是found，<strong>php_memnstr</strong>函数实现了查找的方法。那么再继续看看php_memnstr函数做了什么：</p>
+<p>#define php_memnstr zend_memnstr</p>
+<p>php_memnstr是函数<strong>zend_memnstr</strong>的宏定义，查看zend_memnstr函数如下：</p>
+<p>static inline char *
+zend_memnstr(char *haystack, char *needle, int needle_len, char *end)
+{
+char *p = haystack;
+char ne = needle[needle_len-1];
+if (needle_len == 1) {
+return (char *)memchr(p, *needle, (end-p));
+}</p>
+<p>if (needle_len &gt; end-haystack) {
+return NULL;
+}</p>
+<p>// 第一个优化，只查找end - needle_len次
+end -= needle_len;</p>
+<p>while (p &lt;= end) {
+// 第二个优化，先判断字符串的开头和结尾是否一样再判断整个字符串
+if ((p = (char *)memchr(p, *needle, (end-p+1))) &amp;&amp; ne == p[needle_len-1]) {
+if (!memcmp(needle, p, needle_len-1)) {
+return p;
+}
+}</p>
+<p>if (p == NULL) {
+return NULL;
+}</p>
+<p>p++;
+}</p>
+<p>return NULL;
+}</p>
+<p>第一个优化，因为<code>(char *)memchr(p, *needle, (end-p+1)</code>是在end - needle_len + 1（即haystack_len+1）中查找，如果p为空，说明needle的第一个字符在p中从未出现过。</p>
+<h1 id="strstr" tabindex="-1">strstr</h1>
+<p>string strstr ( string $haystack, mixed $needle [, bool $before_needle = false ] )
+返回needle在haystack中第一次出现的位置到结束的字符串。</p>
+<p>这个函数的区分大小写的。</p>
+<p>如果needle在haystack中不存在，返回FALSE。</p>
+<p>如果before_needle为true，则返回haystack中needle在haystack第一次出现的位置之前的字符串。</p>
+<h2 id="strstr%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81" tabindex="-1">strstr核心源码</h2>
+<p>if (found) {
+// 计算出found的位置
+found_offset = found - haystack;
+if (part) {
+RETURN_STRINGL(haystack, found_offset, 1);
+} else {
+RETURN_STRINGL(found, haystack_len - found_offset, 1);
+}
+}</p>
+<p>strstr函数的前半部分跟strpos类似，区别在于strstr函数在找到位置后，需要返回haystack部分的字符串。part变量就是调用strstr函数时传递的before_needle变量。</p>
+<h1 id="stripos" tabindex="-1">stripos</h1>
+<p>mixed stripos ( string $haystack, string $needle [, int $offset = 0 ] )
+不区分大小写的strpos。实现方式跟下面的类似，主要是使用一份拷贝然后将需要比较的字符串转换成小写字符后进行再进行查找。</p>
+<h1 id="stristr" tabindex="-1">stristr</h1>
+<p>string stristr ( string $haystack, mixed $needle [, bool $before_needle = false ] )
+不区分大小写的strstr。</p>
+<h2 id="%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81" tabindex="-1">核心源码</h2>
+<p>// 拷贝一份haystack
+haystack_dup = estrndup(haystack, haystack_len);</p>
+<p>if (Z_TYPE_P(needle) == IS_STRING) {
+char *orig_needle;
+if (!Z_STRLEN_P(needle)) {
+php_error_docref(NULL TSRMLS_CC, E_WARNING, &quot;Empty needle&quot;);
+efree(haystack_dup);
+RETURN_FALSE;
+}
+orig_needle = estrndup(Z_STRVAL_P(needle), Z_STRLEN_P(needle));
+// 调用php_stristr函数找出orig_needle的值。
+found = php_stristr(haystack_dup, orig_needle,    haystack_len, Z_STRLEN_P(needle));
+efree(orig_needle);
+} else {
+if (php_needle_char(needle, needle_char TSRMLS_CC) != SUCCESS) {
+efree(haystack_dup);
+RETURN_FALSE;
+}
+needle_char[1] = 0;</p>
+<p>found = php_stristr(haystack_dup, needle_char,    haystack_len, 1);
+}</p>
+<p>if (found) {
+found_offset = found - haystack_dup;
+if (part) {
+RETVAL_STRINGL(haystack, found_offset, 1);
+} else {
+RETVAL_STRINGL(haystack + found_offset, haystack_len - found_offset, 1);
+}
+} else {
+RETVAL_FALSE;
+}</p>
+<p>// 释放变量
+efree(haystack_dup);</p>
+<p>可以知道，found是从php_stristr中得到的，继续查看php_stristr函数：</p>
+<p>PHPAPI char *php_stristr(char *s, char *t, size_t s_len, size_t t_len)
+{
+php_strtolower(s, s_len);
+php_strtolower(t, t_len);
+return php_memnstr(s, t, t_len, s + s_len);
+}
+这个函数的功能就是将字符串都转成小写之后调用php_mennstr函数来查找needle在haystack第一次出现的位置。</p>
+<h1 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h1>
+<p>因为strpos/stripos返回的是位置，位置从0开始计算，所以判断查找失败都用<code>=== FALSE</code>更适合。</p>
+<p>阅读PHP的源码收获挺多，一方面可以知道某个函数的具体实现原理是怎样的，另一方面可以学习到一些编程优化方案。</p>
+<p>到此本文结束，如果还有什么疑问或者建议，可以多多交流，原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+<p>我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。<a href="https://github.com/read-php-src/read-php-src">PHP5.4源码注解</a>。可以通过<a href="https://github.com/read-php-src/read-php-src/commits/master">commit记录</a>查看已添加的注解。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

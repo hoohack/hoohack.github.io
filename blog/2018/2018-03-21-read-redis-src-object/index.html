@@ -1,0 +1,195 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="［Redis源码阅读］redis对象" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2018/2018-03-21-read-redis-src-object/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>［Redis源码阅读］redis对象 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>［Redis源码阅读］redis对象</h1>
+    <div class="italic text-gray-500">
+      2018/03/21
+    </div>
+    <div>
+      <h2 id="%E7%BB%93%E6%9E%84%E5%AE%9A%E4%B9%89" tabindex="-1">结构定义</h2>
+<p>在redis中，对象的数据结构定义如下：</p>
+<p>​typedef struct redisObject {
+​unsigned type:4;
+​unsgined encoding:4;
+​unsigned lru:LRU_BITS;
+​int refcount;
+​void *ptr;
+​}</p>
+<p>结构定义中的<code>type:4</code>、<code>encoding:4</code>这种定义方式称为**<a href="http://its.nbtvu.net.cn/xhyu/cai_c/c_web/c/c8/c83.htm">位段类型</a>**。</p>
+<blockquote>
+<p>使用位段类型的好处就是避免浪费内存，如果使用<code>unsigned int type</code>定义type字段，需要4个字节，而使用<code>unsigned type:4</code>，只需要4个位段就足够了。</p>
+</blockquote>
+<h2 id="%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E" tabindex="-1">参数说明</h2>
+<p>redis对象有许多特性，比如：类型检查（通过type实现）、命令多态（encoding实现）、内存共享（通过refcount实现）等等，这些特性都是通过redisObject中的参数实现的。</p>
+<h3 id="type" tabindex="-1">type</h3>
+<p>对象类型，它的取值范围有五个，分别是redis使用的五种对象类型：
+​</p>
+<blockquote>
+<ul>
+<li><code>#define OBJ_STRING 0</code></li>
+<li><code>#define OBJ_LIST 1</code></li>
+<li><code>​#define OBJ_SET 2</code></li>
+<li><code>#define OBJ_ZSET 3</code></li>
+<li><code>#define OBJ_HASH 4</code></li>
+</ul>
+</blockquote>
+<p>在执行命令前对type字段进行检查，可判断出对象是否是命令允许执行的对象类型。</p>
+<h3 id="encoding" tabindex="-1">encoding</h3>
+<p>对象使用的编码类型，它的取值范围有下面这些：</p>
+<blockquote>
+<ul>
+<li><code>#define OBJ_ENCODING_RAW 0     /* 动态字符串 */</code></li>
+<li><code>#define OBJ_ENCODING_INT 1     /* 整数 */</code></li>
+<li><code>#define OBJ_ENCODING_HT 2      /* 哈希表 */</code></li>
+<li><code>#define OBJ_ENCODING_ZIPMAP 3</code></li>
+<li><code>#define OBJ_ENCODING_LINKEDLIST 4 /* 旧的列表编码，现在不再使用了 */</code></li>
+<li><code>#define OBJ_ENCODING_ZIPLIST 5 /* 压缩表 */</code></li>
+<li><code>#define OBJ_ENCODING_INTSET 6  /* 整数集合 */</code></li>
+<li><code>#define OBJ_ENCODING_SKIPLIST 7  /* 跳跃表 */</code></li>
+<li><code>#define OBJ_ENCODING_EMBSTR 8  /* 用于保存短字符串的编码类型 */</code></li>
+<li><code>#define OBJ_ENCODING_QUICKLIST 9 /* 压缩链表和双向链表组成的快速列表 */</code></li>
+</ul>
+</blockquote>
+<p>在调用命令的时候，redis还会根据对象使用的编码类型来选择正确的底层对象，执行对应函数的实现代码。</p>
+<h3 id="lru" tabindex="-1">lru</h3>
+<p>最近最后一次被命令访问的时间 或者 最近最少使用的数据。</p>
+<blockquote>
+<p>在执行OBJECT IDLETIME命令时，通过当前时间减去lru属性的值，得到键的空转时长。另外，如果服务器打开了maxmemory选项，且使用的内存回收算法是volatile-lur或者allkeys-lru，那么当服务器占用的内存超过了maxmemory的上限值，空转时长较高的键会优先被服务器释放，从而回收内存。</p>
+</blockquote>
+<h3 id="refcount" tabindex="-1">refcount</h3>
+<p>对象的引用计数。</p>
+<blockquote>
+<p>redis的对象共享和内存回收特性就是通过refcount属性来实现，通过将refcount + 1实现对象共享；进行内存回收检查时，检查refcount == 0的对象，将对象进行回收。</p>
+</blockquote>
+<h3 id="ptr" tabindex="-1">ptr</h3>
+<p>指向底层数据结构用于保存数据的指针。</p>
+<h2 id="%E5%AF%B9%E8%B1%A1%E4%BD%BF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" tabindex="-1">对象使用的数据结构</h2>
+<p>redis有五种对象，不同对象可能用到的数据结构如下图所示：</p>
+<p><img src="https://www.hoohack.me/assets/images/2018/03/redis-object-type.png" alt="redis对象"></p>
+<h2 id="%E7%BC%96%E7%A0%81%E8%BD%AC%E6%8D%A2%E4%B8%8E%E5%91%BD%E4%BB%A4%E5%A4%9A%E6%80%81" tabindex="-1">编码转换与命令多态</h2>
+<p>同一种对象使用不同的数据结构是通过encoding来实现，而且，同一个命令的实现方法会根据对象的编码属性而变化，这是命令的多态实现。
+以哈希对象为例看看编码转换以及命令多态等特性是怎么实现的。</p>
+<h3 id="%E5%93%88%E5%B8%8C%E5%AF%B9%E8%B1%A1" tabindex="-1">哈希对象</h3>
+<p>哈希对象使用的编码有：ziplist、hashtable。</p>
+<p>如果使用压缩表作为底层实现，每当有新的键值对需要加入哈希对象，会先添加键节点到链表，然后添加值节点。</p>
+<p>使用hashtable作为底层实现，每一个新的键值对都会使用字典键值对来保存，键和值分别是字符串对象。</p>
+<p>使用不同结构保存后的结构图如下所示：</p>
+<p>ziplist编码</p>
+<p><img src="https://www.hoohack.me/assets/images/2018/03/hash_ziplist.png" alt="ziplist编码"></p>
+<p>hashtable编码</p>
+<p><img src="https://www.hoohack.me/assets/images/2018/03/hash_dict.png" alt="hashtable编码"></p>
+<h3 id="%E7%BC%96%E7%A0%81%E8%BD%AC%E6%8D%A2" tabindex="-1">编码转换</h3>
+<p>每一种对象在使用编码的时候都有一定的条件，使用ziplist编码的哈希对象都应该满足两个条件：</p>
+<blockquote>
+<ul>
+<li>1、所有键值对的键和值字符串对象长度小于64字节</li>
+<li>2、哈希对象保存的键值对数量小于512个</li>
+</ul>
+</blockquote>
+<p>如果不能满足上述条件时，redis会进行对哈希对象底层数据结构进行从压缩表到字典的转换，实现步骤是遍历压缩表，获取压缩表中的键和值，使用得到的键和值创建一个字典对象，然后添加字典里，具体代码如下：</p>
+<p>hashTypeIterator *hi;
+dict *dict;
+int ret;</p>
+<p>// 创建遍历器对象和哈希表
+hi = hashTypeInitIterator(o);
+dict = dictCreate(&amp;hashDictType, NULL);</p>
+<p>while (hashTypeNext(hi) != C_ERR) {
+sds key, value;</p>
+<p>// 用获取ziplis中的key、value新增键值对到哈希表
+key = hashTypeCurrentObjectNewSds(hi,OBJ_HASH_KEY);
+value = hashTypeCurrentObjectNewSds(hi,OBJ_HASH_VALUE);
+ret = dictAdd(dict, key, value);
+if (ret != DICT_OK) {
+serverLogHexDump(LL_WARNING,&quot;ziplist with dup elements dump&quot;,
+o-&gt;ptr,ziplistBlobLen(o-&gt;ptr));
+serverPanic(&quot;Ziplist corruption detected&quot;);
+}
+}
+hashTypeReleaseIterator(hi);
+zfree(o-&gt;ptr);
+o-&gt;encoding = OBJ_ENCODING_HT;
+o-&gt;ptr = dict;</p>
+<h3 id="%E5%91%BD%E4%BB%A4%E5%A4%9A%E6%80%81" tabindex="-1">命令多态</h3>
+<p>命令多态是检查对象的编码，然后执行不同的实现方式。比如哈希对象中的hget命令。</p>
+<p>hget命令实现代码：</p>
+<p>void hgetCommand(client *c) {
+robj *o;</p>
+<p>// key不存在，返回空
+if ((o = lookupKeyReadOrReply(c,c-&gt;argv[1],shared.nullbulk)) == NULL ||
+checkType(c,o,OBJ_HASH)) return;</p>
+<p>addHashFieldToReply(c, o, c-&gt;argv[2]-&gt;ptr);
+}</p>
+<p>hget命令的实现最终是调用addHashFieldToReply函数（代码如下），该函数是通过判断哈希对象的编码来决定使用什么函数来获取哈希对象具体field的值，其他命令的实现也是大同小异。</p>
+<p>static void addHashFieldToReply(client *c, robj *o, sds field) {
+int ret;</p>
+<p>if (o == NULL) {
+addReply(c, shared.nullbulk);
+return;
+}</p>
+<p>// 根据底层不同编码获取field的值
+if (o-&gt;encoding == OBJ_ENCODING_ZIPLIST) {
+unsigned char *vstr = NULL;
+unsigned int vlen = UINT_MAX;
+long long vll = LLONG_MAX;</p>
+<p>ret = hashTypeGetFromZiplist(o, field, &amp;vstr, &amp;vlen, &amp;vll);
+if (ret &lt; 0) {
+addReply(c, shared.nullbulk);
+} else {
+if (vstr) {
+addReplyBulkCBuffer(c, vstr, vlen);
+} else {
+addReplyBulkLongLong(c, vll);
+}
+}</p>
+<p>} else if (o-&gt;encoding == OBJ_ENCODING_HT) {
+sds value = hashTypeGetFromHashTable(o, field);
+if (value == NULL)
+addReply(c, shared.nullbulk);
+else
+addReplyBulkCBuffer(c, value, sdslen(value));
+} else {
+serverPanic(&quot;Unknown hash encoding&quot;);
+}
+}</p>
+<h2 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h2>
+<p>redis中的很多操作都是基于上面介绍的redis对象，了解这些对象的底层实现，可以为之后更多的redis特性做准备。</p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

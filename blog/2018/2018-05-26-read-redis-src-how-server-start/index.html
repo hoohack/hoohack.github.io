@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="［Redis源码阅读］当你启动Redis的时候，Redis做了什么" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2018/2018-05-26-read-redis-src-how-server-start/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>［Redis源码阅读］当你启动Redis的时候，Redis做了什么 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>［Redis源码阅读］当你启动Redis的时候，Redis做了什么</h1>
+    <div class="italic text-gray-500">
+      2018/05/26
+    </div>
+    <div>
+      <p>直奔主题，当启动Redis的时候，Redis执行了哪些操作？</p>
+<p>假设Redis安装在了/usr/local/目录下，那么启动Redis是通过执行<code>/usr/local/bin/redis-server -c xxx.conf</code>的方式执行。
+redis-server是一个通过编译server.c文件生成的程序，因此想了解redis是怎么启动的，应该从server.c/main函数入手。</p>
+<p>具体代码可见：<a href="https://github.com/hoohack/read-redis-src/blob/master/redis-4.0/src/server.c">server.c</a></p>
+<p>阅读main函数，可以知道，整个启动大致分为五个步骤：初始化server结构体、从配置文件夹在加载参数、初始化服务器、载入持久化文件、开始监听事件。</p>
+<p>redis用redisServer结构体来保存服务器的属性和信息，在server.c文件中，定义了一个全局服务器变量：</p>
+<p>struct redisServer server;</p>
+<p>另外，还定义了一个redis命令表，表里包含了命令以及命令对应的函数：</p>
+<p>struct redisCommand redisCommandTable;</p>
+<p>在main函数里，redis先调用initServerConfig函数初始化server结构体。</p>
+<h2 id="%E5%88%9D%E5%A7%8B%E5%8C%96server%E7%BB%93%E6%9E%84%E4%BD%93" tabindex="-1">初始化server结构体</h2>
+<p>main函数调用initServerConfig函数为server的属性设置一些默认值，比如：</p>
+<p>服务器的运行ID</p>
+<p>redis使用的默认端口号，是在server.h定义的CONFIG_DEFAULT_SERVER_PORT = 6379</p>
+<p>LRU时钟</p>
+<p>主从备份相关参数</p>
+<p>命令表</p>
+<p>慢查询参数</p>
+<p>接着会保存当前执行的路径和参数，为之后的服务器重启使用相同的参数做准备：</p>
+<p>server.executable = getAbsolutePath(argv[0]);
+server.exec_argv = zmalloc(sizeof(char*)*(argc+1));
+server.exec_argv[argc] = NULL;
+for (j = 0; j &lt; argc; j++) server.exec_argv[j] = zstrdup(argv[j]);</p>
+<h2 id="%E4%BB%8E%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E8%BD%BD%E5%8F%82%E6%95%B0" tabindex="-1">从配置文件加载参数</h2>
+<p>redis的启动参数有很多，其中一个是指定配置文件。初始化server结构体后，大部分的属性都会设置到结构体了，但是有部分参数可以通过配置文件重现设置，比如redis的端口号。</p>
+<p>初始化完server结构体后，函数会判断是否有指定配置文件，如果有，调用loadServerConfig函数，从配置文件加载相关的配置，把配置文件对应的参数设置到server结构体。</p>
+<p>读取配置文件加载参数的流程如下：</p>
+<blockquote>
+<ul>
+<li>1、分割参数项</li>
+<li>2、跳过空行和注释行</li>
+<li>3、逐项检查，如果参数合法，设置配置值到server属性</li>
+</ul>
+</blockquote>
+<p>至此，redisServer大部分属性已经设置好，server还有很多数据结构没有初始化，initServer函数就继续接下来的初始化工作。</p>
+<h2 id="%E5%88%9D%E5%A7%8B%E5%8C%96%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" tabindex="-1">初始化服务器数据结构</h2>
+<p>main函数会调用initServer函数初始化服务器状态，比如：</p>
+<p>进程ID</p>
+<p>客户端链表</p>
+<p>从库链表</p>
+<p>为常用值创建共享对象</p>
+<p>初始化事件循环器</p>
+<p>打开TCP开始监听套接字</p>
+<p>创建服务器的数据库，并初始化内部状态</p>
+<p>为serverCron定时器创建时间事件定时器</p>
+<p>如果开启了AOF，打开AOF文件，之后恢复数据时需要用到</p>
+<p>初始化慢查询日志模块</p>
+<p>初始化后台IO模块</p>
+<h2 id="%E8%BD%BD%E5%85%A5%E6%8C%81%E4%B9%85%E5%8C%96%E6%96%87%E4%BB%B6%EF%BC%8C%E8%BF%98%E5%8E%9F%E6%95%B0%E6%8D%AE%E5%BA%93" tabindex="-1">载入持久化文件，还原数据库</h2>
+<p>初始化完服务器的状态后，服务器已经处于一个可启动状态，因为redis有持久化特性，服务器还需要加载相应的文件来还原之前数据库的数据。
+判断Redis当前开启了哪种模式，如果是AOF，则通过AOF还原数据库的数据，否则，载入RDB文件，通过RDB文件还原数据库的数据。</p>
+<h2 id="%E5%BC%80%E5%A7%8B%E7%9B%91%E5%90%AC%E4%BA%8B%E4%BB%B6" tabindex="-1">开始监听事件</h2>
+<p>main函数会设置beforeSleep和afterSleep回调函数，然后调用aeMain函数启动事件循环器，开始监听事件。aeMain函数是一个死循环，不断的监听新请求的到来。</p>
+<p>/*
+* server启动后，main函数的最终步骤，不断地调用beforesleep和aeProcessEvents
+*/
+void aeMain(aeEventLoop *eventLoop) {
+eventLoop-&gt;stop = 0;
+while (!eventLoop-&gt;stop) {
+if (eventLoop-&gt;beforesleep != NULL)
+eventLoop-&gt;beforesleep(eventLoop);
+aeProcessEvents(eventLoop, AE_ALL_EVENTS|AE_CALL_AFTER_SLEEP);
+}
+}</p>
+<p>综上所述，服务器整个启动简化流程图如下：</p>
+<p><img src="https://www.hoohack.me/assets/images/2018/05/redis-start.png" alt="redisServer"></p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

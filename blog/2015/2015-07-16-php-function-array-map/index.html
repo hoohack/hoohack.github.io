@@ -1,0 +1,187 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="PHP函数--array_map" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-07-16-php-function-array-map/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>PHP函数--array_map | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>PHP函数--array_map</h1>
+    <div class="italic text-gray-500">
+      2015/07/16
+    </div>
+    <div>
+      <p>最近开发过程中经常使用到这个函数，这个函数用在不遍历数组而通过回调函数处理数组的每一项很有用。记录一下这个函数的使用以及自己最近常用的功能。</p>
+<blockquote>
+<p>array_map-将回调函数作用到给定数组的单元上。</p>
+</blockquote>
+<p>##说明</p>
+<p>array_map (callable $callback, array $arr1 [, array $...])</p>
+<p>array_map() 返回一个数组，该数组包含了arr1中的所有单元经过callback作用后的单元。callback接受的参数数目应该和传递给array_map()函数的数组数目一样。</p>
+<p>##参数</p>
+<blockquote>
+<ul>
+<li>callback 对每个数组的每个元素作用的回调函数</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>arr1 将被回调函数（callback）执行的数组</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>...(array) 将被回调函数（callback）执行的数组列表</li>
+</ul>
+</blockquote>
+<p>##返回值
+返回一个数组，该数组的每个元素都是数组（arr1）里面的每个元素经过回调函数（callback）处理了的。</p>
+<p>##使用范例</p>
+<p>1、例子
+&lt;?php
+function cube($n)
+{
+return $n * $n;
+}</p>
+<p>$a = array(1, 2, 3);
+$b = array_map(&quot;cube&quot;, $a);</p>
+<p>print_r($b); //Array([0] =&gt; 1, [1] =&gt; 4, [2] =&gt; 9)</p>
+<p>二、匿名函数
+&lt;?php
+$func = function ($value) {
+return $value * 2;
+};
+print_r(array_map($func, range(1, 3))); //Array([0] =&gt; 2, [1] =&gt; 4, [2] =&gt; 4)</p>
+<p>//print_r(array_map(function ($value) { return $value * 2; }, range(1, 3))); //Array([0] =&gt; 2, [1] =&gt; 4, [2] =&gt; 4)</p>
+<p>三、使用更多的数组
+&lt;?php
+function show_Spanish($n, $m)
+{
+return(&quot;The number $n is called $m in Spanish&quot;);
+}</p>
+<p>function map_Spanish($n, $m)
+{
+return(array($n =&gt; $m));
+}</p>
+<p>$a = array(1, 2, 3, 4, 5);
+$b = array(&quot;uno&quot;, &quot;dos&quot;, &quot;tres&quot;, &quot;cuatro&quot;, &quot;cinco&quot;);</p>
+<p>$c = array_map(&quot;show_Spanish&quot;, $a, $b);
+print_r($c);</p>
+<p>$d = array_map(&quot;map_Spanish&quot;, $a , $b);
+print_r($d);</p>
+<p>输出结果:$c</p>
+<p>Array
+(
+[0] =&gt; The number 1 is called uno in Spanish
+[1] =&gt; The number 2 is called dos in Spanish
+[2] =&gt; The number 3 is called tres in Spanish
+[3] =&gt; The number 4 is called cuatro in Spanish
+[4] =&gt; The number 5 is called cinco in Spanish
+)</p>
+<p>$d</p>
+<p>Array
+(
+[0] =&gt; Array
+(
+[1] =&gt; uno
+)
+[1] =&gt; Array
+(
+[2] =&gt; dos
+)
+[2] =&gt; Array
+(
+[3] =&gt; tres
+)
+[3] =&gt; Array
+(
+[4] =&gt; cuatro
+)
+[4] =&gt; Array
+(
+[5] =&gt; cinco
+)
+)</p>
+<p>通常使用了两个或更多数组时，它们的长度应该相同，因为回调函数是平行作用于相应的单元上的。如果数组的长度不同，则最短的一个将被用空的单元扩充。</p>
+<blockquote>
+<p>本函数一个有趣的用法是构造一个数组的数组，这可以很容易的通过用 NULL 作为回调函数名来实现。</p>
+</blockquote>
+<p>建立一个数组的数组
+&lt;?php
+$a = array(1, 2, 3);
+$b = array(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;);
+$c = array(&quot;uno&quot;, &quot;dos&quot;, &quot;tres&quot;);</p>
+<p>$d = array_map(null, $a, $b, $c);
+print_r($d);</p>
+<p>输出
+Array
+(
+[0] =&gt; Array
+(
+[0] =&gt; 1
+[1] =&gt; one
+[2] =&gt; uno
+)
+[1] =&gt; Array
+(
+[0] =&gt; 2
+[1] =&gt; two
+[2] =&gt; dos
+)
+[2] =&gt; Array
+(
+[0] =&gt; 3
+[1] =&gt; three
+[2] =&gt; tres
+)
+)</p>
+<p>最近最常用到的是获取一个数组的某一个键值对应的值组成的数组。比如从数据库中获取某个数据表的id，经常会返回以下数组</p>
+<p>$arr = array(
+0 =&gt; array(
+'id' =&gt; 111
+),
+1 =&gt; array(
+'id' =&gt; 222
+),
+2 =&gt; array(
+'id' =&gt; 333
+)
+);</p>
+<p>有时候需要获取数组<code>$arr</code>所有单元的<code>id</code>组成的数组，以便进行进一步的操作（比如获得这些id数组组成的字符串然后去其他数据表获取更多的数据）。以前的做法会使用一个foreach，然后返回每一项，学习到了array_map函数之后，则可以使用下面的代码。</p>
+<p>&lt;?php
+$id_arr = array_map(function($v) {return $v['id'];}, $arr);
+print_r($id_arr); //Array(0 =&gt; '111', 1 =&gt; '222', '2' =&gt; 333)</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="［Redis源码阅读］dict字典的实现" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2018/2018-01-07-read-redis-src-dict/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>［Redis源码阅读］dict字典的实现 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>［Redis源码阅读］dict字典的实现</h1>
+    <div class="italic text-gray-500">
+      2018/01/07
+    </div>
+    <div>
+      <h2 id="dict%E7%9A%84%E7%94%A8%E9%80%94" tabindex="-1">dict的用途</h2>
+<p>dict是一种用于保存键值对的抽象数据结构，在redis中使用非常广泛，比如数据库、哈希结构的底层。</p>
+<p>当执行下面这个命令：</p>
+<p>&gt; set msg &quot;hello&quot;</p>
+<p>以及使用哈希结构，如：</p>
+<p>&gt; hset people name &quot;hoohack&quot;</p>
+<p>都会使用到dict作为底层数据结构的实现。</p>
+<h2 id="%E7%BB%93%E6%9E%84%E7%9A%84%E5%AE%9A%E4%B9%89" tabindex="-1">结构的定义</h2>
+<p>先看看字典以及相关数据结构体的定义：</p>
+<h3 id="%E5%AD%97%E5%85%B8" tabindex="-1">字典</h3>
+<p>/* 字典结构 每个字典有两个哈希表，实现渐进式哈希时需要用在将旧表rehash到新表 */
+typedef struct dict {
+dictType <em>type; /</em> 类型特定函数 */
+void <em>privdata; /</em> 保存类型特定函数需要使用的参数 <em>/
+dictht ht[2]; /</em> 保存的两个哈希表，ht[0]是真正使用的，ht[1]会在rehash时使用 <em>/
+long rehashidx; /</em> rehashing not in progress if rehashidx == -1 rehash进度，如果不等于-1，说明还在进行rehash <em>/
+unsigned long iterators; /</em> number of iterators currently running 正在运行中的遍历器数量 */
+} dict;</p>
+<h3 id="%E5%93%88%E5%B8%8C%E8%A1%A8" tabindex="-1">哈希表</h3>
+<p>/* 哈希表结构 */
+typedef struct dictht {
+dictEntry *<em>table; /</em> 哈希表节点数组 <em>/
+unsigned long size; /</em> 哈希表大小 <em>/
+unsigned long sizemask; /</em> 哈希表大小掩码，用于计算哈希表的索引值，大小总是dictht.size - 1 <em>/
+unsigned long used; /</em> 哈希表已经使用的节点数量 */
+} dictht;</p>
+<h3 id="%E5%93%88%E5%B8%8C%E8%A1%A8%E8%8A%82%E7%82%B9" tabindex="-1">哈希表节点</h3>
+<p>/* 哈希表节点 */
+typedef struct dictEntry {
+void <em>key; /</em> 键名 */
+union {
+void <em>val;
+uint64_t u64;
+int64_t s64;
+double d;
+} v; /</em> 值 <em>/
+struct dictEntry <em>next; /</em> 指向下一个节点, 将多个哈希值相同的键值对连接起来</em>/
+} dictEntry;</p>
+<h3 id="dicttype" tabindex="-1">dictType</h3>
+<p>/* 保存一连串操作特定类型键值对的函数 */
+typedef struct dictType {
+uint64_t (*hashFunction)(const void <em>key); /</em> 哈希函数 */
+void *(*keyDup)(void *privdata, const void <em>key); /</em> 复制键函数 */
+void *(*valDup)(void *privdata, const void <em>obj); /</em> 复制值函数 */
+int (*keyCompare)(void *privdata, const void *key1, const void <em>key2); /</em> 比较键函数 */
+void (*keyDestructor)(void *privdata, void <em>key); /</em> 销毁键函数 */
+void (*valDestructor)(void *privdata, void <em>obj); /</em> 销毁值函数 */
+} dictType;</p>
+<p>把上面的结构定义串起来，得到下面的字典数据结构：
+<img src="https://www.hoohack.me/assets/images/2018/01/dict.png" alt="dict struct"></p>
+<p>根据数据结构定义，把关联图画出来后，看代码的时候就更加清晰。</p>
+<p>从图中也可以看出来，字典的哈希表里，使用了链表解决键冲突的情况，称为链式地址法。</p>
+<h2 id="rehash(%E9%87%8D%E6%96%B0%E6%95%A3%E5%88%97)" tabindex="-1">rehash(重新散列)</h2>
+<p>当操作越来越多，比如不断的向哈希表添加元素，此时哈希表需要分配了更多的空间，如果接下来的操作是不断地删除哈希表的元素，那么哈希表的大小就会发生变化，更重要的是，现在的哈希表不再需要那么大的空间了，在redis的实现中，为了保证哈希表的负载因子维持在一个合理范围内，当哈希表保存的键值对太多或者太少时，redis对哈希表大小进行相应的扩展和收缩，称为rehash（重新散列）。</p>
+<h3 id="%E6%89%A7%E8%A1%8Crehash%E7%9A%84%E6%B5%81%E7%A8%8B%E5%9B%BE" tabindex="-1">执行rehash的流程图</h3>
+<p><img src="https://www.hoohack.me/assets/images/2018/01/redis-dict-rehash.png" alt="redis-dict-rehash"></p>
+<h3 id="%E8%B4%9F%E8%BD%BD%E5%9B%A0%E5%AD%90%E8%A7%A3%E9%87%8A" tabindex="-1">负载因子解释</h3>
+<blockquote>
+<p>负载因子 = 哈希表已保存节点数量 / 哈希表大小</p>
+</blockquote>
+<p>负载因子越大，意味着哈希表越满，越容易导致冲突，性能也就越低。因此，一般来说，当负载因子大于某个常数(可能是 1，或者 0.75 等)时，哈希表将自动扩容。</p>
+<h2 id="%E6%B8%90%E8%BF%9B%E5%BC%8Frehash" tabindex="-1">渐进式rehash</h2>
+<p>在上面的rehash流程图里面，rehash的操作不是一次性就完成了的，而是分多次，渐进式地完成。</p>
+<p>原因是，如果需要rehash的键值对较多，会对服务器造成性能影响，渐进式地rehash避免了对服务器的影响。</p>
+<p>渐进式的rehash使用了dict结构体中的rehashidx属性辅助完成。当渐进式哈希开始时，rehashidx会被设置为0，表示从dictEntry[0]开始进行rehash，每完成一次，就将rehashidx加1。直到ht[0]中的所有节点都被rehash到ht[1]，rehashidx被设置为-1，此时表示rehash结束。</p>
+<h3 id="%E7%BB%93%E5%90%88%E4%BB%A3%E7%A0%81%E5%86%8D%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3" tabindex="-1">结合代码再深入理解</h3>
+<p>／* 实现渐进式的重新哈希，如果还有需要重新哈希的key，返回1，否则返回0
+*
+* 需要注意的是，rehash持续将bucket从老的哈希表移到新的哈希表，但是，因为有的哈希表是空的，
+* 因此函数不能保证即使一个bucket也会被rehash，因为函数最多一共会访问N*10个空bucket，不然的话，函数将会耗费过多性能，而且函数会被阻塞一段时间
+<em>/
+int dictRehash(dict <em>d, int n) {
+int empty_visits = n</em>10; /</em> Max number of empty buckets to visit. */
+if (!dictIsRehashing(d)) return 0;</p>
+<p>while(n-- &amp;&amp; d-&gt;ht[0].used != 0) {
+dictEntry *de, *nextde;</p>
+<p>assert(d-&gt;ht[0].size &gt; (unsigned long)d-&gt;rehashidx);
+/* 找到非空的哈希表下标 */
+while(d-&gt;ht[0].table[d-&gt;rehashidx] == NULL) {
+d-&gt;rehashidx++;
+if (--empty_visits == 0) return 1;
+}
+de = d-&gt;ht[0].table[d-&gt;rehashidx];</p>
+<p>/* 实现将bucket从老的哈希表移到新的哈希表 */
+while(de) {
+unsigned int h;</p>
+<p>nextde = de-&gt;next;
+/* Get the index in the new hash table */
+h = dictHashKey(d, de-&gt;key) &amp; d-&gt;ht[1].sizemask;
+de-&gt;next = d-&gt;ht[1].table[h];
+d-&gt;ht[1].table[h] = de;
+d-&gt;ht[0].used--;
+d-&gt;ht[1].used++;
+de = nextde;
+}
+d-&gt;ht[0].table[d-&gt;rehashidx] = NULL;
+d-&gt;rehashidx++;
+}</p>
+<p>/* 如果已经完成了，释放旧的哈希表，返回0 */
+if (d-&gt;ht[0].used == 0) {
+zfree(d-&gt;ht[0].table);
+d-&gt;ht[0] = d-&gt;ht[1];
+_dictReset(&amp;d-&gt;ht[1]);
+d-&gt;rehashidx = -1;
+return 0;
+}</p>
+<p>/* 继续下一次rehash */
+return 1;
+}</p>
+<p>在渐进式rehash期间，所有对字典的操作，包括：添加、查找、更新等等，程序除了执行指定的操作之外，还会顺带将ht[0]哈希表索引的所有键值对rehash到ht[1]。比如添加：</p>
+<p>dictEntry *dictAddRaw(dict *d, void *key, dictEntry **existing)
+{
+int index;
+dictEntry *entry;
+dictht *ht;</p>
+<p>／* 如果正在rehash，顺带执行rehash操作 */
+if (dictIsRehashing(d)) _dictRehashStep(d);</p>
+<p>/* 获取新元素的下标，如果已经存在，返回-1 */
+if ((index = _dictKeyIndex(d, key, dictHashKey(d,key), existing)) == -1)
+return NULL;</p>
+<p>ht = dictIsRehashing(d) ? &amp;d-&gt;ht[1] : &amp;d-&gt;ht[0]; // 如果正在进行rehash操作，返回ht[1],否则返回ht[0]
+entry = zmalloc(sizeof(*entry));
+entry-&gt;next = ht-&gt;table[index];
+ht-&gt;table[index] = entry;
+ht-&gt;used++;</p>
+<p>/* Set the hash entry fields. */
+dictSetKey(d, entry, key);
+return entry;
+}</p>
+<h2 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h2>
+<p>使用一个标记值标记某项操作正在执行是编程中常用的手段，比如本文提到的rehashidx，多利用此手段可以解决很多问题。</p>
+<p>我在github有对Redis源码更详细的注解。感兴趣的可以围观一下，给个star。</p>
+<p><a href="https://github.com/hoohack/read-redis-src">Redis4.0源码注解</a>。可以通过<a href="https://github.com/hoohack/read-redis-src/commits/master">commit记录</a>查看已添加的注解。</p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

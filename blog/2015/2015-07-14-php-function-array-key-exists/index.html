@@ -1,0 +1,77 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="PHP函数--array_key_exists" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-07-14-php-function-array-key-exists/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>PHP函数--array_key_exists | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>PHP函数--array_key_exists</h1>
+    <div class="italic text-gray-500">
+      2015/07/14
+    </div>
+    <div>
+      <p>好记性不如烂笔头，虽然手册上都有函数的说明，但是自己记录一遍的话能记得更加牢固。</p>
+<p>##array_key_exists--检查给定的键名或索引是否存在于数组中。</p>
+<p>###说明</p>
+<blockquote>
+<p>bool array_key_exists (mixed $key, array $search)</p>
+</blockquote>
+<p>array_key_exists()在给定的key存在于数组中时返回TRUE。key可以是任何能作为数组索引的值。array_key_exists()也可以用于对象。</p>
+<p>###参数</p>
+<blockquote>
+<p>key 要检查的键值。</p>
+</blockquote>
+<blockquote>
+<p>search 一个数组，包含待检查的键。</p>
+</blockquote>
+<p>###返回值
+成功时返回TRUE，或者在失败时返回FALSE。</p>
+<p>###使用例子</p>
+<p>&lt;?php
+$search_array = array('first' =&gt; 1, 'second' =&gt; 4);</p>
+<p>if (array_key_exists('key', $search_array))
+{
+echo &quot;The 'first' element in the array&quot;;
+}</p>
+<p>###array_key_exists()与isset()的区别
+isset()对于数组中为NULL的值不会返回TRUE，而array_key_exists()会。</p>
+<p>&lt;?php
+$search_array = array('first' =&gt; null, 'second' =&gt; 4);</p>
+<p>var_dump(isset($search_array['first']));    //false</p>
+<p>var_dump(array_key_exists('first', $search_array));</p>
+<p>这是在工作中新学到的函数，在此总结。如有好的建议，望指出。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

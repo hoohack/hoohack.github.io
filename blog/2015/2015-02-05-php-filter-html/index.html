@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="PHP过滤HTML数据" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-02-05-php-filter-html/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>PHP过滤HTML数据 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>PHP过滤HTML数据</h1>
+    <div class="italic text-gray-500">
+      2015/02/05
+    </div>
+    <div>
+      <h2 id="%E5%88%86%E4%BA%AB%E4%B8%A4%E4%B8%AA%E8%BF%87%E6%BB%A4html%E6%A0%87%E7%AD%BE%E7%9A%84%E6%96%B9%E6%B3%95%E3%80%82" tabindex="-1">分享两个过滤HTML标签的方法。</h2>
+<h3 id="%E4%B8%80%E3%80%81%E4%BD%BF%E7%94%A8%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%BF%87%E6%BB%A4html%E6%A0%87%E7%AD%BE" tabindex="-1">一、使用正则表达式过滤html标签</h3>
+<p>$html_data = &quot;&lt;a href=&quot;#&quot;&gt;<a href="http://www.hoohack.me">www.hoohack.me</a>&lt;/a&gt;&quot;;
+preg_replace(&quot;/(&lt;/?)(w+)([^&gt;]*&gt;)/e&quot;, &quot;'\1'.strtoupper('\2').'\3'&quot;, $html_data);</p>
+<h3 id="%E4%BA%8C%E3%80%81php%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0strip_tags" tabindex="-1">二、PHP内置函数strip_tags</h3>
+<h4 id="%E5%87%BD%E6%95%B0%E8%AF%B4%E6%98%8E" tabindex="-1">函数说明</h4>
+<blockquote>
+<p>string strip_tags ( string $str [, string $allowable_tags ] )</p>
+</blockquote>
+<h4 id="%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81" tabindex="-1">使用示例代码</h4>
+<p>$str = &quot;&lt;a href='#'&gt;<a href="http://www.hoohack.me">www.hoohack.me</a>&lt;/a&gt;&lt;img src=''&gt;&lt;p&gt;hello&lt;/p&gt;&quot;;</p>
+<p>$newStr = strip_tags($str);                               //过滤所有html标签</p>
+<p>$strNoImg = strip_tags($str,&quot;&lt;a&gt;&quot;);                       //仅过滤(某种标签，这里是a)标签</p>
+<p>$multiStr = strip_tags($str,&quot;&lt;a&gt;&lt;p&gt;&quot;);                    //过滤多种标签</p>
+<h4 id="%E8%BF%87%E6%BB%A4%26nbsp%3B" tabindex="-1">过滤<code>&amp;nbsp;</code></h4>
+<p>使用上面的函数时无法过滤<code>&amp;nbsp;</code>等转义字符（即HTML中的空格）。因为strip_tags的话只能过滤html的标签，而&amp;nbsp;不属于html标签。如果需要过滤这个字符时，应该使用正则替换</p>
+<p>preg_replace('/ /', '', $str);</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

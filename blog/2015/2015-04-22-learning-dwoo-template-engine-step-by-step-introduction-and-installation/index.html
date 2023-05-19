@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="一步步学习Dwoo模板引擎--介绍、安装" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-04-22-learning-dwoo-template-engine-step-by-step-introduction-and-installation/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>一步步学习Dwoo模板引擎--介绍、安装 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>一步步学习Dwoo模板引擎--介绍、安装</h1>
+    <div class="italic text-gray-500">
+      2015/04/22
+    </div>
+    <div>
+      <p>使用Dwoo模板引擎有一个多月了，网上的中文文档比较少，在这里记录自己学到的相关知识。</p>
+<p>##Dwoo是什么
+Dwoo是一款基于PHP5的模板引擎。</p>
+<p>Dwoo来自一个众所周知的，已经越来越老的模板引擎--Smarty。</p>
+<p>随着年龄的增大，Smarty显得越来越重了，有着与新版本不一致的旧特性。作为一个为PHP4写的模板引擎，在某些地方，它的面向对象特征没有利用到PHP5更多的高级特性。</p>
+<p>因此Dwoo就诞生了，为了提供一个更新更强壮的引擎。</p>
+<p>自从发布以来，已被证实它在很多地方都比Smarty更快，而且它提供了一个兼容层来让使用了多年Smarty的开发者逐步地过渡到Dwoo。</p>
+<p>Dwoo2嵌入了PHP的新特性，比如：Namespaces,CamelCase等等...因此Dwoo2需要PHP5.3或以上的版本才能运行。</p>
+<p>##安装Dwoo</p>
+<blockquote>
+<p>1、使用composer是最简单地方法。在<a href="packagist.org">https://packagist.org/packages/dwoo/dwoo</a>也可以找到。</p>
+</blockquote>
+<p>2、也可以使用Dwoo的PHAR包。</p>
+<p>##使用</p>
+<p>###Autoload</p>
+<p>&lt;?php
+// Include autoloader
+require 'lib/Dwoo/Autoloader.php';</p>
+<p>// Register Dwoo namespace and register autoloader
+$autoloader = new Dwoo\Autoloader();
+$autoloader-&gt;add('Dwoo', 'lib/Dwoo');
+$autoloader-&gt;register(true);</p>
+<p>// Create the controller, it is reusable and can render multiple templates
+$dwoo = new Dwoo\Core();</p>
+<p>// Create some data
+$data = array('a'=&gt;5, 'b'=&gt;6);</p>
+<p>// Output the result directly ...
+$dwoo-&gt;output('path/to/index.tpl', $data);
+// ... or get it to use it somewhere else
+$var = $dwoo-&gt;get('path/to/index.tpl', $data);
+echo $var;</p>
+<p>###使用PHAR</p>
+<p>&lt;?php
+// Include phar archive, not need to call autoloader anymore
+require 'phar://dwoo.phar';</p>
+<p>// Create the controller, it is reusable and can render multiple templates
+$dwoo = new Dwoo\Core();</p>
+<p>// Create some data
+$data = array('a'=&gt;5, 'b'=&gt;6);</p>
+<p>// Output the result directly ...
+$dwoo-&gt;output('path/to/index.tpl', $data);
+// ... or get it to use it somewhere else
+$var = $dwoo-&gt;get('path/to/index.tpl', $data);
+echo $var;</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

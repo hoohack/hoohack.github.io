@@ -1,0 +1,116 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="MySQL中VARCHAR与CHAR格式数据的区别" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-01-04-difference-between-varchar-and-char-in-mysql/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>MySQL中VARCHAR与CHAR格式数据的区别 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>MySQL中VARCHAR与CHAR格式数据的区别</h1>
+    <div class="italic text-gray-500">
+      2015/01/04
+    </div>
+    <div>
+      <p>#区别
+CHAR与VARCHAR类型类似，但它们保存和检索的方式不同。CHAR有固定的长度，而VARCHAR属于可变长的字符类型。它们最大长度和是否尾部空格被保留等方面也不同。在存储和检索过程中不进行大小写转换。</p>
+<p>下面的表格显示了将各种字符串值保存到CHAR(4)和VARCHAR(4)列后的结果，说明了CHAR和VARCHAR之间的差别：
+&lt;table&gt;
+&lt;thead&gt;
+&lt;th&gt;值   &lt;/th&gt;
+&lt;th&gt;CHAR(4)&lt;/th&gt;
+&lt;th&gt;存储需求&lt;/th&gt;
+&lt;th&gt;VARCHAR(4)&lt;/th&gt;
+&lt;th&gt;存储需求&lt;/th&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;''&lt;/td&gt;
+&lt;td&gt;'    '&lt;/td&gt;
+&lt;td&gt;4个字节&lt;/td&gt;
+&lt;td&gt;''&lt;/td&gt;
+&lt;td&gt;1个字节&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;'ab'&lt;/td&gt;
+&lt;td&gt;'ab  '&lt;/td&gt;
+&lt;td&gt;4个字节&lt;/td&gt;
+&lt;td&gt;'ab'&lt;/td&gt;
+&lt;td&gt;3个字节&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;'abcd'&lt;/td&gt;
+&lt;td&gt;'abcd'&lt;/td&gt;
+&lt;td&gt;4个字节&lt;/td&gt;
+&lt;td&gt;'abcd'&lt;/td&gt;
+&lt;td&gt;5个字节&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;'abcdefgh'&lt;/td&gt;
+&lt;td&gt;'abcd'&lt;/td&gt;
+&lt;td&gt;4个字节&lt;/td&gt;
+&lt;td&gt;'abcd'&lt;/td&gt;
+&lt;td&gt;5个字节&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</p>
+<p>从上面可以看得出来CHAR的长度是固定的，不管你存储的数据是多少他都会都固定的长度。而VARCHAR则处可变长度但他要在总长度上加1字符，这个用来存储位置。所以实际应用中用户可以根据自己的数据类型来做。</p>
+<p>请注意，上表中最后一行的值只适用不使用严格模式时;如果MySQL运行在严格模式，超过列长度的值不被保存，并且会出现错误。</p>
+<p>从CHAR(4)和VARCHAR(4)列检索的值并不总是相同，因为检索时从CHAR列删除了尾部的空格。通过下面的例子说明差别：</p>
+<p>mysql&gt; CREATE TABLE test(a VARCHAR(4), b CHAR(4));</p>
+<p>mysql&gt; INSERT INTO test VALUES ('ab  ', 'ab  ');</p>
+<p>mysql&gt; SELECT CONCAT(a, '+'), CONCAT(b, '+') FROM test;</p>
+<p>结果如下：
+&lt;table&gt;
+&lt;thead&gt;
+&lt;th&gt;CONCAT(a, '+')&lt;/th&gt;
+&lt;th&gt;CONCAT(b, '+')&lt;/th&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ab  +&lt;/td&gt;
+&lt;td&gt;ab+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</p>
+<p>从上面可以看出来，由于某种原因CHAR有固定长度，所以在处理速度上要比VARCHAR快很多，但是相对浪费存储空间，所以对存储不大，但在速度上有要求的可以使用CHAR类型，反之可以用VARCHAR类型来实现。</p>
+<p>#建议</p>
+<blockquote>
+<ul>
+<li>MyISAM存储引擎 建议使用固定长度，数据列代替可变长度的数据列</li>
+<li>INNODB 存储引擎 建议使用VARCHAR类型</li>
+</ul>
+</blockquote>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

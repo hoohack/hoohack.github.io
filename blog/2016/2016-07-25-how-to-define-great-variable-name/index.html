@@ -1,0 +1,461 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="[代码大全读书笔记]如何定义一个好的变量名" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-07-25-how-to-define-great-variable-name/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>[代码大全读书笔记]如何定义一个好的变量名 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>[代码大全读书笔记]如何定义一个好的变量名</h1>
+    <div class="italic text-gray-500">
+      2016/07/25
+    </div>
+    <div>
+      <p>在日常编程中最烦恼的就是给变量取名，一段好代码，既要能完美地运行，还要能较容易地维护。这就意味着需要让日后维护代码的人能很快地看懂你的代码，而且，在团队合作中，其他开发者也会经常阅读你那部分代码。如果你的代码中充满了a,b,c,a1,a2,a3...那简直就是一个噩梦。因此，好的变量名非常重要。</p>
+<h2 id="%E9%80%89%E6%8B%A9%E5%A5%BD%E5%8F%98%E9%87%8F%E5%90%8D%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9" tabindex="-1">选择好变量名的注意事项</h2>
+<p>变量和变量名本质上是同一件事物，因此，变量的好与坏就在很大程度上取决于它的命名的好与坏。</p>
+<p>下面举一个糟糕命名的例子</p>
+<p>$pp = ($cp &gt; 1) ? ($cp - 1) : $cp;
+$np = ($cp &lt; $tp) ? ($cp + 1) : $tp;</p>
+<p>$p = new P($pp, $cp, $np, $tp);</p>
+<p>这段代码在做什么呢？也许可以大概知道是在计算一些信息，但是，计算的是什么信息呢？$p,$pp,np,$tp等等这些变量代表的是什么呢？讲真，如果没有任何注释，任何人都无法看不懂这段代码想表达的意思。如果写这段代码的人告诉你，这段代码是在计算分页信息，然后实例化一个分页类，那么你应该如何命名呢？</p>
+<p>下面是这段代码的另一种写法，看起来更加清晰：</p>
+<p>$prev_page_num = ($curr_page_num &gt; 1) ? ($curr_page_num - 1) : $curr_page_num);
+$next_page_num = ($next_page_num &lt; $total_page_num) ? ($curr_page_num + 1) : $total_page_num);</p>
+<p>$page = new Page($prev_page_num, $curr_page_num, $next_page_num, $total_page_num);</p>
+<p>从上面两段代码可以看出，一个好的变量名在可读性和可维护性上是极其重要的。而且好的变量名是易记的。可以通过应用多条原则来实现这些目标。</p>
+<h3 id="%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84%E5%91%BD%E5%90%8D%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9" tabindex="-1">最重要的命名注意事项</h3>
+<blockquote>
+<ul>
+<li>名字要完全、准确地描述出该变量所代表的事物</li>
+<li>用名字表达变量所代表的是什么，不包含晦涩的缩写，同时也没有歧义</li>
+</ul>
+</blockquote>
+<p>下表给出一些变量名称的例子，其中有好的也有差的。</p>
+<table>
+<thead>
+<tr>
+<th>变量用途</th>
+<th>好名字，好描述</th>
+<th>坏名字，差描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>到期的支票累计额</td>
+<td>runningTotal,checkTotal</td>
+<td>written,ct,checks,CHKTTL,x,x1,x2</td>
+</tr>
+<tr>
+<td>高速列车的运行速度</td>
+<td>velocity,trainVelocity,velocityInMph</td>
+<td>velt,v,tv,x,x1,x2,train</td>
+</tr>
+<tr>
+<td>当前日期</td>
+<td>currentDate,todaysDate</td>
+<td>cd,current,c,x,x1,x2,date</td>
+</tr>
+<tr>
+<td>每页的行数</td>
+<td>linesPerPage</td>
+<td>lpp,lines,l,x,x1,x2</td>
+</tr>
+</tbody>
+</table>
+<p>currentDate和todaysDate都是很好的名字，因为它们都完全而且准确地描述出了“当前日期”这一概念。</p>
+<p>cd和c是很糟糕的命名，因为它们用了太短的缩写，而且又不具有描述性。</p>
+<p>current也很糟，因为它并没有告诉你是当前什么。</p>
+<p>date看上去不错，但经过最后推敲它也只是个坏名字，因为这里所说的日期并不是所有的日期均可，而只是特指当前日期，而date本身并未表达出这层含义。</p>
+<p>x,x1和x2永远都是坏名字--传统上用x代表一个未知量，如果不希望你的变量所代表的是一个未知量，那么请考虑取一个更好的名字吧。</p>
+<blockquote>
+<p>名字应该尽可能地明确。像x、temp、i这些名字都泛泛可得可以用于多种目的，它们并没有像应该的那样提供足够信息，因此通常是命名上的败笔。</p>
+</blockquote>
+<h3 id="%E4%BB%A5%E9%97%AE%E9%A2%98%E4%B8%BA%E5%AF%BC%E5%90%91" tabindex="-1">以问题为导向</h3>
+<p>一个好记的名字反映的通常都是问题，而不是解决方案。即，一个好名字通常表达的是什么（What），而不是怎么样（How）。通常来说，如果一个名字反映了计算机的某些方面而不是问题本身，那么它反映的就是“How”而非“What”了。</p>
+<p>比如，考虑下面这两个变量命名：inputRec和employeeData。inputRec是一个反映输入、记录这些计算概念的计算机术语。employeeData则直指问题领域，与计算机无关。
+类似地，printerReady比bitFlag更能表达打印机的状态；在财务软件里，calcVar比sum来得更准确。</p>
+<h3 id="%E6%9C%80%E9%80%82%E5%BD%93%E7%9A%84%E5%90%8D%E5%AD%97%E9%95%BF%E5%BA%A6" tabindex="-1">最适当的名字长度</h3>
+<p>经研究发现，变量名的平均长度在10到16个字符的时候，调试花的力气是最小的。平均名字长度在8到20隔字符的程序也几乎同样容易调试。这并不意味着你的变量名一定要在8到20个字符，它强调的是，如果你查看自己写的代码时发现了很多更短的名字，那么你就需要认真检查，确保这些名字含义足够清晰。</p>
+<p>下面展示变量名太长、太短或刚好的示例：</p>
+<p>太长 : numberOfPeopleOnTheUsOlympicTeam; numberOfSeatsInTheStadium; maximumNumberOfPointsInModernOlympics</p>
+<p>太短 : n, np, ntm; n, ms, nsisd; m, mp, max, points</p>
+<p>正好 : numTeamMembers, teamMemberCount; numSeatsInStadium, seatCount; teamPointsMax, pointsRecord</p>
+<h3 id="%E5%8F%98%E9%87%8F%E5%90%8D%E4%B8%AD%E7%9A%84%E8%AE%A1%E7%AE%97%E5%80%BC%E9%99%90%E5%AE%9A%E8%AF%8D" tabindex="-1">变量名中的计算值限定词</h3>
+<p>很多程序都有表示计算结果的变量：总额、平均值、最大值，等等。如果你要用类似Total、Sum、Average、Max、Min、Record、String、Pointer这样的限定词来修改某个名字，那么请记住把限定词加到名字的最后。</p>
+<p>这种方法的优点：</p>
+<blockquote>
+<ul>
+<li>变量名中最重要的那部分，即为这一变量赋予主要含义的部分应当位于最前面，这样，这一部分就可以显得最为突出，并会被首先阅读到；</li>
+<li>避免了由于同时在程序中使用totalRevenue和revenueTotal而产生的歧义</li>
+<li>使用统一的编码规范可以提高可读性，简化维护工作。比如，revenueTotal、expenseTotal、revenueAverage、expenseAverage这组名字具有非常优雅的对称性。而totalRevenue、expenseTotal、revenueAverage、averageRevenue这组名字中则看不出什么规律来。</li>
+</ul>
+</blockquote>
+<p>这条规则也有例外，那就是Num的限定词的位置已经是约定俗成的。Num放在变量名的开始位置代表一个总数，比如：numCustomers表示员工的总数。Num放在变量名的结束位置代表一个下标：customerNum表示的是当前员工的序号。这样使用Num常常会带来麻烦，因此，最好的方法是避开这些问题，使用Count或者Total来代表总数，使用Index来指代某个特定的员工。这样，customerCount就代表员工的总数，customerIndex代表某个特定的员工。</p>
+<h3 id="%E5%8F%98%E9%87%8F%E5%90%8D%E4%B8%AD%E7%9A%84%E5%B8%B8%E7%94%A8%E5%AF%B9%E4%BB%97%E8%AF%8D" tabindex="-1">变量名中的常用对仗词</h3>
+<p>对仗词要使用正确，不然会产生歧义。</p>
+<p>常用对仗词如下：</p>
+<blockquote>
+<ul>
+<li>begin/end</li>
+<li>first/last</li>
+<li>locked/unlocked</li>
+<li>min/max</li>
+<li>next/previous</li>
+<li>old/new</li>
+<li>opened/closed</li>
+<li>visible/invisible</li>
+<li>source/target</li>
+<li>source/destination</li>
+<li>up/down</li>
+</ul>
+</blockquote>
+<h2 id="%E4%B8%BA%E7%89%B9%E5%AE%9A%E7%B1%BB%E5%9E%8B%E7%9A%84%E6%95%B0%E6%8D%AE%E5%91%BD%E5%90%8D" tabindex="-1">为特定类型的数据命名</h2>
+<p>为变量命名，除了通常的考虑事项之外，为一些特定类型数据的命名还要求作出一些特殊的考虑。比如，循环变量、状态变量、临时变量等等。</p>
+<h3 id="%E4%B8%BA%E5%BE%AA%E7%8E%AF%E4%B8%8B%E6%A0%87%E5%91%BD%E5%90%8D" tabindex="-1">为循环下标命名</h3>
+<p>在循环中，最常见的下标变量就是i,j,k，如：</p>
+<p>for(i = 0; i &lt; arrLen; i++) {
+// ...
+}</p>
+<p>如果循环下标变量只在循环内部使用，那么如此使用是没问题的，但是，如果该变量需要在循环之外使用，那么就应该为它取一个比i,j,k更有意义的名字。举个栗子，如果你从文件中读取记录，并且需要记下所读取记录的数量，那么类似于redcordCount这样的名字就更合适：</p>
+<p>recordCount = 0;
+while ( moreScores() ) {
+score[recordCount] = GetNextScore();
+recordCount++;
+}</p>
+<p>// using recordCount</p>
+<p>另一种情况就是嵌套循环，比较常犯的错误就是在想写j的时候写了i，想用i的时候却写了j。</p>
+<p>如果你使用了多个嵌套的循环，那么就应该给循环变量赋予更长的名字以提高可读性：</p>
+<p>for ( teamIndex = 0; teamIndex &lt; teamCount; teamIndex++) {
+for ( eventIndex = 0; eventIndex &lt; eventCount[teamIndex]; eventIndex++) {
+score[teamIndex][eventIndex] = 0;
+}
+}</p>
+<blockquote>
+<p>score[teamIndex][eventIndex] 比 score[i][j]给出的信息更多。</p>
+</blockquote>
+<p>注意：如果你一定要用i、j、k，那么不要把它们用于简单循环的循环下标之外的任何场合，避免造成误解。要想避免这种问题，最简单的方法就是使用更好的命名而不是i，j，k。</p>
+<h3 id="%E4%B8%BA%E7%8A%B6%E6%80%81%E5%8F%98%E9%87%8F%E5%91%BD%E5%90%8D" tabindex="-1">为状态变量命名</h3>
+<blockquote>
+<p>为状态变量取一个比flag更好的名字。</p>
+</blockquote>
+<p>最好是把标记看作是状态变量。标记的名字中不应该含有flag，因为你从中丝毫看不出该标记是做什么的。</p>
+<p>为清楚可见，标记应该使用枚举变量、具名常量，或用作具名常量的全局变量来对其赋值。</p>
+<p>看看下面比较差的标记命名：</p>
+<p>if ( flag ) ...
+if ( statusFlag &amp; 0x0F ) ...
+if ( printFlag == 16 ) ...
+if ( computeFlag == 0 ) ...</p>
+<p>flag = 0x1;
+statusFlag = 0x80;
+printFlag = 16;
+computeFlag = 0;</p>
+<p>上面这段代码反映不出能做什么，如果没有文档，不知道statusFlag = 0x80的含义是什么。下面是作用相同但更为清晰的代码：</p>
+<p>if ( dataReady ) ...
+if ( characterType &amp; PRINTABLE_CHAR ) ...
+if ( reportType == ReportTyoe_Annual ) ...
+if ( recalcNeeded == false ) ...</p>
+<p>dataReady = true;
+characterType = CONTRAL_CHARACTER;
+reportType = ReportType_Annual;
+recalNeeded = false;</p>
+<p>这段代码更加清晰。而且说明你可以结合枚举类型和预定义的具名常量来使用这种方法。</p>
+<p>如果你发现自己需要猜测某段代码的含义的时候，就该考虑为变量重新命名。代码应该尽可能直接读懂。</p>
+<h3 id="%E4%B8%BA%E4%B8%B4%E6%97%B6%E5%8F%98%E9%87%8F%E5%91%BD%E5%90%8D" tabindex="-1">为临时变量命名</h3>
+<p>临时变量常用于存储计算的中间结果，作为临时占位符，以及存储内部值。它们常被赋予temp，tmp，x或者其他一些模糊且缺乏描述性的名字。通常，临时变量是一个信号，表明程序缘还没有完全把问题弄清楚。而且，由于这些变量被正式地赋予了一种“临时”状态，因此程序员会倾向于比其他变量更为随意地对待这些变量，从而增加了出错的可能。</p>
+<blockquote>
+<p>警惕临时变量</p>
+</blockquote>
+<p>临时地保存一些变量是很有必要的。但无论从哪种角度看，程序中的大多数变量都是临时性的。把其中几个称为临时的，可能表明你还没有弄清它们的实际用途。看看下面的示例：</p>
+<p>temp = sqrt( b^2 - 4<em>a</em>c );
+root[0] = ( -b + temp ) / ( 2<em>a );
+root[1] = ( -b - temp ) / ( 2</em>a );</p>
+<p>更好的做法：</p>
+<p>discriminant = sqrt( b^2 - 4<em>a</em>c );
+root[0] = ( -b + discriminant ) / ( 2<em>a );
+root[1] = ( -b - discriminant ) / ( 2</em>a );</p>
+<blockquote>
+<p>discriminant，判别式</p>
+</blockquote>
+<h3 id="%E4%B8%BA%E5%B8%83%E5%B0%94%E5%8F%98%E9%87%8F%E5%91%BD%E5%90%8D" tabindex="-1">为布尔变量命名</h3>
+<p>典型的布尔变量名：</p>
+<blockquote>
+<ul>
+<li>done</li>
+<li>error</li>
+<li>found</li>
+<li>success/ok</li>
+</ul>
+</blockquote>
+<p><strong>给布尔变量赋予隐含“真/假”含义的名字</strong>。像done和success一样，它们的值不是true就是false，表示某件事情完成了或者没有完成；成功或者失败。另一方面，想status这样的名字却是很糟的布尔变量名，因为它们没有明确的true或者false。status是true反映的是什么含义呢？表示某件事情拥有一个状态吗？然而，每件事情都有状态。true表明某件事情的状态是OK吗？或者说false表明没有任何错误吗？对于status，你什么都说不出。</p>
+<p>为了更好的效果，可以把status命名为error或者statusOK。</p>
+<p>有时，也可以在布尔变量名前加上Is。这样，变量名就成了一个问题：isDone?isError?isFound?用true或false回答问题也就为该变量给出了取值。优点是不能用于那些模糊不清的名字，比如：isStatus?毫无意义。缺点就是降低了简单逻辑表达式的可读性：if(isFound)的可读性要略差于if(Found)。</p>
+<p><strong>使用肯定的布尔变量名</strong>。避免双重否定：not notFound。</p>
+<h3 id="%E4%B8%BA%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%91%BD%E5%90%8D" tabindex="-1">为枚举类型命名</h3>
+<p>在使用枚举类型的时候，可以通过使用组前缀，如Color_，Planet_或者Month_来明确标识该类型的成员都同属于一个组。比如：</p>
+<p>Public Enum Color
+Color_Red
+Color_Green
+Color_Blue
+End Enum</p>
+<p>Public Enum Planet
+Planet_Earth
+Planet_Mars
+Planet_Venus
+End Enum</p>
+<p>在有些编程语言里，枚举类型的处理很像类，枚举类型也总是被冠以枚举名字前缀，比如Color.Color_Red或者Planet.Planet_Earth。如果你正在使用这样的编程语言，那么重复上述前缀的意义就不大了，可以简化为Color.Red和Planet.Earth。</p>
+<h3 id="%E4%B8%BA%E5%B8%B8%E9%87%8F%E5%91%BD%E5%90%8D" tabindex="-1">为常量命名</h3>
+<p>在具名常量时，应该根据该常量所表示的含义，而不是该常量所具有的数值为该抽象事物命名。比如FIVE是个很糟糕的常量名，CYCLES_NEEDED是个不错的名字。</p>
+<h2 id="%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99%E7%9A%84%E5%8A%9B%E9%87%8F" tabindex="-1">命名规则的力量</h2>
+<p>很多程序员会抵制标准和约定（有时我也会这样），并且有很好的理由：有些标准和约定非常刻板并且低效--它们会毁坏创造性和程序质量。</p>
+<h3 id="%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%9C%89%E8%A7%84%E5%88%99" tabindex="-1">为什么要有规则</h3>
+<blockquote>
+<ul>
+<li>要求你更多地按规矩行事。集中精力关注代码更重要的特征；</li>
+<li>有助于在项目之间传递知识；</li>
+<li>有助于在新项目中更快速地学习代码；</li>
+<li>有助于减少名字增生，在没有规则下，很容易给同一个对象起两个不同的名字；</li>
+<li>弥补编程语言的不足之处；</li>
+<li>强调相关变量之间的关系。</li>
+</ul>
+</blockquote>
+<p>关键是，采用任何一项规则都要好于没有规则。规则可能是武断的。命名规则的威力并非来源于你所采取的某个特定规则，而是来源于以下事实：规则的存在为你的代码增加了结构，减少了你需要考虑的事情。</p>
+<h3 id="%E4%BD%95%E6%97%B6%E9%87%87%E7%94%A8%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99" tabindex="-1">何时采用命名规则</h3>
+<blockquote>
+<ul>
+<li>多个程序员合作开发一个项目时</li>
+<li>计划把一个程序转交给另一位程序员来修改和维护的时候</li>
+<li>你所在组织中的其他程序员评估你写的程序的时候</li>
+<li>当你写的程序规模过大，以致于你无法在脑海里同时了解事情的全貌，而必须分而治之的时候</li>
+<li>你写的程序生命期足够长，长到你可能会在把它搁置几个星期或几个月之后又重新启动有关该程序的工作时</li>
+<li>当在一个项目中存在一些不常见的术语，并且你希望在编写代码阶段使用标准的术语或缩写的时候</li>
+</ul>
+</blockquote>
+<h2 id="%E9%9D%9E%E6%AD%A3%E5%BC%8F%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99" tabindex="-1">非正式命名规则</h2>
+<p>尽管上面介绍了很多比较标准的命名规则，但是大多数项目采用的都是相对非正式的命名规则。</p>
+<h3 id="%E4%B8%8E%E8%AF%AD%E8%A8%80%E6%97%A0%E5%85%B3%E7%9A%84%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99%E7%9A%84%E6%8C%87%E5%AF%BC%E5%8E%9F%E5%88%99" tabindex="-1">与语言无关的命名规则的指导原则</h3>
+<blockquote>
+<ul>
+<li>区分变量名和子程序名字</li>
+<li>区分类和对象</li>
+<li>标识全局变量</li>
+<li>标识成员变量</li>
+<li>标识类型声明</li>
+<li>标识具名常量</li>
+<li>标识枚举类型的元素</li>
+<li>在不能保证输入参数只读的语言里标识只读参数</li>
+<li>格式化命名以提高可读性</li>
+</ul>
+</blockquote>
+<p>尽量不要混用上述方法，那样会使代码更难阅读。老老实实地坚持使用其中任意一种提高可读性的方法，你的代码质量一定会有所改善。</p>
+<h3 id="%E4%B8%8E%E8%AF%AD%E8%A8%80%E7%9B%B8%E5%85%B3%E7%9A%84%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99%E7%9A%84%E6%8C%87%E5%AF%BC%E5%8E%9F%E5%88%99" tabindex="-1">与语言相关的命名规则的指导原则</h3>
+<p>应该遵循你所用语言的命名规则。对于大多数语言，你都可以找到描述其风格原则的参考书，下面给出C的指导原则。</p>
+<h4 id="c%E7%9A%84%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99" tabindex="-1">C的命名规则</h4>
+<blockquote>
+<ul>
+<li>c和ch是字符变量</li>
+<li>i和j是整数下标</li>
+<li>n表示某物的数量</li>
+<li>p是指针</li>
+<li>s是字符串</li>
+<li>预处理宏全部大写，通常包括typedef</li>
+<li>变量名和子程序名全部小写</li>
+<li>下划线用作分隔符，如：letters_in_lowercase</li>
+</ul>
+</blockquote>
+<h2 id="%E6%A0%87%E5%87%86%E5%89%8D%E7%BC%80" tabindex="-1">标准前缀</h2>
+<p>对具有通用含义的前缀标准化，为数据命名提供了一种简洁、一致并且可读性好的方法。</p>
+<p>标准化的前缀由两部分组成：用户自定义类型（UDT）的缩写和语义前缀。</p>
+<h3 id="%E7%94%A8%E6%88%B7%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E7%BC%A9%E5%86%99" tabindex="-1">用户自定义类型缩写</h3>
+<p>UDT缩写可以标识被命名对象或变量的数据类型。UDT缩写通常不会表示任何由编程语言所提供的预置数据类型。下面列出一份UDT示例。</p>
+<table>
+<thead>
+<tr>
+<th>UDT缩写</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ch</td>
+<td>字符(Character)</td>
+</tr>
+<tr>
+<td>doc</td>
+<td>文档(Document)</td>
+</tr>
+<tr>
+<td>pa</td>
+<td>段落(Paragraph)</td>
+</tr>
+<tr>
+<td>scr</td>
+<td>屏幕区域(Screen region)</td>
+</tr>
+<tr>
+<td>sel</td>
+<td>选中范围(Selection)</td>
+</tr>
+<tr>
+<td>wn</td>
+<td>窗体(Window)</td>
+</tr>
+</tbody>
+</table>
+<p>可以使用上表列出的UDT类型定义下面这样的数据声明：</p>
+<p>CH chCursorPosition;
+SCR srcUserWorkSpace;
+DOC docActive;
+PA firstPaActiveDocument;
+PA lastPaActiveDocument;
+WN wnMain;</p>
+<h3 id="%E8%AF%AD%E4%B9%89%E5%89%8D%E7%BC%80" tabindex="-1">语义前缀</h3>
+<p>语义前缀比UDT更进一步，它描述了变量或者对象是如何使用的。而且语义前缀不会根据项目的不同而不同，对于不同的项目均是标准的。下面列出一组标准的语义前缀。</p>
+<table>
+<thead>
+<tr>
+<th>语义前缀</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>c</td>
+<td>数量(count)</td>
+</tr>
+<tr>
+<td>first</td>
+<td>数组中需要处理的第一个元素</td>
+</tr>
+<tr>
+<td>g</td>
+<td>全局变量</td>
+</tr>
+<tr>
+<td>i</td>
+<td>数组的下标</td>
+</tr>
+<tr>
+<td>last</td>
+<td>数组中需要处理的最后一个元素，与first对应</td>
+</tr>
+<tr>
+<td>lim</td>
+<td>数组中需要处理的元素的上限，通常，lim等于last+1</td>
+</tr>
+<tr>
+<td>m</td>
+<td>类一级的变量</td>
+</tr>
+<tr>
+<td>max</td>
+<td>数组或其他种类的列表中绝对的最后一个元素</td>
+</tr>
+<tr>
+<td>min</td>
+<td>数组或其他种类的列表中绝对的第一个元素</td>
+</tr>
+<tr>
+<td>p</td>
+<td>指针(pointer)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="%E6%A0%87%E5%87%86%E5%89%8D%E7%BC%80%E7%9A%84%E4%BC%98%E5%8A%A3" tabindex="-1">标准前缀的优劣</h3>
+<blockquote>
+<ul>
+<li>能更为精确地描述一些含义比较模糊的名字</li>
+<li>使名字变得更加紧凑</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>缺陷：程序员在使用前缀的同时忽略给变量其有意义的名字。</p>
+</blockquote>
+<h2 id="%E5%88%9B%E5%BB%BA%E5%85%B7%E5%A4%87%E5%8F%AF%E8%AF%BB%E6%80%A7%E7%9A%84%E7%9F%AD%E5%90%8D%E5%AD%97" tabindex="-1">创建具备可读性的短名字</h2>
+<p>如果环境真的要求你创建简短的名字，请注意有些缩短名字的方法要好于其他的方法。</p>
+<h3 id="%E7%BC%A9%E5%86%99%E7%9A%84%E4%B8%80%E8%88%AC%E6%8C%87%E5%AF%BC%E5%8E%9F%E5%88%99" tabindex="-1">缩写的一般指导原则</h3>
+<p>下面列出几项用于创建缩写的指导原则。其中一些原则彼此冲突，所以不要试图同时应用所有的原则。</p>
+<blockquote>
+<ul>
+<li>使用标准的缩写</li>
+<li>去掉所有非前置元音（computer =&gt; cmptr, screen =&gt; scrn, apple =&gt; appl, interger =&gt; intgr）</li>
+<li>去掉虚词and，or，the等</li>
+<li>使用每个单词的第一个或前几个字母</li>
+<li>统一在每个单词的第一、第二或者第三个字母后截断</li>
+<li>保留每个单词的第一个和最后一个字母</li>
+<li>使用名字中的每一个重要单词，最多不超过三个</li>
+<li>去掉无用的后缀--ing，ed等</li>
+<li>保留每个音节中最引人注意的发音</li>
+<li>确保不要改变变量的含义</li>
+<li>反复使用上述技术，直到把每个变量名的长度缩减到了8-20个字符。</li>
+</ul>
+</blockquote>
+<h3 id="%E8%AF%AD%E9%9F%B3%E7%BC%A9%E5%86%99" tabindex="-1">语音缩写</h3>
+<p>有些人倡导基于单词的发音而不是拼写来创建缩写，比如skating =&gt; sk8ing, before =&gt; b4...但是不提倡这么做。</p>
+<h3 id="%E6%9C%89%E5%85%B3%E7%BC%A9%E5%86%99%E7%9A%84%E8%AF%84%E8%AE%BA" tabindex="-1">有关缩写的评论</h3>
+<p>下面是一些能够用来避免犯错的规则</p>
+<blockquote>
+<ul>
+<li>不要用从每个单词中删除一个字符的方式来缩写，要么删除不止一个字符，要么就把单词拼写完整</li>
+<li>缩写要一致，比如：要么全部使用Num，要么全用No，不要两个都用</li>
+<li>创建你能读出来到的名字，比如：用xPos而不用xPstn。可以借助电话来测试--如果你无法在电话中向他人读出你的代码，就请重新给变量起一个更清晰的名字吧</li>
+<li>避免使用容易看错或者读错的字符组合，比如ENDB和BEND，为了表示B的结尾，可以用一种好的分隔技术来命名：b_end/BEnd</li>
+<li>使用辞典来解决命名冲突，使用近义词来解决命名冲突</li>
+<li>在代码里用缩写对照表解释极短的名字的含义</li>
+</ul>
+</blockquote>
+<h2 id="%E5%BA%94%E8%AF%A5%E9%81%BF%E5%85%8D%E7%9A%84%E5%90%8D%E5%AD%97" tabindex="-1">应该避免的名字</h2>
+<blockquote>
+<ul>
+<li>避免使用令人误解的名字或缩写，比如将&quot;Fig and Almond Season&quot;缩写为FALSE</li>
+<li>避免使用具有相似含义的名字</li>
+<li>避免使用具有不同含义但却有相似名字的变量</li>
+<li>避免使用发音相近的名字</li>
+<li>避免在名字中使用数字</li>
+<li>避免在名字中拼错单词</li>
+<li>避免使用英语中常常拼错的单词</li>
+<li>不要仅靠大小写来区分变量名</li>
+<li>避免使用多种自然语言</li>
+<li>避免使用标准类型、变量和子程序的名字</li>
+<li>不要使用与变量含义完全无关的名字</li>
+<li>避免在名字中包含易混淆的字符，比如1(数字1)和l(字母l),0(数字0)和O(字母O)</li>
+</ul>
+</blockquote>
+<h2 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h2>
+<p>好的变量名是提高程序可读性的一项关键要素。代码阅读的次数远远多于编写的次数，确保代码中所取的名字更侧重于阅读方便而不是编写方便。选择一种规则，并坚持遵循该规则。</p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+<p>如果本文对你有帮助，请点下推荐吧，谢谢^_^</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

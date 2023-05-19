@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="［PHP源码阅读］number_format函数" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2017/2017-09-21-php-source-code-number-format/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>［PHP源码阅读］number_format函数 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>［PHP源码阅读］number_format函数</h1>
+    <div class="italic text-gray-500">
+      2017/09/21
+    </div>
+    <div>
+      <p>上次讲到<a href="https://www.hoohack.me/2017/09/14/learning-php-big-number-detail">PHP是如何解析大整数</a>的，一笔带过了number_format的处理，再详细阅读该函数的源码，以下是小分析。</p>
+<h2 id="%E5%87%BD%E6%95%B0%E5%8E%9F%E5%9E%8B" tabindex="-1">函数原型</h2>
+<p>string number_format ( float $number [, int $decimals = 0 ] )</p>
+<p>string number_format ( float $number , int $decimals = 0 , string $dec_point = &quot;.&quot; , string $thousands_sep = &quot;,&quot; )</p>
+<p>函数可以接受1、2、4个参数（具体可以看代码的实现）。</p>
+<p>_</p>
+<p>如果只提供第一个参数，number的小数部分会被去掉，并且每个千位分隔符都是英文小写逗号&quot;,&quot; ；
+如果提供两个参数，number将保留小数点后的位数到你设定的值，其余同楼上；
+如果提供了四个参数，number 将保留decimals个长度的小数部分, 小数点被替换为dec_point，千位分隔符替换为thousands_sep</p>
+<h2 id="php_function(number_format)" tabindex="-1">PHP_FUNCTION(number_format)</h2>
+<p>// number
+// 你要格式化的数字
+// num_decimal_places
+// 要保留的小数位数
+// dec_separator
+// 指定小数点显示的字符
+// thousands_separator
+// 指定千位分隔符显示的字符
+/* proto string number_format(float number [, int num_decimal_places [, string dec_separator, string thousands_separator]])
+Formats a number with grouped thousands */
+PHP_FUNCTION(number_format)
+{
+// 期望number_format的第一个参数num是double类型的，在词法阶段已经对字面量常量做了转换
+double num;
+zend_long dec = 0;
+char *thousand_sep = NULL, *dec_point = NULL;
+char thousand_sep_chr = ',', dec_point_chr = '.';
+size_t thousand_sep_len = 0, dec_point_len = 0;
+// 解析参数
+ZEND_PARSE_PARAMETERS_START(1, 4)
+Z_PARAM_DOUBLE(num)// 拿到double类型的num
+Z_PARAM_OPTIONAL
+Z_PARAM_LONG(dec)
+Z_PARAM_STRING_EX(dec_point, dec_point_len, 1, 0)
+Z_PARAM_STRING_EX(thousand_sep, thousand_sep_len, 1, 0)
+ZEND_PARSE_PARAMETERS_END();
+switch(ZEND_NUM_ARGS()) {
+case 1:
+RETURN_STR(_php_math_number_format(num, 0, dec_point_chr, thousand_sep_chr));
+break;
+case 2:
+RETURN_STR(_php_math_number_format(num, (int)dec, dec_point_chr, thousand_sep_chr));
+break;
+case 4:
+if (dec_point == NULL) {
+dec_point = &amp;dec_point_chr;
+dec_point_len = 1;
+//}
+if (thousand_sep == NULL) {
+thousand_sep = &amp;thousand_sep_chr;
+thousand_sep_len = 1;
+}
+// _php_math_number_format_ex
+// 真正处理的函数，在本文件第1107行
+RETVAL_STR(_php_math_number_format_ex(num, (int)dec,
+dec_point, dec_point_len, thousand_sep, thousand_sep_len));
+break;
+default:
+WRONG_PARAM_COUNT;
+}
+}</p>
+<h2 id="%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%9B%BE" tabindex="-1">代码执行流程图</h2>
+<p><img src="https://www.hoohack.me/assets/images/2017/09/number_format.png" alt="number_format流程图"></p>
+<h2 id="_php_math_number_format_ex" tabindex="-1"><code>_php_math_number_format_ex</code></h2>
+<p>函数实现的各种参数数量，最终都会调用_php_math_number_format_ex函数。函数主要做的是：</p>
+<blockquote>
+<p>处理负数；
+根据要保留的小数点对浮点数进行四舍五入；
+调用strpprintf函数将浮点数表达式转成字符串表示；
+计算需要分配给结果变量的字符串长度；
+将结果拷贝到返回值中（如果有千位符，则进行千位符分割）</p>
+</blockquote>
+<h2 id="strpprintf" tabindex="-1">strpprintf</h2>
+<p>这个函数是实现浮点数与字符串的转换，如上文所说，最终是调用了php_conv_fp函数做的转换（这里是通过gdb调试做的定位），而php_conv_fp函数，往下追踪，调用的是zend_dtoa函数，</p>
+<p>更多细节注解，见<a href="https://github.com/hoohack/read-php-src/commit/2bac1ac45911d42884b0fe7bda2ecce65dd59235">github项目提交记录</a>。</p>
+<h2 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h2>
+<p>阅读完这个函数的源码，学习到的是浮动数与字符串的互相转换的实现细节，字符串与浮点数之间的关系较复杂，之后还要继续学习。</p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+<p>如果本文对你有帮助，请点个赞吧，谢谢^_^</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

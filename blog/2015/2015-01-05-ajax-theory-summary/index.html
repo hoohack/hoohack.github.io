@@ -1,0 +1,67 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="AJAX原理总结" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-01-05-ajax-theory-summary/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>AJAX原理总结 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>AJAX原理总结</h1>
+    <div class="italic text-gray-500">
+      2015/01/05
+    </div>
+    <div>
+      <p>###AJAX全称</p>
+<blockquote>
+<p>Asynchronous JavaScript and XML(异步的JavaScript 和XML)</p>
+</blockquote>
+<p>###同步和异步
+异步传输是面向字符的传输，单位是字符</p>
+<p>同步传输是面向比特，单位是帧，传输时要求接收方和发送方的时钟是保持一致的。</p>
+<p>###通过XMLHTTPRequest理解AJAX</p>
+<blockquote>
+<p>AJAX原理简单地说就是通过XMLHTTPRequest来向服务器发送异步请求，从服务器获得数据，然后用JavaScript来操作DOM而刷新页面。</p>
+</blockquote>
+<p>####XMLHTTPRequest对象属性
+<img src="http://7u2eqw.com1.z0.glb.clouddn.com/XMLHTTPRequest%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7.png" alt="XMLHTTPRequest对象属性">
+<a href="https://www.hoohack.me/assets/images/2015_01_05.png">查看大图</a></p>
+<p>AJAX就是把JavaScript技术与XMLHTTPRequest对象放在WEB表单和服务器间，当用户向服务器请求时，数据发送给JavaScript代码而不是直接发给服务器，JavaScript代码在幕后发送异步请求，然后服务器将数据返回给JavaScript代码。JavaScript代码接收到数据后，操作DOM来更新页面数据。</p>
+<p>###AJAX同步和异步
+异步：AJAX一直执行，不发生阻塞等待服务器的响应，因此在使用异步AJAX时，在函数中对变量赋值是没有效的。</p>
+<p>同步：AJAX发生阻塞，等待服务器返回数据才能执行下一步。</p>
+<p>###AJAX原理图
+<img src="http://7u2eqw.com1.z0.glb.clouddn.com/ajax.png" alt="AJAX原理图"></p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

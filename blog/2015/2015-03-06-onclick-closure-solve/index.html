@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="Javascript中使用onclick函数时的闭包问题解决" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-03-06-onclick-closure-solve/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>Javascript中使用onclick函数时的闭包问题解决 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>Javascript中使用onclick函数时的闭包问题解决</h1>
+    <div class="italic text-gray-500">
+      2015/03/05
+    </div>
+    <div>
+      <p>在Javascript函数中，经常有遇到闭包的情况。</p>
+<p>如下面的代码</p>
+<p>for (var i = 0; i &lt; arr.length; i++) {
+arr[i].onclick = function() {
+console.log(i);
+};
+}</p>
+<p>此时输出的i的值全都是arr.length的值，因为出现了闭包。</p>
+<p>解决方法：</p>
+<h2 id="%E4%B8%80%E3%80%81%E5%B0%86i%E4%BF%9D%E5%AD%98%E5%9C%A8%E6%AF%8F%E4%B8%AA%E6%95%B0%E7%BB%84%E5%AF%B9%E8%B1%A1%E4%B8%AD" tabindex="-1">一、将i保存在每个数组对象中</h2>
+<p>for (var i = 0; i &lt; arr.length; i++) {
+arr[i].i = i;
+arr[i].onclick = function() {
+console.log(this.i);
+}
+}</p>
+<h2 id="%E4%BA%8C%E3%80%81%E5%B0%86i%E4%BF%9D%E5%AD%98%E5%9C%A8%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E8%87%AA%E8%BA%AB" tabindex="-1">二、将i保存在匿名函数自身</h2>
+<p>for (var i = 0; i &lt; arr.length; i++) {
+(arr[i].onclick = function() {
+console.log(arguments.callee.i);
+}).i = i;
+}</p>
+<h2 id="%E4%B8%89%E3%80%81%E6%B7%BB%E5%8A%A0%E4%B8%80%E5%B1%82%E9%97%AD%E5%8C%85(%E4%BD%9C%E4%B8%BA%E5%BD%A2%E5%8F%82)" tabindex="-1">三、添加一层闭包(作为形参)</h2>
+<p>for (var i = 0; i &lt; arr.length; i++) {
+(function(arg) {
+arr[i].onclick = function() {
+console.log(arg);
+}
+})(i);
+}</p>
+<h2 id="%E5%9B%9B%E3%80%81%E5%8A%A0%E4%BB%A5%E5%B1%82%E9%97%AD%E5%8C%85(%E4%BD%9C%E4%B8%BA%E5%8F%98%E9%87%8F)" tabindex="-1">四、加以层闭包(作为变量)</h2>
+<p>for (var i = 0; i &lt; arr.length; i++) {
+(function(arg) {
+var temp = i;
+arr[i].onclick = function() {
+console.log(temp);
+}
+})();
+}</p>
+<p>在这里记录下解决方案，以便以后查阅。如有错误之处或更多建议，请指出。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

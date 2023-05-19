@@ -1,0 +1,220 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="【PDO扩展】lastInsertId函数返回0的原因" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-01-19-the-reason-why-lastInsertId-return-0/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>【PDO扩展】lastInsertId函数返回0的原因 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>【PDO扩展】lastInsertId函数返回0的原因</h1>
+    <div class="italic text-gray-500">
+      2016/01/19
+    </div>
+    <div>
+      <h2 id="%E9%97%AE%E9%A2%98" tabindex="-1">问题</h2>
+<p>在使用PHP的PDO扩展插入数据的时候，有时候需要获取到最后插入记录的ID作为返回信息。要怎么才能实现这个需求呢？</p>
+<h2 id="lastinsertid%E5%87%BD%E6%95%B0" tabindex="-1">lastInsertId函数</h2>
+<blockquote>
+<p>使用PDO的lastInsertId函数。</p>
+</blockquote>
+<p>但是，最近在使用的过程中发现有时候lastInsertId函数返回的是0。为什么会这样呢？</p>
+<p>先来看看lastInsertId函数在<a href="http://php.net/manual/zh/pdo.lastinsertid.php">PHP手册</a>上的说明。</p>
+<blockquote>
+<p>返回最后插入行的ID或序列值。</p>
+</blockquote>
+<p>再来看看下面的几个例子。</p>
+<h2 id="%E6%B5%8B%E8%AF%95%E4%BE%8B%E5%AD%90" tabindex="-1">测试例子</h2>
+<h3 id="%E4%B8%BB%E9%94%AE%E6%98%AFid%E5%AD%97%E6%AE%B5%EF%BC%8C%E4%BD%BF%E7%94%A8%E8%87%AA%E5%A2%9E%E7%BA%A6%E6%9D%9F%E3%80%82" tabindex="-1">主键是ID字段，使用自增约束。</h3>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E5%BB%BA%E8%A1%A8%E8%AF%AD%E5%8F%A51.png" alt="测试数据库表建表语句1"></p>
+<p>&lt;?php
+$dsn = 'mysql:dbname=test;host=127.0.0.1';
+$user = 'root';
+$password = 'root';</p>
+<p>try{
+$dbh = new PDO($dsn, $user, $password);
+}catch(PDOException $e){
+echo &quot;Connection failed: &quot; . $e-&gt;getMessage();
+}</p>
+<p>for( $i = 0; $i &lt; 10; $i++){
+$sql = 'INSERT INTO <code>tbl_test</code> (id, name) VALUE (:id, :name)';
+$data = array(
+':id' =&gt; '',
+':name' =&gt; &quot;user_$i&quot;
+);
+$sth = $dbh-&gt;prepare($sql);
+$sth-&gt;execute($data);
+}</p>
+<p>$sql = 'INSERT INTO <code>tbl_test</code> (id, name) VALUE (:id, :name)';
+$new_data = array(
+':id' =&gt; '',
+':name' =&gt; 'user_new'
+);
+$sth = $dbh-&gt;prepare($sql);
+$sth-&gt;execute($new_data);
+$last_id = $dbh-&gt;lastInsertId();
+echo 'last id: ' . $last_id;</p>
+<p>结果</p>
+<blockquote>
+<p>last id: 11</p>
+</blockquote>
+<h3 id="%E4%B8%BB%E9%94%AE%E6%98%AFid%E5%AD%97%E6%AE%B5%EF%BC%8C%E4%B8%8D%E4%BD%BF%E7%94%A8%E8%87%AA%E5%A2%9E%E7%BA%A6%E6%9D%9F%E3%80%82" tabindex="-1">主键是ID字段，不使用自增约束。</h3>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E5%BB%BA%E8%A1%A8%E8%AF%AD%E5%8F%A52.png" alt="测试数据库表建表语句2"></p>
+<p>&lt;?php
+$dsn = 'mysql:dbname=test;host=127.0.0.1';
+$user = 'root';
+$password = 'root';</p>
+<p>try{
+$dbh = new PDO($dsn, $user, $password);
+}catch(PDOException $e){
+echo &quot;Connection failed: &quot; . $e-&gt;getMessage();
+}</p>
+<p>for( $i = 0; $i &lt; 10; $i++){
+$sql = 'INSERT INTO <code>tbl_test</code> (id, name) VALUE (:id, :name)';
+$data = array(
+':id' =&gt; $i,
+':name' =&gt; &quot;user_$i&quot;
+);
+$sth = $dbh-&gt;prepare($sql);
+$sth-&gt;execute($data);
+}</p>
+<p>$sql = 'INSERT INTO <code>tbl_test</code> (id, name) VALUE (:id, :name)';
+$new_data = array(
+':id' =&gt; '',
+':name' =&gt; 'user_new'
+);
+$sth = $dbh-&gt;prepare($sql);
+$sth-&gt;execute($new_data);
+$last_id = $dbh-&gt;lastInsertId();
+echo 'last id: ' . $last_id;</p>
+<p>结果</p>
+<blockquote>
+<p>last id: 0</p>
+</blockquote>
+<h3 id="%E4%B8%BB%E9%94%AE%E4%B8%8D%E6%98%AFid%E5%AD%97%E6%AE%B5%EF%BC%8C%E4%B8%BB%E9%94%AE%E4%BD%BF%E7%94%A8%E8%87%AA%E5%A2%9E%E7%BA%A6%E6%9D%9F%E3%80%82" tabindex="-1">主键不是ID字段，主键使用自增约束。</h3>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E5%BB%BA%E8%A1%A8%E8%AF%AD%E5%8F%A53.png" alt="测试数据库表建表语句3"></p>
+<p>&lt;?php
+$dsn = 'mysql:dbname=test;host=127.0.0.1';
+$user = 'root';
+$password = 'root';</p>
+<p>try{
+$dbh = new PDO($dsn, $user, $password);
+}catch(PDOException $e){
+echo &quot;Connection failed: &quot; . $e-&gt;getMessage();
+}</p>
+<p>for( $i = 0; $i &lt; 10; $i++){
+$sql = 'INSERT INTO <code>tbl_test</code> (tbl_id, name) VALUE (:tbl_id, :name)';
+$data = array(
+':tbl_id' =&gt; $i,
+':name' =&gt; &quot;user_$i&quot;
+);
+$sth = $dbh-&gt;prepare($sql);
+$sth-&gt;execute($data);
+}</p>
+<p>$sql = 'INSERT INTO <code>tbl_test</code> (tbl_id, name) VALUE (:tbl_id, :name)';
+$new_data = array(
+':tbl_id' =&gt; '',
+':name' =&gt; 'user_new'
+);
+$sth = $dbh-&gt;prepare($sql);
+$sth-&gt;execute($new_data);
+$last_id = $dbh-&gt;lastInsertId();
+echo 'last id: ' . $last_id;</p>
+<p>结果</p>
+<blockquote>
+<p>last id: 11</p>
+</blockquote>
+<h3 id="%E4%B8%BB%E9%94%AE%E4%B8%8D%E6%98%AFid%E5%AD%97%E6%AE%B5%EF%BC%8C%E4%B8%8D%E4%BD%BF%E7%94%A8%E8%87%AA%E5%A2%9E%E7%BA%A6%E6%9D%9F%E3%80%82" tabindex="-1">主键不是ID字段，不使用自增约束。</h3>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E5%BB%BA%E8%A1%A8%E8%AF%AD%E5%8F%A54.png" alt="测试数据库表建表语句4"></p>
+<p>&lt;?php
+$dsn = 'mysql:dbname=test;host=127.0.0.1';
+$user = 'root';
+$password = 'root';</p>
+<p>try{
+$dbh = new PDO($dsn, $user, $password);
+}catch(PDOException $e){
+echo &quot;Connection failed: &quot; . $e-&gt;getMessage();
+}</p>
+<p>for( $i = 0; $i &lt; 10; $i++){
+$sql = 'INSERT INTO <code>tbl_test</code> (tbl_id, name) VALUE (:tbl_id, :name)';
+$data = array(
+':tbl_id' =&gt; uniqid(),
+':name' =&gt; &quot;user_$i&quot;
+);
+$sth = $dbh-&gt;prepare($sql);
+$sth-&gt;execute($data);
+}</p>
+<p>$sql = 'INSERT INTO <code>tbl_test</code> (tbl_id, name) VALUE (:tbl_id, :name)';
+$new_data = array(
+':tbl_id' =&gt; uniqid(),
+':name' =&gt; 'user_new'
+);
+$sth = $dbh-&gt;prepare($sql);
+$sth-&gt;execute($new_data);
+$last_id = $dbh-&gt;lastInsertId();
+echo 'last id: ' . $last_id;</p>
+<p>结果</p>
+<blockquote>
+<p>last id: 0</p>
+</blockquote>
+<h2 id="%E6%9F%A5%E7%9C%8Bphp%E6%BA%90%E7%A0%81" tabindex="-1">查看PHP源码</h2>
+<p>可以看到，有些例子返回0，有些例子返回最新的ID。那么lastInsertId什么情况下会返回0呢？在网上搜了很多资料，并没有发现想要的答案，翻开PHP源码，发现函数<code>last_insert_id</code>的实现源码是这样的：</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/%E5%87%BD%E6%95%B0last_insert_id%E6%BA%90%E7%A0%81.jpg" alt="函数last_insert_id源码"></p>
+<p>可以看到，函数返回的id的值是调用mysql api中的<code>mysql_insert_id</code>函数返回的值。</p>
+<h2 id="%E6%9F%A5%E7%9C%8Bmysql%E6%89%8B%E5%86%8C" tabindex="-1">查看mysql手册</h2>
+<p>翻开mysql手册，在<a href="http://dev.mysql.com/doc/refman/5.6/en/getting-unique-id.html">这里</a>找到这一段：</p>
+<blockquote>
+<p>mysql_insert_id() returns the value stored into an AUTO_INCREMENT column, whether that value is automatically generated by storing NULL or 0 or was specified as an explicit value. LAST_INSERT_ID() returns only automatically generated AUTO_INCREMENT values. If you store an explicit value other than NULL or 0, it does not affect the value returned by LAST_INSERT_ID().</p>
+</blockquote>
+<h2 id="%E7%BB%93%E8%AE%BA" tabindex="-1">结论</h2>
+<p>从手册的描述可以知道，<code>mysql_insert_id</code>函数返回的是储存在有<code>AUTO_INCREMENT</code>约束的字段的值，如果表中的字段不使用<code>AUTO_INCREMENT</code>约束或者使用自己生成的唯一值插入，那么该函数不会返回你所存储的值，而是返回NULL或0。因此，在没有使用AUTO_INCREMENT约束的表中，或者ID是自己生成的唯一ID，lastInsertId函数返回的都是0。</p>
+<h2 id="%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88" tabindex="-1">解决方案</h2>
+<p>那么，有没有另一种方法可以帮助我们判断程序执行插入是否成功呢？答案是有的。在PDO执行了excecute之后，调用PDO实例的rowCount函数可以得到执行之后的影响行数，如果结果非0，那么说明数据库插入操作执行成功了。下面这个解决方案的一小段demo：</p>
+<p>$sql = 'INSERT INTO <code>tbl_test</code> (tbl_id, name) VALUE (:tbl_id, :name)';
+$new_data = array(
+':tbl_id' =&gt; uniqid(),
+':name' =&gt; 'user_another'
+);
+$sth = $dbh-&gt;prepare($sql);
+$sth-&gt;execute($new_data);
+$row_count = $sth-&gt;rowCount();
+if( $row_count ){
+echo 'execute success';
+} else{
+echo 'execute failed';
+}</p>
+<p>本文探讨一个问题出现的原因和一个解决方案，由于个人水平有限，如有更好的方法或者其他建议和批评，欢迎指出。</p>
+<p>注：本文使用的是PHP5.4.15，MySQL5.5.41。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

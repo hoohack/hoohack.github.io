@@ -1,0 +1,74 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="在Linux中使用dd刻录系统" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-01-15-use-dd-to-burn-system/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>在Linux中使用dd刻录系统 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>在Linux中使用dd刻录系统</h1>
+    <div class="italic text-gray-500">
+      2015/01/15
+    </div>
+    <div>
+      <p>第一次接触Linux操作系统的时候使用的是Ubuntu发行版，装系统的时候只需要使用ultraisoPE软件添加镜像文件就可以进行刻录了，但是后来经过朋友的
+介绍，改为使用OpenSUSE的发行版，在刻录的时候，不可以像Ubuntu那样刻录，可以通过Linux下的dd命令进行刻录的操作。</p>
+<h2 id="dd" tabindex="-1">dd</h2>
+<p>在linux查看该命令的用途：<code>man dd</code></p>
+<p>可以看到</p>
+<p>dd - convert and copy a file</p>
+<p>可见dd命令是转换和复制文件。</p>
+<p>在Unix上，硬件的设备驱动（如硬盘）和特殊设备文件（如/dev/zero和/dev/random）就像普通文件一样，出现在文件系统中；只要在各自的驱动程序中
+实现了对应的功能，dd也可以读取自和/或写入到这些文件。这样，dd也可以用在备份硬件的引导扇区、获取一定数量的随机数据等任务中。dd程序也可以在
+复制时处理数据，例如转换字节序、或在ASCII与EBCDIC编码间互换。</p>
+<h2 id="dd%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E" tabindex="-1">dd参数说明</h2>
+<p>dd if=&quot;input file&quot; of=&quot;output file&quot; bs=&quot;block size&quot; count=&quot;number&quot;</p>
+<p>if ： 就是input file，也可以是设备</p>
+<p>of ： 就是output file，也可以是设备</p>
+<p>bs ： 规划一个block的大小，若未指定则默认是512bytes（一个扇区的大小）</p>
+<p>count ： 多少个bs的意思</p>
+<h2 id="%E5%88%BB%E5%BD%95%E7%9A%84%E6%AD%A5%E9%AA%A4" tabindex="-1">刻录的步骤</h2>
+<h3 id="%E6%9F%A5%E6%89%BEusb%E8%AE%BE%E5%A4%87" tabindex="-1">查找USB设备</h3>
+<p>ls -l /dev/disk/by_id/<em>usb</em>/</p>
+<p>此时可以看到你插入的USB设备，找到有数字后缀的设备进行卸载</p>
+<h3 id="%E5%8D%B8%E8%BD%BDu%E7%9B%98" tabindex="-1">卸载U盘</h3>
+<p>umount /dev/sdX1</p>
+<h3 id="%E5%88%BB%E5%BD%95%E9%95%9C%E5%83%8F" tabindex="-1">刻录镜像</h3>
+<p>dd if=/path/to/downloaded.iso of=/dev/sdX1 bs=4M</p>
+<h2 id="%EF%BC%9F%E6%97%A0%E6%B3%95%E6%A0%BC%E5%BC%8F%E5%8C%96%E4%BF%AE%E5%A4%8Du%E7%9B%98" tabindex="-1">？无法格式化修复U盘</h2>
+<p>使用dd命令刻录U盘后，你的U盘可能在Windows下即使再次重新格式化，也无法显示正常的大小，如果您确信您的U盘是正品，那么可以使用类似如下命令修复U盘</p>
+<p>dd if=/dev/zero of=/dev/sdc bs=512 count=1</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

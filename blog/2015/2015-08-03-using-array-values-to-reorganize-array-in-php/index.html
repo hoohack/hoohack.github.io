@@ -1,0 +1,73 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="在php中使用array_values函数调整数组键值" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-08-03-using-array-values-to-reorganize-array-in-php/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>在php中使用array_values函数调整数组键值 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>在php中使用array_values函数调整数组键值</h1>
+    <div class="italic text-gray-500">
+      2015/08/03
+    </div>
+    <div>
+      <p>来看看这段代码。</p>
+<p>&lt;?php
+$arr = array('a', 'b', 'c', '', 'd', '', 'e');</p>
+<p>print_r($arr);</p>
+<p>$filter_arr = array_filter($arr);</p>
+<p>print_r($filter_arr);</p>
+<p>上面这段程序的运行结果是这样的</p>
+<p>$arr
+Array ( [0] =&gt; a [1] =&gt; b [2] =&gt; c [3] =&gt; [4] =&gt; d [5] =&gt; [6] =&gt; e )</p>
+<p>$filter_arr
+Array ( [0] =&gt; a [1] =&gt; b [2] =&gt; c [4] =&gt; d [6] =&gt; e )</p>
+<p>当在纯数字键值的数组中进行了元素删除操作的同时，也将数组元素的键值删去了，而且在PHP中不会将数组键值重新调整。那么当需要在删除操作之后再次利用到数组的下标时就不能使用到正确的下标了。</p>
+<p>比如说$arr是从一个字符串分割得到的数据数组，然后需要去除掉空值后继续使用，此时使用$arr[3]希望得到d。但是因为数组的下标已经被打乱了，因此只能得到空值。</p>
+<p>这个问题的解决方案就是使用array_values函数。先看看此函数的定义。</p>
+<p>##array_values
+返回数组中所有的值</p>
+<p>array array_values (array $input)</p>
+<p>array_values() 返回 input 数组中所有的值并给其建立数字索引。但不保留键名。被返回的数组将使用数值键，并从0开始且以1递增。</p>
+<p>这个函数正好解决了上面的问题。那么来验证一下这个函数的效果。</p>
+<p>&lt;?php
+$arr = array('a', 'b', 'c', '', 'd', '', 'e');</p>
+<p>print_r($arr);</p>
+<p>$filter_arr = array_values(array_filter($arr));</p>
+<p>print_r($filter_arr);</p>
+<p>上面代码运行的结果是：</p>
+<p>Array ( [0] =&gt; a [1] =&gt; b [2] =&gt; c [3] =&gt; d [4] =&gt; e )</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,254 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="［Redis源码阅读］当你输入get/set命令的时候，redis做了什么" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2018/2018-06-11-what-happen-when-you-use-get-set/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>［Redis源码阅读］当你输入get/set命令的时候，redis做了什么 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>［Redis源码阅读］当你输入get/set命令的时候，redis做了什么</h1>
+    <div class="italic text-gray-500">
+      2018/06/11
+    </div>
+    <div>
+      <p><a href="https://www.hoohack.me/2018/05/26/read-redis-src-how-server-start">上一篇文章</a>介绍了redis-server的启动过程，服务端启动之后，就启动事件循环机制监听新事件的到来，此时不同的客户端就可以通过发送指令的方式请求server并得到处理结果的回复。在开发过程中，用到最多的就是get和set命令，那么，当我们输入get/set命令时，redis做了什么呢？</p>
+<h2 id="redis-cli%E5%90%AF%E5%8A%A8" tabindex="-1">redis-cli启动</h2>
+<p>了解命令是如何使用之前，先了解下redis-client启动时做了什么。redis客户端有多种实现，不同的语言也有自己的实现，在这里可以看到各种版本：<a href="https://redis.io/clients">redis版本</a>，平常调试过程中比较常用的是redis-client，即命令行的形式，redis-client的主要实现代码在<code>redis-cli.h</code>和<code>redis-cli.c</code>。redis-client的启动入口是在main函数，阅读代码可以看到是先给config设置属性，然后判断客户端使用哪种模式启动，启动模式有：Latency、Latency分布式、从库、获取RDB、查找大key、管道、Stat、Scan、LRU、Intrinsic Latency、交互模式。我们用的命令行就是交互模式。</p>
+<p>在redis整个连接过程中，使用了redisContext结构体来保存连接的上下文，看看结构体的定义：</p>
+<pre class="language-c"><code class="language-c"><span class="token comment">/* 代表一个Redis连接的上下文结构体 */</span><br><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">redisContext</span> <span class="token punctuation">{</span><br>    <span class="token keyword">int</span> err<span class="token punctuation">;</span><br>    <span class="token keyword">char</span> errstr<span class="token punctuation">[</span><span class="token number">128</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <br>    <span class="token keyword">int</span> fd<span class="token punctuation">;</span><br>    <span class="token keyword">int</span> flags<span class="token punctuation">;</span><br>    <span class="token keyword">char</span> <span class="token operator">*</span>obuf<span class="token punctuation">;</span><br>    redisReader <span class="token operator">*</span>reader<span class="token punctuation">;</span> <br>    <span class="token keyword">enum</span> <span class="token class-name">redisConnectionType</span> connection_type<span class="token punctuation">;</span><br>    <span class="token keyword">struct</span> <span class="token class-name">timeval</span> <span class="token operator">*</span>timeout<span class="token punctuation">;</span><br>    <span class="token keyword">struct</span> <span class="token punctuation">{</span><br>        <span class="token keyword">char</span> <span class="token operator">*</span>host<span class="token punctuation">;</span><br>        <span class="token keyword">char</span> <span class="token operator">*</span>source_addr<span class="token punctuation">;</span><br>        <span class="token keyword">int</span> port<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span> tcp<span class="token punctuation">;</span><br><br>    <span class="token keyword">struct</span> <span class="token punctuation">{</span><br>        <span class="token keyword">char</span> <span class="token operator">*</span>path<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span> unix_sock<span class="token punctuation">;</span><br><span class="token punctuation">}</span> redisContext<span class="token punctuation">;</span></code></pre>
+<blockquote>
+<p>err：操作过程中的错误标志，0表示无错误</p>
+</blockquote>
+<blockquote>
+<p>errstr：错误信息字符串</p>
+</blockquote>
+<blockquote>
+<p>fd：redis-client连接服务器后的socket文件</p>
+</blockquote>
+<blockquote>
+<p>obuf：保存输入的命令</p>
+</blockquote>
+<blockquote>
+<p>tcp：保存一个tcp连接的信息，包括IP，协议族，端口</p>
+</blockquote>
+<p>介绍完使用的数据结构后，继续连接过程，在交互模式下，redis调用<code>cliConnect</code>函数进行连接。</p>
+<p>cliConnect函数的执行流程：</p>
+<blockquote>
+<ul>
+<li>1、调用redisConnect函数连接到redis服务器实例，使用redisContext保存连接上下文。</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>2、通过设置KeepAlive属性避免连接断开，KeepAlive的默认时间是15s。</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>3、连接成功后，进行验证并选择正确的DB。</li>
+</ul>
+</blockquote>
+<p>连接建立成功后，redis-cli启动就完成了，此时进入了交互阶段，redisContext封装了客户端连接服务器的状态，之后有关客户端的操作都会操作这个结构体。</p>
+<h2 id="%E8%B7%9F%E8%B8%AAget%2Fset%E5%91%BD%E4%BB%A4%E7%9A%84%E5%85%A8%E8%BF%87%E7%A8%8B" tabindex="-1">跟踪get/set命令的全过程</h2>
+<p>客户端启动成功，就可以输入指令调用redis的命令了。
+本文测试使用的key是<code>username:1234</code>，先输入<code>get username:1234</code>。</p>
+<p>继续阅读代码，发现客户端进入交互模式之后，就调用repl读取终端命令、发送命令到客户端并返回结果，repl函数是交互模式的核心函数。repl函数调用linenoise函数读取用户输入的命令，读取方式是通过空格分隔多个参数，读取到命令请求之后，就会调用<code>issueCommandRepeat</code>函数启动命令执行，<code>issueCommandRepeat</code>函数调用<code>cliSendCommand</code>发送命令给服务器。</p>
+<p><code>cliSendCommand</code>函数调用<code>redisAppendCommandArgv</code>函数使用redis的协议编码输入的命令，然后调用<code>cliReadReply</code>函数发送数据到服务端并读取服务端的返回数据。读到这里的时候，挺想看看使用redis协议编码后的数据是怎样的，于是想到使用gdb断点调试，查看每一个步骤的数据以及交互。</p>
+<h2 id="gdb%E8%B0%83%E8%AF%95redis%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C" tabindex="-1">gdb调试redis准备工作</h2>
+<p>在使用gdb调试的时候，输出其中一些变量会得到如下结果：</p>
+<p>​   <code>&lt;value optimized out&gt;</code></p>
+<p>这是因为在编译的时候默认使用了-O2优化选项，在这个选项下，编译器会把它认为冗余的部分变量进行优化，因此看不到具体的值，要想去掉这个优化，在gcc编译的时候指定-O0就可以了，对于redis的编译来说，修改makefile文件，把-O2改为-O0或者执行<code>make noopt</code>即可。</p>
+<h2 id="redis%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D" tabindex="-1">redis通信协议介绍</h2>
+<p>众所周知，HTTP有自己的协议，协议是通信计算机双方必须共同遵从的一组约定。 如怎么样建立连接、怎么样互相识别等。 只有遵守这个约定，计算机之间才能相互通信交流。 对于redis而言，为了保证服务器与客户端的正常通信，也定义了自己的通信协议，客户端和服务器在接收解析数据时都需要遵循这个协议才能保证通信正常进行。</p>
+<p>redis请求协议的一般形式：</p>
+<pre class="language-c"><code class="language-c"><span class="token operator">*</span><span class="token operator">&lt;</span>参数数量<span class="token operator">></span> CR LF<br>$<span class="token operator">&lt;</span>参数 <span class="token number">1</span> 的字节数量<span class="token operator">></span> CR LF<br><span class="token operator">&lt;</span>参数 <span class="token number">1</span> 的数据<span class="token operator">></span> CR LF<br><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><br>$<span class="token operator">&lt;</span>参数 N 的字节数量<span class="token operator">></span> CR LF<br><span class="token operator">&lt;</span>参数 N 的数据<span class="token operator">></span> CR LF</code></pre>
+<p>回复的协议：</p>
+<pre class="language-c"><code class="language-c">状态回复（status reply）的第一个字节是 <span class="token string">"+"</span><br>错误回复（error reply）的第一个字节是 <span class="token string">"-"</span><br>整数回复（integer reply）的第一个字节是 <span class="token string">":"</span><br>批量回复（bulk reply）的第一个字节是 <span class="token string">"$"</span><br>多条批量回复（multi bulk reply）的第一个字节是 <span class="token string">"*"</span></code></pre>
+<h2 id="%E8%A7%A3%E6%9E%90%E5%91%BD%E4%BB%A4" tabindex="-1">解析命令</h2>
+<p>根据上面的描述可知，<code>issueCommandRepeat</code>函数是执行命令的核心实现，为函数进行一个断点。</p>
+<pre class="language-shell"><code class="language-shell"><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> b issueCommandRepeat<br>Breakpoint <span class="token number">1</span> at 0x40f891: <span class="token function">file</span> redis-cli.c, line <span class="token number">1281</span>.<br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> run<br>Starting program: /usr/local/src/redis-stable/src/redis-cli<br><span class="token punctuation">[</span>Thread debugging using libthread_db enabled<span class="token punctuation">]</span><br>Using <span class="token function">host</span> libthread_db library <span class="token string">"/lib/x86_64-linux-gnu/libthread_db.so.1"</span><span class="token builtin class-name">.</span><br><span class="token number">127.0</span>.0.1:637<span class="token operator"><span class="token file-descriptor important">9</span>></span> get username:1234<br>Breakpoint <span class="token number">1</span>, issueCommandRepeat <span class="token punctuation">(</span>argc<span class="token operator">=</span><span class="token number">2</span>, <span class="token assign-left variable">argv</span><span class="token operator">=</span>0x68a950, <span class="token assign-left variable">repeat</span><span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span> at redis-cli.c:1281<br><span class="token number">1281</span>            config.cluster_reissue_command <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span></code></pre>
+<p>把<code>issuseCommandRepeat</code>的参数打印出来：</p>
+<pre class="language-shell"><code class="language-shell"><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> p *argv<br><span class="token variable">$1</span> <span class="token operator">=</span> 0x685583 <span class="token string">"get"</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> p *<span class="token punctuation">(</span>argv+1<span class="token punctuation">)</span><br><span class="token variable">$2</span> <span class="token operator">=</span> 0x68a973 <span class="token string">"username:1234"</span></code></pre>
+<p>可以知道，用户输入的命令通过<code>lineinoise</code>解析后通过数组传递给<code>issuseCommandRepeat</code>函数了。</p>
+<p>继续执行，就进入了<code>cliSendCommand</code>函数，这个函数主要做的事情是使用redis协议编码发送过来的命令（调用<code>redisAppendCommandArgv</code>函数），然后发送给服务器，并等待服务器的回复（调用<code>cliReadReply</code>函数）。</p>
+<p>命令的解析过程是，使用redis的协议编码，然后将结果保存到redisContext-&gt;obuf，结合前面介绍的redis通信协议看代码，非常直观，编码过程：</p>
+<pre class="language-c"><code class="language-c"><span class="token comment">/*<br> * 使用Redis协议格式化命令，通过sds字符串保存，使用sdscatfmt函数追加<br> * 函数接收几个参数，参数数组以及参数长度数组<br> * 如果参数长度数组为NULL，参数长度会用strlen函数计算<br> */</span><br><span class="token keyword">int</span> <span class="token function">redisFormatSdsCommandArgv</span><span class="token punctuation">(</span>sds <span class="token operator">*</span>target<span class="token punctuation">,</span> <span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span><span class="token operator">*</span>argv<span class="token punctuation">,</span><br>    <span class="token keyword">const</span> <span class="token class-name">size_t</span> <span class="token operator">*</span>argvlen<span class="token punctuation">)</span><br><span class="token punctuation">{</span><br>    sds cmd<span class="token punctuation">;</span><br>    <span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token keyword">long</span> totlen<span class="token punctuation">;</span><br>    <span class="token keyword">int</span> j<span class="token punctuation">;</span><br>    <span class="token class-name">size_t</span> len<span class="token punctuation">;</span><br>    <span class="token comment">/* Abort on a NULL target */</span><br>    <span class="token keyword">if</span> <span class="token punctuation">(</span>target <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><br>        <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span><br>    <span class="token comment">/* 计算总大小 */</span><br>    totlen <span class="token operator">=</span> <span class="token number">1</span><span class="token operator">+</span><span class="token function">countDigits</span><span class="token punctuation">(</span>argc<span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">2</span><span class="token punctuation">;</span><br>    <span class="token keyword">for</span> <span class="token punctuation">(</span>j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> argc<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        len <span class="token operator">=</span> argvlen <span class="token operator">?</span> argvlen<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">:</span> <span class="token function">strlen</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        totlen <span class="token operator">+=</span> <span class="token function">bulklen</span><span class="token punctuation">(</span>len<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br>    <span class="token comment">/* 初始化一个sds字符串 */</span><br>    cmd <span class="token operator">=</span> <span class="token function">sdsempty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token keyword">if</span> <span class="token punctuation">(</span>cmd <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><br>        <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span><br>    <span class="token comment">/* 使用前面计算得到的totlen分配空间 */</span><br>    cmd <span class="token operator">=</span> <span class="token function">sdsMakeRoomFor</span><span class="token punctuation">(</span>cmd<span class="token punctuation">,</span> totlen<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token keyword">if</span> <span class="token punctuation">(</span>cmd <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><br>        <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span><br>    <span class="token comment">/* 构造命令字符串 */</span><br>    cmd <span class="token operator">=</span> <span class="token function">sdscatfmt</span><span class="token punctuation">(</span>cmd<span class="token punctuation">,</span> <span class="token string">"*%i\r\n"</span><span class="token punctuation">,</span> argc<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// *%i 表示包含命令在内，共有多少个参数</span><br>    <span class="token keyword">for</span> <span class="token punctuation">(</span>j<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> argc<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        len <span class="token operator">=</span> argvlen <span class="token operator">?</span> argvlen<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">:</span> <span class="token function">strlen</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        cmd <span class="token operator">=</span> <span class="token function">sdscatfmt</span><span class="token punctuation">(</span>cmd<span class="token punctuation">,</span> <span class="token string">"%u\r\n"</span><span class="token punctuation">,</span> len<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// %u 表示该参数的长度</span><br>        cmd <span class="token operator">=</span> <span class="token function">sdscatlen</span><span class="token punctuation">(</span>cmd<span class="token punctuation">,</span> argv<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">,</span> len<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 参数的值</span><br>        cmd <span class="token operator">=</span> <span class="token function">sdscatlen</span><span class="token punctuation">(</span>cmd<span class="token punctuation">,</span> <span class="token string">"\r\n"</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token string">"\r\n"</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 最后加上\r\n</span><br>    <span class="token punctuation">}</span><br>    <span class="token function">assert</span><span class="token punctuation">(</span><span class="token function">sdslen</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token operator">==</span>totlen<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token operator">*</span>target <span class="token operator">=</span> cmd<span class="token punctuation">;</span><br>    <span class="token keyword">return</span> totlen<span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre>
+<p>结合编码过程，对于输入的命令，得到的编码结果应该是：</p>
+<p>​   <code>*2\r\n$3\r\nget\r\n$13\r\nusername:1234\r\n</code></p>
+<p>在gdb打印验证一下，在执行redisAppendCommandArgv函数前后打印context-&gt;obuf结果如下，验证成功：</p>
+<pre class="language-shell"><code class="language-shell"><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span><br><span class="token number">984</span>             redisAppendCommandArgv<span class="token punctuation">(</span>context,argc,<span class="token punctuation">(</span>const char**<span class="token punctuation">)</span>argv,argvlen<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> p context-<span class="token operator">></span>obuf<br><span class="token variable">$3</span> <span class="token operator">=</span> 0x6855a3 <span class="token string">""</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> n<br><span class="token number">985</span>             <span class="token keyword">while</span> <span class="token punctuation">(</span>config.monitor_mode<span class="token punctuation">)</span> <span class="token punctuation">{</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> p context-<span class="token operator">></span>obuf<br><span class="token number">4</span> <span class="token operator">=</span> 0x68a9e3 <span class="token string">"*2<span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span>3<span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span>get<span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span><span class="token variable">$13</span><span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span>username:1234<span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span>"</span></code></pre>
+<p>把\r\n去掉，通过一种更直观展示：</p>
+<blockquote>
+<p>*2 // 命令参数的总数量，包含命令在内</p>
+<p>$3 // 第一个参数的长度</p>
+<p>get // 第一个参数的值</p>
+<p>$13 // 第二个参数的长度</p>
+<p>username:1234 // 第二个参数的值</p>
+</blockquote>
+<h2 id="%E5%8F%91%E9%80%81%E5%91%BD%E4%BB%A4" tabindex="-1">发送命令</h2>
+<p>客户端解析完命令，并对其进行编码后，就进入下一阶段，将命令发给服务器，对cliReadReply函数进行断点：</p>
+<pre class="language-shell"><code class="language-shell">Breakpoint <span class="token number">3</span>, cliReadReply <span class="token punctuation">(</span>output_raw_strings<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span> at redis-cli.c:840<br><span class="token number">840</span>     static int cliReadReply<span class="token punctuation">(</span>int output_raw_strings<span class="token punctuation">)</span> <span class="token punctuation">{</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> n<br><span class="token number">843</span>         sds out <span class="token operator">=</span> NULL<span class="token punctuation">;</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span><br><span class="token number">844</span>         int output <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span><br><span class="token number">846</span>         <span class="token keyword">if</span> <span class="token punctuation">(</span>redisGetReply<span class="token punctuation">(</span>context,<span class="token operator">&amp;</span>_reply<span class="token punctuation">)</span> <span class="token operator">!=</span> REDIS_OK<span class="token punctuation">)</span> <span class="token punctuation">{</span></code></pre>
+<p>调用了<code>redisGetReply</code>函数，函数接收连接上下文redisContext参数，并把结果写到_reply。在redisGetReply函数里，函数做的事情是把命令发送给服务器，然后等待服务器返回，里面一个I/O操作，底层调用了系统调用write和read。</p>
+<p>调用write函数发送命令之后，请求到了服务器，上一篇文章有讲到了redis服务器是怎么启动的，启动之后就进入了事件循环状态，接下来就看看服务器是怎么处理请求的。</p>
+<h2 id="%E5%A4%84%E7%90%86%E8%AF%B7%E6%B1%82" tabindex="-1">处理请求</h2>
+<p>服务器启动会注册文件事件，注册的回调<code>acceptTcpHandler</code>，当服务器可读时（即客户端可以write/close），<code>acceptTcpHandler</code>被调用，追踪函数，调用链路如下：</p>
+<blockquote>
+<p>acceptTcpHandler -&gt; anetTcpAccept -&gt; acceptCommonHandler</p>
+</blockquote>
+<p><code>acceptTcpHandler</code>函数会调用anetTcpAccept函数发起accept，接收客户端请求，请求到来后，会调用<code>acceptCommonHandler</code>函数处理。<code>acceptCommonHandler</code>调用链：</p>
+<blockquote>
+<p>acceptCommonHandler-&gt; createClient -&gt; readQueryFromClient</p>
+</blockquote>
+<p><code>acceptCommonHandler</code>函数调用<code>createClient</code>创建一个客户端，注册回调函数，如果有请求到来，会调用<code>readQueryFromClient</code>函数读取客户端的请求。客户端创建成功后，redis会将它添加到当前服务器的客户端链表中，之后如果需要对所有客户端进行交互，都会使用这个链表。</p>
+<p>梳理整个调用链路后，对readQueryFromClient函数加一个断点，看看接收到的数据：</p>
+<pre class="language-shell"><code class="language-shell"><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> b readQueryFromClient<br>Breakpoint <span class="token number">1</span> at 0x440b6b: <span class="token function">file</span> networking.c, line <span class="token number">1377</span>.<br><span class="token number">1377</span>        client c <span class="token operator">=</span> <span class="token punctuation">(</span>client<span class="token punctuation">)</span> privdata<span class="token punctuation">;</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> n<br><span class="token number">1383</span>        readlen <span class="token operator">=</span> PROTO_IOBUF_LEN<span class="token punctuation">;</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> n<br><span class="token number">1390</span>        <span class="token keyword">if</span> <span class="token punctuation">(</span>c-<span class="token operator">></span>reqtype <span class="token operator">==</span> PROTO_REQ_MULTIBULK <span class="token operator">&amp;&amp;</span> c-<span class="token operator">></span>multibulklen <span class="token operator">&amp;&amp;</span> c-<span class="token operator">></span>bulklen <span class="token operator">!=</span> <span class="token parameter variable">-1</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> n<br><span class="token number">1398</span>        qblen <span class="token operator">=</span> sdslen<span class="token punctuation">(</span>c-<span class="token operator">></span>querybuf<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> n<br><span class="token number">1399</span>        <span class="token keyword">if</span> <span class="token punctuation">(</span>c-<span class="token operator">></span>querybuf_peak <span class="token operator">&lt;</span> qblen<span class="token punctuation">)</span> c-<span class="token operator">></span>querybuf_peak <span class="token operator">=</span> qblen<span class="token punctuation">;</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> n<br><span class="token number">1400</span>        c-<span class="token operator">></span>querybuf <span class="token operator">=</span> sdsMakeRoomFor<span class="token punctuation">(</span>c-<span class="token operator">></span>querybuf, readlen<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> n<br><span class="token number">1401</span>        nread <span class="token operator">=</span> read<span class="token punctuation">(</span>fd, c-<span class="token operator">></span>querybuf+qblen, readlen<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>从执行步骤发现，redis-server为请求的命令创建一个字符串结构体保存，然后发起系统调用read从当前socket读取数据，执行完这步后，打印读取到的字符串，以及字符串结构体在内存中的保存情况：</p>
+<pre class="language-shell"><code class="language-shell"><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> p nread<br><span class="token variable">$7</span> <span class="token operator">=</span> <span class="token number">33</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> p c-<span class="token operator">></span>querybuf<br><span class="token number">8</span> <span class="token operator">=</span> <span class="token punctuation">(</span>sds<span class="token punctuation">)</span> 0x7ffff6b3a345 <span class="token string">"*2<span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span>3<span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span>get<span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span><span class="token variable">$13</span><span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span>username:1234<span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span>"</span><br><span class="token punctuation">(</span>gdb<span class="token punctuation">)</span> x/33 c-<span class="token operator">></span>querybuf<br>0x7ffff6b3a345: <span class="token number">42</span> <span class="token string">'*'</span>  <span class="token number">50</span> <span class="token string">'2'</span>  <span class="token number">13</span> <span class="token string">'\r'</span> <span class="token number">10</span> <span class="token string">'\n'</span> <span class="token number">36</span> <span class="token string">'$'</span>  <span class="token number">51</span> <span class="token string">'3'</span>  <span class="token number">13</span> <span class="token string">'\r'</span> <span class="token number">10</span> <span class="token string">'\n'</span><br>0x7ffff6b3a34d: <span class="token number">103</span> <span class="token string">'g'</span> <span class="token number">101</span> <span class="token string">'e'</span> <span class="token number">116</span> <span class="token string">'t'</span> <span class="token number">13</span> <span class="token string">'\r'</span> <span class="token number">10</span> <span class="token string">'\n'</span> <span class="token number">36</span> <span class="token string">'$'</span>  <span class="token number">49</span> <span class="token string">'1'</span>  <span class="token number">51</span> <span class="token string">'3'</span><br>0x7ffff6b3a355: <span class="token number">13</span> <span class="token string">'\r'</span> <span class="token number">10</span> <span class="token string">'\n'</span> <span class="token number">117</span> <span class="token string">'u'</span> <span class="token number">115</span> <span class="token string">'s'</span> <span class="token number">101</span> <span class="token string">'e'</span> <span class="token number">114</span> <span class="token string">'r'</span> <span class="token number">110</span> <span class="token string">'n'</span> <span class="token number">97</span> <span class="token string">'a'</span><br>0x7ffff6b3a35d: <span class="token number">109</span> <span class="token string">'m'</span> <span class="token number">101</span> <span class="token string">'e'</span> <span class="token number">58</span> <span class="token string">':'</span>  <span class="token number">49</span> <span class="token string">'1'</span>  <span class="token number">50</span> <span class="token string">'2'</span>  <span class="token number">51</span> <span class="token string">'3'</span>  <span class="token number">52</span> <span class="token string">'4'</span>  <span class="token number">13</span> <span class="token string">'\r'</span><br>0x7ffff6b3a365: <span class="token number">10</span> <span class="token string">'\n'</span></code></pre>
+<p>如果根据redis协议计算解析到的字符串长度，得到长度是33，打印<code>c-&gt;querybuf</code>在内存中的保存情况，可以看到整个命令的字节字符串都在这，每一个字节都是紧挨着地保存。</p>
+<p>因为redis是事件驱动的，在每一次有数据到来，<code>readQueryFromClient</code>函数都会被调用，读取命令。本次调试用的get命令比较短，redis-server只需要一次事件循环过程就解析完整个命令了，server每次最多读取1024*16个字节的字符放到缓冲区，如果命令长度超过缓冲最大长度，会分别在多次事件中读取完然后再执行。</p>
+<p>读取完命令后，下一步就是解析和执行了。命令是根据之前介绍的redis协议编码的，server也是根据同样的协议解码，然后保存到redisClient，解析过程是一个反编码过程，具体是在processMultibulkBuffer函数中，有兴趣了解细节的可以查看这个函数。</p>
+<p>解析完命令后，通过调用<code>processCommand</code>函数执行命令。上一篇文章说到，服务器启动时会加载命令表到server中，<code>processCommand</code>函数先在命令表查找命令是否存在，查找方式是通过以命令名称作为key去redis的命令字典查找，对于get命令，定义的格式如下：</p>
+<p>{&quot;get&quot;,getCommand,2,&quot;rF&quot;,0,NULL,1,1,1,0,0}</p>
+<p>读取到之后，command-&gt;proc就会被设置为getCommand函数，接着server进行一系列检查：参数是否正确、是否授权、集群模式处理、是否超出最大内存、如果硬盘有问题不处理等等，然后调用call函数执行命令。call函数是redis执行命令的核心函数，call函数的核心代码：</p>
+<pre class="language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">call</span><span class="token punctuation">(</span>client <span class="token operator">*</span>c<span class="token punctuation">,</span> <span class="token keyword">int</span> flags<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token operator">--</span> 执行前检查 <span class="token operator">--</span><br>    <span class="token comment">/* 调用命令执行函数 */</span><br>    dirty <span class="token operator">=</span> server<span class="token punctuation">.</span>dirty<span class="token punctuation">;</span><br>    start <span class="token operator">=</span> <span class="token function">ustime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    c<span class="token operator">-></span>cmd<span class="token operator">-></span><span class="token function">proc</span><span class="token punctuation">(</span>c<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    duration <span class="token operator">=</span> <span class="token function">ustime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span>start<span class="token punctuation">;</span><br>    dirty <span class="token operator">=</span> server<span class="token punctuation">.</span>dirty<span class="token operator">-</span>dirty<span class="token punctuation">;</span><br>    <span class="token keyword">if</span> <span class="token punctuation">(</span>dirty <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> dirty <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><br><br>    <span class="token operator">--</span> 执行后处理 <span class="token operator">--</span><br><span class="token punctuation">}</span></code></pre>
+<p>看看上面的代码，是redis动态分发命令调用函数的实现，在命令表中配置好每个命令对应的执行函数，参数数量等信息，在server启动时把命令加载到命令表<code>server.commands</code>，这时会将命令表中的命令函数保存到<code>redisCommand.proc</code>，因此，在call函数，只需要执行<code>c-&gt;cmd-&gt;proc(c)</code>就可以执行执行命令对应的函数了。</p>
+<h2 id="getcommand%E5%AE%9E%E7%8E%B0" tabindex="-1">getCommand实现</h2>
+<p>对于本次get命令而言，直接看getCommand函数，调用了getGenericCommand</p>
+<pre><code>/*
+* get命令的&quot;通用&quot;实现
+*/
+int getGenericCommand(client *c) {
+    robj *o;
+    // 调用lookupKeyReadOrReply函数查找指定key，找不到，返回
+    if ((o = lookupKeyReadOrReply(c,c-&gt;argv[1],shared.nullbulk)) == NULL)
+        return C_OK;
+    // 如果找到的对象类型不是string返回类型错误
+    if (o-&gt;type != OBJ_STRING) {
+        addReply(c,shared.wrongtypeerr);
+        return C_ERR;
+    } else {
+        addReplyBulk(c,o);
+        return C_OK;
+    }
+}
+
+/*
+* get命令
+* 调用getGenericCommand函数实现具体操作
+*/
+void getCommand(client *c) {
+    getGenericCommand(c);
+}
+</code></pre>
+<p>getGenericCommand函数调用的<code>lookupKeyReadOrReply(c,c-&gt;argv[1],shared.nullbulk)</code>，传递的参数是客户端c，key，以及shared.nullbulk。</p>
+<p><code>shared.nullbulk</code>是由redis在服务器启动时创建的一个共享变量，因为使用的地方较多，所以redis会创建这些共享变量，减少重复创建过程以及减少内存的损耗。它的值是：</p>
+<p><code>shared.nullbulk = createObject(OBJ_STRING,sdsnew(&quot;$-1\r\n&quot;));</code></p>
+<p>lookupKeyReadOrReply函数只是做了简单的封装，看起来非常简洁，实际上，底层访问数据库是调用了db.c/lookupKey函数，这是get命令实现的核心：</p>
+<pre class="language-c"><code class="language-c"><span class="token comment">/*<br>* 查找数据库中指定key的对象并返回，查询出来的对象用于读操作<br>*/</span><br>robj <span class="token operator">*</span><span class="token function">lookupKeyReadOrReply</span><span class="token punctuation">(</span>client <span class="token operator">*</span>c<span class="token punctuation">,</span> robj <span class="token operator">*</span>key<span class="token punctuation">,</span> robj <span class="token operator">*</span>reply<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    robj <span class="token operator">*</span>o <span class="token operator">=</span> <span class="token function">lookupKeyRead</span><span class="token punctuation">(</span>c<span class="token operator">-></span>db<span class="token punctuation">,</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>o<span class="token punctuation">)</span> <span class="token function">addReply</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span>reply<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token keyword">return</span> o<span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br>robj <span class="token operator">*</span><span class="token function">lookupKey</span><span class="token punctuation">(</span>redisDb <span class="token operator">*</span>db<span class="token punctuation">,</span> robj <span class="token operator">*</span>key<span class="token punctuation">,</span> <span class="token keyword">int</span> flags<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token comment">// 在字典中根据key查找字典对象</span><br>    dictEntry <span class="token operator">*</span>de <span class="token operator">=</span> <span class="token function">dictFind</span><span class="token punctuation">(</span>db<span class="token operator">-></span>dict<span class="token punctuation">,</span>key<span class="token operator">-></span>ptr<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token keyword">if</span> <span class="token punctuation">(</span>de<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token comment">// 获取字典对象的值</span><br>        robj <span class="token operator">*</span>val <span class="token operator">=</span> <span class="token function">dictGetVal</span><span class="token punctuation">(</span>de<span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token comment">/* 更新key的最新访问时间 */</span><br>        <span class="token keyword">if</span> <span class="token punctuation">(</span>server<span class="token punctuation">.</span>rdb_child_pid <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token operator">&amp;&amp;</span><br>            server<span class="token punctuation">.</span>aof_child_pid <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token operator">&amp;&amp;</span><br>            <span class="token operator">!</span><span class="token punctuation">(</span>flags <span class="token operator">&amp;</span> LOOKUP_NOTOUCH<span class="token punctuation">)</span><span class="token punctuation">)</span><br>        <span class="token punctuation">{</span><br>            <span class="token keyword">if</span> <span class="token punctuation">(</span>server<span class="token punctuation">.</span>maxmemory_policy <span class="token operator">&amp;</span> MAXMEMORY_FLAG_LFU<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>                <span class="token keyword">unsigned</span> <span class="token keyword">long</span> ldt <span class="token operator">=</span> val<span class="token operator">-></span>lru <span class="token operator">>></span> <span class="token number">8</span><span class="token punctuation">;</span><br>                <span class="token keyword">unsigned</span> <span class="token keyword">long</span> counter <span class="token operator">=</span> <span class="token function">LFULogIncr</span><span class="token punctuation">(</span>val<span class="token operator">-></span>lru <span class="token operator">&amp;</span> <span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>                val<span class="token operator">-></span>lru <span class="token operator">=</span> <span class="token punctuation">(</span>ldt <span class="token operator">&lt;&lt;</span> <span class="token number">8</span><span class="token punctuation">)</span> <span class="token operator">|</span> counter<span class="token punctuation">;</span><br>            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><br>            val<span class="token operator">-></span>lru <span class="token operator">=</span> <span class="token function">LRU_CLOCK</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>            <span class="token punctuation">}</span><br>        <span class="token punctuation">}</span><br>        <span class="token keyword">return</span> val<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><br>        <span class="token keyword">return</span> <span class="token constant">NULL</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>在redis中，所有的键值对都会用内置的哈希表保存在内存里，因此，在lookupKey的实现里，先使用<code>dictFind</code>函数查找传进来的key是否存在哈希表中，如果找到，则调用<code>dictGetVal</code>获取哈希节点对象的value属性，否则，返回NULL，函数的时间复杂度是O(1)。</p>
+<p>函数lookupKeyRead在接收到返回后，判断值的类型：</p>
+<p>如果是NULL，则将函数接收的参数shared.nullbulk返回给客户端。shared.nullbuk是上层函数传递进来的reply对象，一个null共享对象，根据redis的协议，解析为nil。</p>
+<p>如果函数不为空，则调用dictGetVal获取查找到的对象的值，然后返回。</p>
+<p>查找到的两种结果最终都是调用函数addReply返回结果给客户端，addReply函数将回复传递给客户端，addReply函数将回复结果写入到client的buf中，在redis的事件循环过程中，只要buf有数据就会输出到客户端。客户端得到内容后，根据redis协议解析结果，输出。在这个例子中，要查找的key不存在，因此客户端显示的是
+(nil)</p>
+<p>至此，get命令的全流程已经介绍完，接着看看set命令的执行链路，输入<code>set username:1234</code>。</p>
+<h2 id="set%E5%91%BD%E4%BB%A4" tabindex="-1">set命令</h2>
+<p>set的执行流程与get的流程几乎一样，不同点在于处理请求的时候调用的是<code>setCommand</code>，<code>setCommand</code>先做了一些参数的校验，然后会为value做一次编码转换，因为保存redis字符串的有两种编码格式：embstr和sds，使用embstr编码字符串，可以节省空间，这也是redis做的其中一项优化，继续往下看，最终是调用了<code>setGenricCommand</code>函数：</p>
+<pre><code>void setGenericCommand(client *c, int flags, robj *key, robj *val, robj *expire, int unit, robj *ok_reply, robj *abort_reply) {
+    long long milliseconds = 0; /* 初始化，避免报错 */
+    // 如果需要设置超时时间，根据unit单位参数设置超时时间
+    if (expire) {
+        // 获取时间值
+        if (getLongLongFromObjectOrReply(c, expire, &amp;milliseconds, NULL) != C_OK)
+            return;
+        // 处理非法的时间值
+        if (milliseconds &lt;= 0) {
+            addReplyErrorFormat(c,&quot;invalid expire time in %s&quot;,c-&gt;cmd-&gt;name);
+            return;
+        }
+        if (unit == UNIT_SECONDS) milliseconds *= 1000; // 统一用转换成毫秒
+    }
+    /*
+     * 处理非法情况
+     * 如果flags为OBJ_SET_NX 且 key存在或者flags为OBJ_SET_XX且key不存在，函数终止并返回abort_reply的值
+     */
+    if ((flags &amp; OBJ_SET_NX &amp;&amp; lookupKeyWrite(c-&gt;db,key) != NULL) ||
+        (flags &amp; OBJ_SET_XX &amp;&amp; lookupKeyWrite(c-&gt;db,key) == NULL))
+    {
+        addReply(c, abort_reply ? abort_reply : shared.nullbulk);
+        return;
+    }
+    // 设置val到key中
+    setKey(c-&gt;db,key,val);
+    // 增加服务器的dirty值
+    server.dirty++;
+    // 设置过期时间
+    if (expire) setExpire(c,c-&gt;db,key,mstime()+milliseconds);
+    // 通知监听了key的数据库，key被操作了set、expire命令
+    notifyKeyspaceEvent(NOTIFY_STRING,&quot;set&quot;,key,c-&gt;db-&gt;id);
+    if (expire) notifyKeyspaceEvent(NOTIFY_GENERIC,
+        &quot;expire&quot;,key,c-&gt;db-&gt;id);
+    // 返回成功的信息
+    addReply(c, ok_reply ? ok_reply : shared.ok);
+}
+
+void setKey(redisDb *db, robj *key, robj *val) {
+    /*
+     * 如果key不在数据库里，新建
+     * 否则，用新值覆盖
+     */
+    if (lookupKeyWrite(db,key) == NULL) {
+        dbAdd(db,key,val);
+    } else {
+        dbOverwrite(db,key,val);
+    }
+    incrRefCount(val); // 增加值的引用计数
+    removeExpire(db,key); // 重置键在数据库里的过期时间
+    signalModifiedKey(db,key); // 发送修改键的通知
+}
+</code></pre>
+<p><code>setGenericCommand</code>调用<code>setKey</code>函数将<strong>key-value</strong>的键值对添加到数据库，setKey调用<code>dictFind</code>函数查找key是否在数据库，如果在数据库，就用value覆盖旧值，否则将key-value添加到数据库。对于本文的例子，因为<strong>username:1234</strong>这个key不存在，<code>dictFind</code>查找返回的是空，因此函数<code>dbAdd</code>被调用，<code>dbAdd</code>函数只会在key不存在当前数据库的情况下被调用。</p>
+<p>redis中的键值对都会保存到dict（字典对象）数据结构中。
+dict数据结构的介绍可见之前的文章：<a href="https://www.hoohack.me/2018/01/07/read-redis-src-dict">dict字典的实现</a>。具体操作API实现直接看代码：<a href="https://github.com/hoohack/read-redis-src/blob/master/redis-4.0/src/dict.c">dict.c</a>。</p>
+<p>追踪dbAdd函数代码细节可以发现，调用了<code>dictAdd</code>函数执行具体的操作，<code>_dictKeyIndex</code>函数为key返回合适的字典数组下标，然后分配内存保存新节点，将节点添加到哈希表中，并设置key和value的具体值。操作成功后，返回<strong>DICT_OK</strong>，否则返回<strong>DICT_ERR</strong>。</p>
+<p>现在，username:1234已经设置了值，如果再次调用命令：<code>get username:1234</code>，过程跟上面描述的一样，到了<code>dictFind</code>阶段，函数能在数据库中找到<code>key username:1234</code>，函数返回的结果不为空，因此调用dictGetVal函数获取key的值，然后调用<code>addReply</code>返回对象的值。</p>
+<p>至此，set/get命令的整个流程到此结束，通读一遍可能还会有点懵逼，因此根据本次分享的内容再加一个图，看完这个图再回顾整个流程可以加深理解。<a href="https://www.hoohack.me/assets/images/2018/06/redis-call-strace.jpg">查看大图</a></p>
+<p><img src="https://www.hoohack.me/assets/images/2018/06/redis-call-strace.jpg" alt="redis调用链路"></p>
+<h2 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h2>
+<p>通过本次的学习，从外层代码一只追溯到底层的网络代码实现，了解到了很多网络知识和代码封装技巧，再次感叹redis代码的优美。也借此机会将学习到的内容分享出来，如果有需要查看其它命令实现或者其他函数实现，也可以作为一次参考。</p>
+<p>参考文章：<a href="https://pauladamsmith.com/blog/2011/03/redis_get_set.html">More Redis internals: Tracing a GET &amp; SET</a></p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

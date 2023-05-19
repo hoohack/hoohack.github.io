@@ -1,0 +1,144 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="一步步学习Dwoo模板引擎--前端使用" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-04-23-learning-dwoo-step-by-step-dwoo-for-designers/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>一步步学习Dwoo模板引擎--前端使用 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>一步步学习Dwoo模板引擎--前端使用</h1>
+    <div class="italic text-gray-500">
+      2015/04/23
+    </div>
+    <div>
+      <p>介绍完如何安装之后，现在来介绍一下前端开发者如何使用Dwoo模板引擎套模板。</p>
+<p>##简介
+一个模板，简单地说就是一个文本文件。可以生成任意多种文本格式(HTML、XML、TPL等等)。Dwoo没有确定的文件后缀，.html或者.tpl都可以。</p>
+<p>一个模板包含在模板运行的时候被替换为确定的值的变量和表达式以及控制模板逻辑的标签。</p>
+<p>下面是介绍了一些基础的简易模板。细节的东西稍后附上：</p>
+<p>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;My Webpage&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;ul id=&quot;navigation&quot;&gt;
+{foreach $navigation item}
+&lt;li&gt;&lt;a href=&quot;{$item.href}&quot;&gt;{$item.caption}&lt;/a&gt;&lt;/li&gt;
+{/foreach}
+&lt;/ul&gt;</p>
+<p>&lt;h1&gt;My Webpage&lt;/h1&gt;
+{$a_variable}
+&lt;/body&gt;
+&lt;/html&gt;</p>
+<p>在Dwoo里，只用一种定界符用来定位变量、表达式以及标签。</p>
+<p>##变量
+应用程序传送变量到模板，你可以在模板中使用它。变量也许拥有一些你可以访问的属性或者元素。一个变量是怎样的很大程度依赖于应用程序的提供。</p>
+<p>你可以使用下标点(.)来访问PHP变量的属性(PHP对象的方法或者属性、数组的项)，或者被称为下标的标签的&quot;[]&quot;。</p>
+<p>{$foo}
+{$foo.bar}
+{$foor['bar']}</p>
+<p>##全局变量
+下面的变量在模板中是一直有效的。</p>
+<p>{$.version} : Dwoo的版本
+{$.ad} : dwoo网站的链接
+{$.now} : 执行页面的请求时间
+{$.charset} : 使用的编码(默认是UTF-8)</p>
+<p>你也可以使用下面的访问方式访问PHP中的全局变量。</p>
+<p>{$.get.m}
+{$dwoo.get.m}
+{$dwoo.post.x}
+{$dwoo.session.x}</p>
+<p>##函数
+函数可以被调用来生成内容。函数通过函数名和括号以及可选参数来调用。</p>
+<p>例如date_format函数：</p>
+<p>{date_format &quot;now&quot; &quot;Y-m-j&quot;}</p>
+<p>##命名参数
+使用命名参数让你的模板有更明确的意义。</p>
+<p>{date_format value=&quot;now&quot; format&quot;Y-m-j&quot;}
+命名参数也允许你跳过一些你不想改变其默认值的参数。</p>
+<p>{date_format format=&quot;m/d/y&quot; timestamp=$.now modify=&quot;+150 day&quot;}</p>
+<p>##注释
+如果想在模板中注释一行代码，可以使用这样的语句:<code>{*...*}</code>。</p>
+<p>这些注释是Dwoo处理的，而且不像HTML注释一样，它不会被输出到浏览器上。</p>
+<p>这对于调试或增加一些信息给其他前端使用者或者你自己。</p>
+<p>{* This is a Dwoo comment *}</p>
+<p>{*
+- This is a multi line
+- Dwoo comment!
+*}</p>
+<p>{*
+This is also a comment
+*}</p>
+<p>##引入其他模板
+include函数对于引入模板和返回另一个模板的渲染内容到当前模板中十分有用。</p>
+<p>{include('header.html')}
+有时候也许你需要在不通过Dwoo类的get或output函数来传递数据到页面中就传递参数到其他页面中。下面这个通过作为参数加到函数后面的例子可以实现：</p>
+<p>{include(file='site_header.tpl' title='About Us')}</p>
+<p>##模板继承
+Dwoo最强大的部分就是模板继承。模板继承允许你建立一个基于包含了你网站的所有常用元素和定义一些子模板可以重写的模块的模板骨架。</p>
+<p>听起来很复杂但实际上是很简单的。通过使用一个例子学习就能很容易地明白。</p>
+<p>定义一个基础模板:base.html。包含了简单的用于显示两列页面的HTML骨架文本。</p>
+<p>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;{block &quot;title&quot;}My site name{/block}&lt;/title&gt;
+{* css includes, etc. *}
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;{block &quot;page-title&quot;}Default page title{/block}&lt;/h1&gt;
+&lt;div id=&quot;content&quot;&gt;
+{block &quot;content&quot;}
+Welcome to my amazing homepage
+{/block}
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+在这个例子里，模块标签定义了四个子模板可以填充的模块。所有的模块标签用来告诉模板引擎子模板可以覆盖模板的这些部分。</p>
+<p>一个字模板可以使这样的：</p>
+<p>{extends &quot;base.html&quot;}</p>
+<p>{block &quot;title&quot;}
+Gallery
+{/block}
+可以使用parent方法来渲染父模块的内容。下面这样会返回父模块的结果：</p>
+<p>{extends &quot;base.html&quot;}</p>
+<p>{block &quot;title&quot;}Home - {$dwoo.parent}{/block}</p>
+<p>##HTML过滤
+如果你需要显示HTML的代码，你可以使用escape函数：</p>
+<p>{&quot;some &lt;strong&gt;html&lt;/strong&gt; tags&quot;|escape}
+将输出：</p>
+<p>some &lt;strong&gt;html&lt;/strong&gt; tags</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

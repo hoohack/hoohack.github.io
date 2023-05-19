@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="TCP/IP详解读书笔记--ARP：地址解析协议" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-05-06-read-tcp-ip-illustrated-address-reverse-protocol/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>TCP/IP详解读书笔记--ARP：地址解析协议 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>TCP/IP详解读书笔记--ARP：地址解析协议</h1>
+    <div class="italic text-gray-500">
+      2015/05/06
+    </div>
+    <div>
+      <p>ARP为IP地址到对应的硬件地址之间提供动态映射。</p>
+<blockquote>
+<p>动态是指这个过程是自动完成的。</p>
+</blockquote>
+<p>##ARP解析过程
+任何时候我们敲入这个形式的命令：<code>ftp bsdi</code></p>
+<p>都会进行以下这些步骤。这些步骤的序号如图4-2所示。</p>
+<blockquote>
+<ul>
+<li>应用程序FTP客户端调用函数gethostbyname把主机名(bsdi)转换成32bit的IP地址。这个函数在DNS(域名系统)中称作解析器。这个转换过程或者使用DNS，或者在较小网络中使用一个静态的主机文件(/etc/hosts)；</li>
+<li>FTP客户端请求TCP用上一步得到的IP地址建立连接；</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>TCP发送一个连接请求分段到远端的主机，即用上述IP地址发送一份IP数据报；</li>
+<li>如果目的主机在本地网络上(如以太网、令牌环网或点对点链接的另一端)，那么IP数据包可以直接送到目的主机上。如果目的主机在一个远程网络上，那么就通过IP选路函数来确定位于本地网络上的下一站路由器地址，并让它转发IP数据报。在这两种情况下，IP数据报都是被送到位于本地网络上的一台主机或路由器。</li>
+<li>假定是一个以太网，那么发送端主机必须把32bit的IP地址变换成48bit的以太网地址。从逻辑Internet地址到对应的物理硬件地址需要进行翻译。这就是ARP的功能。ARP本来是用于广播网络的，有许多主机或路由器连在同一个网络上；</li>
+<li>ARP发送一份称为ARP请求的以太网数据帧给以太网上的每个主机。这个过程称为广播，如图4-2中的虚线所示。ARP请求数据帧中包含目的主机的IP地址(主机名为bsdi)，其意思是“如果你是这个IP地址的拥有者，请回答你的硬件地址。”；</li>
+<li>目的主机的ARP层收到这个广播报文后，识别出这是发送端在寻问它的IP地址，于是发送一个ARP应答。这个ARP应答包含IP地址及对应的硬件地址；</li>
+<li>收到ARP应答后，是ARP进行请求-应答交换的IP数据报现在就可以传送了；</li>
+<li>发送IP数据报到目的主机。</li>
+</ul>
+</blockquote>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/tcp-ip-illustrated-4-2.png" alt="ARP解析过程"></p>
+<p>##ARP高速缓存
+ARP高效运行的关键是由于每个主机上都有一个ARP高速缓存。这个高速缓存存放了最近Internet地址到硬件地址之间的映射记录。高速缓存中每一项的生存时间一般为20分钟。起始时间从被创建时开始算起。</p>
+<p>##ARP的分组格式
+在以太网上解析IP地址时，ARP请求和应答分组的格式如图4-3所示(ARP可以用于其他类型的网络，可以解析IP地址以外的地址。紧跟着帧类型字段的前四个字段指定了最后四个字段的类型和长度)。</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/tcp-ip-illustrated-4-3.png" alt="ARP分组格式"></p>
+<p>以太网报头中的前两个字段是以太网的源地址和目的地址。目的地址为全1的特殊地址是广播地址。电缆上的所有以太网接口都要接收广播的数据帧。</p>
+<p>两个字节长的以太网帧类型表示后面数据的类型。对于ARP请求或应答来说，该字段的值为0x0806。</p>
+<p>形容词hardware(硬件)和protocol(协议)用来描述ARP分组中的各个字段。例如，一个ARP请求分组询问协议地址(这里是IP地址)对应的硬件地址(这里是以太网地址)。</p>
+<p>硬件类型字段表示硬件地址的类型。它的值为1即表示以太网地址。协议类型字段表示要映射的协议地址类型。它的值为0x0800即表示IP地址。它的值与包含IP数据报的以太网数据帧中的类型字段的值相同。</p>
+<p>接下来的两个1字节的字段，硬件地址长度和协议地址长度分别指出硬件地址和协议地址的长度，以字节为单位。对于以太网上IP地址的ARP请求或应答来说，它们的值分别为6和4.</p>
+<p>操作字段指出四种操作类型，它们是ARP请求(值为1)、ARP应答(值为2)、RARP请求(值为3)和RARP应答(值为4)。这个字段是必需的，因为ARP请求和ARP应答的帧类型字段值是相同的。</p>
+<p>接下来的四个字段是发送端的硬件地址(在本例中是以太网地址)、发送端的协议地址(IP地址)、目的端的硬件地址和目的端的协议地址。注意，这里有一些重复信息：在以太网的数据帧报头中和ARP请求数据帧中都有发送端的硬件地址。</p>
+<p>##ARP代理
+如果ARP请求是从一个网络的主机发往另一个网络上的主机，那么连接这两个网络的路由器就可以回答该请求，这个过程称作委托ARP或ARP代理(Proxy ARP)。这样可以欺骗发起ARP请求的发送端，使它误以为路由器就是目的主机，而事实上目的主机是在路由器的“另一边”。路由器的功能相当于目的主机的代理，把分组从其他主机转发给它。</p>
+<blockquote>
+<p>注：路由器的功能相当于目的主机的代理，把分组从其他主机转发给它。</p>
+</blockquote>
+<p>ARP代理也称作混合ARP或ARP出租(ARP hack)。这些名字来自于ARP代理的其他用途：通过两个物理网络之间的路由器可以互相隐藏物理网络。在这种情况下，两个物理网络可以使用相同的网络号，只要把中间的路由器设置成一个ARP代理，以响应一个网络到另一个网络主机的ARP请求。</p>
+<p>##免费ARP
+免费ARP(gratuitous ARP)。是指主机发送ARP查找自己的IP地址。通常，它发生在系统引导期间进行接口配置的时候。</p>
+<p>免费ARP可以有两个方面的作用：</p>
+<blockquote>
+<ul>
+<li>一个主机可以通过它来确定另一个主机是否设置了相同的IP地址。主机并不希望对此ARP请求有一个回答；</li>
+<li>如果发送免费ARP的主机正好改变了硬件地址(很可能是主机关机了，并换了一块接口卡，然后重新启动)，那么这个分组就可以使其他主机高速缓存中旧的硬件地址进行相应的更新。</li>
+</ul>
+</blockquote>
+<p>小结：</p>
+<p>在大多数的TCP/IP实现中，ARP是一个基础协议，但是它的运行对于应用程序或系统管理员来说一般是透明的。ARP高速缓存在它的运行过程中非常关键，我们可以用arp命令对高速缓存进行检查和操作。高速缓存中的每一项内容都有一个定时器，根据它来删除不完整和完整的表项。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

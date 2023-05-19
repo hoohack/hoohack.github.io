@@ -1,0 +1,97 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="［PDO绑定参数］使用PHP的PDO扩展进行批量更新操作" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-04-25-multiple-update-database-by-using-pdo/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>［PDO绑定参数］使用PHP的PDO扩展进行批量更新操作 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>［PDO绑定参数］使用PHP的PDO扩展进行批量更新操作</h1>
+    <div class="italic text-gray-500">
+      2016/04/25
+    </div>
+    <div>
+      <p>最近有一个批量更新数据库表中某几个字段的需求，在做这个需求的时候，使用了PDO做参数绑定，其中遇到了一个坑。</p>
+<h2 id="%E6%96%B9%E6%A1%88%E9%80%89%E6%8B%A9" tabindex="-1">方案选择</h2>
+<p>笔者已知的做批量更新有以下几种方案：</p>
+<p>1、逐条更新</p>
+<blockquote>
+<p>这种是最简单的方案，但无疑也是效率最低的方案。</p>
+</blockquote>
+<p>2、CASE WHEN</p>
+<p>类似如下的语句</p>
+<p>UPDATE tbl_test SET val = CASE id WHEN 1 THEN 2 WHEN 2 THEN 3 END WHERE id IN(1, 2);
+PDO绑定参数</p>
+<p>为了防止SQL注入，使用了PDO扩展绑定参数。上面的数字在一般情况下是变量，那么就需要做参数绑定。刚开始是想着在IN的时候将id组成的字符串作为变量绑定过去，第一次实现的代码如下：</p>
+<p>&lt;?php
+$data = array(array('id' =&gt; 1, 'val' =&gt; 2), array('id' =&gt; 2, 'val' =&gt; 3));
+$ids = implode(',', array_map(function($v) {return $v['id'];}, $data)); //获取ID数组
+$update_sql = 'UPDATE tbl_test SET val = CASE id';
+$params = array();
+$params[&quot;:ids&quot;] = $ids;
+foreach($data as $key =&gt; $item) {
+$update_sql .= &quot;WHEN :id_&quot; . $key . &quot;THEN :val_&quot; . $key . &quot; &quot;;
+$params[&quot;:id_&quot; . $key] = $item['id'];
+$params[&quot;:val_&quot; . $key] = $item['val'];
+}
+$update_sql .= &quot;END WHERE id IN (:_ids)&quot;;
+TEST::execute($update_sql, $params);//此处会调用bindParam绑定参数</p>
+<p>后来发现这样是行不通的，而且比较诡异的是这样只能更新第一条记录。查阅资料后，发现这样的绑定方式是不行的，IN语句的参数应该一个一个地绑定。看看文档中对bindParam函数的描述：</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/PDO%E6%8F%8F%E8%BF%B0" alt="PDO描述"></p>
+<p>修改后的写法：</p>
+<p>&lt;?php
+$data = array(array('id' =&gt; 1, 'val' =&gt; 2), array('id' =&gt; 2, 'val' =&gt; 3));
+$update_sql = 'UPDATE tbl_test SET val = CASE id';
+$params = array();
+$params[&quot;:ids&quot;] = $ids;
+$in_arr = array();</p>
+<p>foreach($data as $key =&gt; $item) {
+$update_sql .= &quot;WHEN :id_&quot; . $key . &quot;THEN :val_&quot; . $key . &quot; &quot;;
+$params[&quot;:id_&quot; . $key] = $item['id'];
+$params[&quot;:val_&quot; . $key] = $item['val'];
+$params[&quot;:ids_&quot; . $key] = $item['id'];
+array_push($in_arr, &quot;:id_&quot; . $key);
+}
+$update_sql .= &quot;END WHERE id IN (&quot; . implode(',' $in_arr) . &quot;)&quot;;
+TEST::execute($update_sql, $params);//此处会调用bindParam绑定参数</p>
+<h2 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h2>
+<p>这是最近遇到的一个小问题，其实更多的是说明在MySQL的IN语句里面做参数绑定时应该一个一个的绑定。</p>
+<p>参考链接：
+<a href="http://www.ghugo.com/update-multiple-rows-with-different-values-and-a-single-sql-query/">mysql语句：批量更新多条记录的不同值</a>
+<a href="http://stackoverflow.com/questions/920353/can-i-bind-an-array-to-an-in-conditionhttp://stackoverflow.com/questions/920353/can-i-bind-an-array-to-an-in-condition">Can I bind an array to an IN() condition?</a></p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+<p>如果本文对你有帮助，请点下推荐，写文章不容易。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

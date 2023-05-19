@@ -1,0 +1,194 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="如何在openSUSE42.1下编译安装PHP7" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-12-24-how-to-compile-php7-on-opensuse-leap-42-1/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>如何在openSUSE42.1下编译安装PHP7 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>如何在openSUSE42.1下编译安装PHP7</h1>
+    <div class="italic text-gray-500">
+      2015/12/24
+    </div>
+    <div>
+      <p>首先推荐一篇文章<a href="http://www.phpclasses.org/blog/post/333-PHP-7-Release-Date-Arrived-Will-Developers-Adopt-PHP-7.html">PHP 7 Release Date Arrived: Will Developers Adopt PHP 7? - PHP Classes blog</a>。</p>
+<p>里面说到是否会去使用PHP7，就个人而言，我是毫不犹豫地使用的，但是生产环境就不是我说了算，所以只能自己在自己的开发环境里更新PHP的版本。那么，你呢？</p>
+<p>笔者使用的是Linux的openSUSE42.1发行版，Yast里面还没有PHP7的安装包，于是乎只能自己手动编译安装了。作为一个PHP开发者，我是非常希望能够学会编译安装PHP7的，之前试过几次，但是每次安装都要上网找各种资料，于是乎，这次安装成功后就想把自己的安装过程以及遇到的问题记录下来，方便以后查阅和分享给需要的人。</p>
+<h2 id="%E4%B8%8B%E8%BD%BD%E6%BA%90%E7%A0%81%E5%B9%B6%E8%A7%A3%E5%8E%8B" tabindex="-1">下载源码并解压</h2>
+<p>进入正题，要编译安装PHP7,首先当然要下载PHP7的源码。你可以到<a href="https://github.com/php/php-src">github</a>上clone，也可以到<a href="http://php.net/downloads.php">PHP官网</a>下载。下载后解压到<code>/usr/local/src</code>目录，并将目录重命名为php7。进入目录。</p>
+<h2 id="%E9%85%8D%E7%BD%AE%E7%BC%96%E8%AF%91%E5%8F%82%E6%95%B0" tabindex="-1">配置编译参数</h2>
+<h3 id="%E7%94%9F%E6%88%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6" tabindex="-1">生成配置文件</h3>
+<p>./buildconf</p>
+<h3 id="%E9%85%8D%E7%BD%AE" tabindex="-1">配置</h3>
+<p>./configure <br>
+--prefix=/usr/local/php7 <br>
+--exec-prefix=/usr/local/php7 <br>
+--bindir=/usr/local/php7/bin <br>
+--sbindir=/usr/local/php7/sbin <br>
+--includedir=/usr/local/php7/include <br>
+--libdir=/usr/local/php7/lib/php <br>
+--mandir=/usr/local/php7/php/man <br>
+--with-config-file-path=/usr/local/php7/etc <br>
+--with-mysql-sock=/var/run/mysql/mysql.sock <br>
+--with-mcrypt=/usr/include <br>
+--with-mhash <br>
+--with-openssl <br>
+--with-mysqli=shared,mysqlnd <br>
+--with-pdo-mysql=shared,mysqlnd <br>
+--with-gd <br>
+--with-iconv <br>
+--with-zlib <br>
+--enable-zip <br>
+--enable-inline-optimization <br>
+--disable-debug <br>
+--disable-rpath <br>
+--enable-shared <br>
+--enable-xml <br>
+--enable-bcmath <br>
+--enable-shmop <br>
+--enable-sysvsem <br>
+--enable-mbregex <br>
+--enable-mbstring <br>
+--enable-ftp <br>
+--enable-gd-native-ttf <br>
+--enable-pcntl <br>
+--enable-sockets <br>
+--with-xmlrpc <br>
+--enable-soap <br>
+--without-pear <br>
+--with-gettext <br>
+--enable-session <br>
+--with-curl <br>
+--with-jpeg-dir <br>
+--with-freetype-dir <br>
+--enable-opcache <br>
+--enable-fpm <br>
+--disable-cgi <br>
+--with-fpm-user=nginx <br>
+--with-fpm-group=nginx <br>
+--without-gdbm <br>
+--disable-fileinfo</p>
+<blockquote>
+<p>参数说明
+prefix PHP7安装的根目录
+with-config-file-path PHP7的配置文件目录</p>
+</blockquote>
+<p>执行完上面的配置命令后的结果如下图所示：</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/php7-configure-result.png" alt="安装PHPconfigure结果"></p>
+<p>执行上面命令的过程中会遇到一些依赖缺少的提示，下面列出我遇到的依赖问题：</p>
+<p>错误：</p>
+<blockquote>
+<p>configure: error: xml2-config not found. Please check your libxml2 installation.</p>
+</blockquote>
+<p>解决：</p>
+<blockquote>
+<p>zypper install libxml2-devel</p>
+</blockquote>
+<p>错误：</p>
+<blockquote>
+<p>configure: WARNING: unrecognized options: --with-mysql</p>
+</blockquote>
+<p>解决：</p>
+<blockquote>
+<p>取消这个选项，这个选项是不存在的</p>
+</blockquote>
+<p>错误：</p>
+<blockquote>
+<p>configure: error: jpeglib.h not found.</p>
+</blockquote>
+<p>解决：</p>
+<blockquote>
+<p>zypper install libjpeg-devel</p>
+</blockquote>
+<p>错误：</p>
+<blockquote>
+<p>configure: error: mcrypt.h not found. Please reinstall libmcrypt.</p>
+</blockquote>
+<p>解决：</p>
+<blockquote>
+<p>zypper install libmcrypt-devel</p>
+</blockquote>
+<p>错误：</p>
+<blockquote>
+<p>configure: error: Cannot find pspell</p>
+</blockquote>
+<p>解决：</p>
+<blockquote>
+<p>取消该选项</p>
+</blockquote>
+<p>错误：</p>
+<blockquote>
+<p>checking for recode support... yes
+configure: error: Can not find recode.h anywhere under /usr /usr/local /usr /opt.</p>
+</blockquote>
+<p>解决：</p>
+<blockquote>
+<p>zypper install librecode-devel</p>
+</blockquote>
+<p>总的来说，在配置的时候遇到没有的就打开Yast搜一下，如果有的话就安装，然后重新编译看还需要那些，如果在Yast找不到，那就上网找一下Google。</p>
+<h2 id="%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85php7" tabindex="-1">编译和安装PHP7</h2>
+<p>make &amp;&amp; make install</p>
+<blockquote>
+<p>其中，make之后可以选择make test。只是一个可选步骤，不执行不知道有什么问题，不过笔者暂时还没遇到。</p>
+</blockquote>
+<h2 id="%E6%9F%A5%E7%9C%8B%E5%AE%89%E8%A3%85%E6%88%90%E5%8A%9F%E5%90%8E%E7%9A%84php7%E7%9B%AE%E5%BD%95" tabindex="-1">查看安装成功后的PHP7目录</h2>
+<p>编译安装成功后，查看PHP7的安装目录<code>ls /usr/local/php7</code>：</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/php-installed-dir.png" alt="PHP7安装目录"></p>
+<h2 id="%E8%AE%BE%E7%BD%AEphp7%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6" tabindex="-1">设置PHP7的配置文件</h2>
+<p>cp /usr/local/src/php7/php.ini-production /usr/local/php7/etc/php.ini
+cp /usr/local/src/php7/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+cp /usr/local/php7/etc/php-fpm.conf.default /usr/local/php7/etc/php-fpm.conf
+cp /usr/local/php7/etc/php-fpm.d/www.conf.default /usr/local/php7/etc/php-fpm.d/www.conf</p>
+<h2 id="%E6%B7%BB%E5%8A%A0%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F" tabindex="-1">添加环境变量</h2>
+<p>在/etc/profile 文件的最后一行加上</p>
+<p>export PATH=/usr/local/php7/bin:/usr/local/php7/sbin:$PATH</p>
+<p>然后执行<code>source /etc/profile</code></p>
+<h2 id="%E8%AE%BE%E7%BD%AEphp%E6%97%A5%E5%BF%97%E7%9B%AE%E5%BD%95%E5%92%8Cphp-fpm%E8%BF%9B%E7%A8%8B%E6%96%87%E4%BB%B6%EF%BC%88php-fpm.sock%EF%BC%89%E7%9B%AE%E5%BD%95" tabindex="-1">设置PHP日志目录和php-fpm进程文件（php-fpm.sock）目录</h2>
+<p>mkdir -p /var/log/php-fpm/ &amp;&amp; mkdir -p /var/run/php-fpm &amp;&amp; cd /var/run/ &amp;&amp; chown -R nginx:nginx php-fpm</p>
+<h2 id="%E5%B0%86php%E8%AE%BE%E7%BD%AE%E4%B8%BA%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8" tabindex="-1">将PHP设置为开机启动</h2>
+<p>chmod +x /etc/init.d/php-fpm
+chkconfig php-fpm on</p>
+<blockquote>
+<p>可以用chkconfig命令查看开机启动服务列表。</p>
+</blockquote>
+<h2 id="%E5%90%AF%E5%8A%A8php%E6%9C%8D%E5%8A%A1" tabindex="-1">启动PHP服务</h2>
+<p>service php-fpm start</p>
+<blockquote>
+<p>通过<code>ps aux | grep 'php'</code>查看PHP是否启动成功</p>
+</blockquote>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/php-run.png" alt="PHP启动"></p>
+<p>至此，PHP7就安装成功了，你也开始使用PHP7吧！</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="[PHP源码阅读]array_slice和array_splice函数" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-07-05-php-source-code-array-slice-array-splice/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>[PHP源码阅读]array_slice和array_splice函数 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>[PHP源码阅读]array_slice和array_splice函数</h1>
+    <div class="italic text-gray-500">
+      2016/07/05
+    </div>
+    <div>
+      <p>array_slice和array_splice函数是用在取出数组的一段切片，array_splice还有用新的切片替换原删除切片位置的功能。类似javascript中的Array.prototype.splice和Array.prototype.slice方法。</p>
+<p>我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。<a href="https://github.com/hoohack/read-php-src">PHP5.4源码注解</a>。可以通过<a href="https://github.com/hoohack/read-php-src/commits/master">commit记录</a>查看已添加的注解。</p>
+<h1 id="array_slice" tabindex="-1">array_slice</h1>
+<p>array array_slice ( array $array , int $offset [, int $length = NULL [, bool $preserve_keys = false ]] )</p>
+<p>返回数组中指定下标offset和长度length的子数组切片。</p>
+<h2 id="%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E" tabindex="-1">参数说明</h2>
+<p>设第一个参数数组的长度为num_in。</p>
+<h3 id="offset" tabindex="-1">offset</h3>
+<p>如果offset是正数且小于length，则返回数组会从offset开始；如果offset大于length，则不操作，直接返回。如果offset是负数，则offset = num_in+offset，如果num_in+offset == 0，则将offset设为0。</p>
+<h3 id="length" tabindex="-1">length</h3>
+<p>如果length小于0，那么会将length转为num_in - offset + length；否则，如果offset+length &gt; array_count，则length = num_in - offset。如果处理后length还是小于0，则直接返回。</p>
+<h3 id="preserve_keys" tabindex="-1">preserve_keys</h3>
+<p>默认是false，默认不保留数字键值原顺序，设为true的话会保留数组原来的数字键值顺序。</p>
+<h2 id="%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B" tabindex="-1">使用实例</h2>
+<p>&lt;?php
+$input = array(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;);</p>
+<p>$output = array_slice($input, 2);      // returns &quot;c&quot;, &quot;d&quot;, and &quot;e&quot;
+$output = array_slice($input, -2, 1);  // returns &quot;d&quot;
+$output = array_slice($input, 0, 3);   // returns &quot;a&quot;, &quot;b&quot;, and &quot;c&quot;</p>
+<p>print_r(array_slice($input, 2, -1)); // array(0 =&gt; 'c', 1 =&gt; 'd');
+print_r(array_slice($input, 2, -1, true)); // array(2 =&gt; 'c', 1 =&gt; 'd');</p>
+<h2 id="%E8%BF%90%E8%A1%8C%E6%AD%A5%E9%AA%A4" tabindex="-1">运行步骤</h2>
+<p>处理参数：offset、length</p>
+<p>移动指针到offset指向的位置</p>
+<p>从offset开始，拷贝length个元素到返回数组</p>
+<p>运行流程图如下
+<img src="http://7u2eqw.com1.z0.glb.clouddn.com/array_slice_and_array_splice.png" alt="array_splice"></p>
+<h1 id="array_splice" tabindex="-1">array_splice</h1>
+<p>array array_splice ( array &amp;$input , int $offset [, int $length = 0 [, mixed $replacement = array() ]] )</p>
+<p>删除input中从offset开始length个元素，如果有replacement参数的话用replacement数组替换删除掉的元素。</p>
+<h2 id="%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E-1" tabindex="-1">参数说明</h2>
+<p>array_splice函数中的offset和length参数跟array_slice函数中的用法一样。</p>
+<h3 id="replacement" tabindex="-1">replacement</h3>
+<p>如果这个参数设置了，那么函数将使用replacement数组来替换。</p>
+<p>如果offset和length指定了没有任何元素需要移除，那么replacement会被插入到offset的位置。</p>
+<p>如果replacement只有一个元素，可以不用array()去包着它。</p>
+<h2 id="%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B" tabindex="-1">使用示例</h2>
+<p>&lt;?php
+$input = array(&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;yellow&quot;);
+array_splice($input, 2);
+// $input变为 array(&quot;red&quot;, &quot;green&quot;)</p>
+<p>$input = array(&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;yellow&quot;);
+array_splice($input, 1, -1);
+// $input变为 array(&quot;red&quot;, &quot;yellow&quot;)</p>
+<p>$input = array(&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;yellow&quot;);
+array_splice($input, 1, count($input), &quot;orange&quot;);
+// $input变为 array(&quot;red&quot;, &quot;orange&quot;)</p>
+<p>$input = array(&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;yellow&quot;);
+array_splice($input, -1, 1, array(&quot;black&quot;, &quot;maroon&quot;));
+// $input为 array(&quot;red&quot;, &quot;green&quot;,
+//          &quot;blue&quot;, &quot;black&quot;, &quot;maroon&quot;)</p>
+<p>$input = array(&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;yellow&quot;);
+array_splice($input, 3, 0, &quot;purple&quot;);
+// $input为 array(&quot;red&quot;, &quot;green&quot;,
+//          &quot;blue&quot;, &quot;purple&quot;, &quot;yellow&quot;);</p>
+<h1 id="%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB" tabindex="-1">源码解读</h1>
+<p>在array_splice中，有这么一段代码：</p>
+<p>if (return_value_used) { // 如果有用到函数返回值则创建返回数组，否则不创建返回数组
+int size = length;</p>
+<p>/* Clamp the offset.. */
+if (offset &gt; num_in) {
+offset = num_in;
+} else if (offset &lt; 0 &amp;&amp; (offset = (num_in + offset)) &lt; 0) {
+offset = 0;
+}</p>
+<p>/* ..and the length */
+if (length &lt; 0) {
+size = num_in - offset + length;
+} else if (((unsigned long) offset + (unsigned long) length) &gt; (unsigned) num_in)         {
+size = num_in - offset;
+}</p>
+<p>/* Initialize return value */
+array_init_size(return_value, size &gt; 0 ? size : 0);
+rem_hash = &amp;Z_ARRVAL_P(return_value);
+}</p>
+<p>array_splice函数返回的是被删除的切片。这段代码的意思是，如果array_splice需要返回值，那么才创建返回数组，否则不创建，以免浪费空间。这也是一个编程小技巧，仅当需要的时候才返回。比如在函数中使用$result = array_splice(...)，那么return_value_used就是true。</p>
+<h1 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h1>
+<p>到此本文结束，在平时编程中，应当像这两个函数实现时的做法一样，将最特殊的情况先处理掉，然后再继续，以免做了多余的判断；有需要保存新变量的时候才申请新的空间，不然会造成浪费。</p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+<p>如果本文对你有帮助，请点下推荐吧，谢谢^_^</p>
+<p>最后再安利一下，我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。<a href="https://github.com/hoohack/read-php-src">PHP5.4源码注解</a>。可以通过<a href="https://github.com/hoohack/read-php-src/commits/master">commit记录</a>查看已添加的注解。</p>
+<p>更多源码文章，欢迎访问个人主页继续查看：<a href="https://www.hoohack.me">hoohack</a></p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

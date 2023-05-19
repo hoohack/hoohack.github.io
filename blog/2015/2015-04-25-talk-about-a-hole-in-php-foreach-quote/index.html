@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="说说PHP中foreach引用的一个坑" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-04-25-talk-about-a-hole-in-php-foreach-quote/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>说说PHP中foreach引用的一个坑 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>说说PHP中foreach引用的一个坑</h1>
+    <div class="italic text-gray-500">
+      2015/04/25
+    </div>
+    <div>
+      <p>先来看看下面这段代码：</p>
+<p>&lt;?php
+$arr = array('apple','banana','cat','dog');
+foreach($arr as $key=&gt;$val)
+{
+//some code
+}</p>
+<p>echo $val;  //输出dog
+echo $key;  //输出3</p>
+<p>//下面对val进行赋值
+$val = 'e';
+print_r($arr);  //输出Array ( [0] =&gt; apple [1] =&gt; banana [2] =&gt; cat [3] =&gt; dog )</p>
+<p>说明：在上面的foreach循环中，当循环结束后，$key和$val变量都不会被自动释放掉。值会被保存下来。而且此时修改$val的值不会影响$arr。</p>
+<blockquote>
+<p>引用：如果想在遍历数组的过程中修改数组的元素，可以在foreach中对$val使用引用。此时被引用的元素$val指向当前数组元素的内存地址，即共享一段内存地址。因此修改$val的值会同时改变$arr[$key]的值。</p>
+</blockquote>
+<p>再来看看下面一段在foreach中使用引用的代码，这是最近在项目中遇到的一种情况：</p>
+<p>&lt;?php
+$arr = array('apple','banana','cat','dog');
+//在foreach中使用引用
+foreach($arr as $key =&gt; &amp;$val)
+{
+$val = 'new value';
+}</p>
+<p>echo $val;  //输出new value
+echo $key;  //输出3</p>
+<p>$val = 'egg';
+print_r($arr);  //输出Array ( [0] =&gt; new value [1] =&gt; new value [2] =&gt; new value [3] =&gt; egg )</p>
+<p>说明：在foreach中使用&amp;引用后，当foreach结束后，$key和$val变量也都不会被自动释放掉，但是此时$val和$arr<a href="%E6%AD%A4%E5%A4%84%E6%98%AF$arr%5B3%5D">count($arr) - 1</a>指向相同的内存地址。因此，此时修改$val的值也会改变了$arr[3]的值。</p>
+<p>这种情况下很容易犯的错误就是像上面例子所示，在循环外面继续使用被foreach引用的变量，这样会使开发者得不到预期的数据。因此，为了避免这种情况的发生，应该在适当的位置释放变量的引用。以上面的代码为例：</p>
+<p>&lt;?php
+$arr = array('apple','banana','cat','dog');
+//在foreach中使用引用
+foreach($arr as $key =&gt; &amp;$val)
+{
+$val = 'new value';
+}
+unset($val);</p>
+<p>echo $val;  //报错，Notice: Undefined variable: val
+echo $key;  //输出3</p>
+<p>$val = 'egg';
+print_r($arr);  //输出Array ( [0] =&gt; new value [1] =&gt; new value [2] =&gt; new value [3] =&gt; new value )
+在foreach结束后unset $val，此时会释放对$val的引用。因此改变$val不会对$arr造成影响。</p>
+<p>这是最近在项目中遇到的坑和解决方案的总结，如果错误或更好地建议，欢迎指出。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

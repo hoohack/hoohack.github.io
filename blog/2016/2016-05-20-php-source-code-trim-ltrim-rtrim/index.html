@@ -1,0 +1,113 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="[PHP源码阅读]trim、rtrim、ltrim函数" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-05-20-php-source-code-trim-ltrim-rtrim/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>[PHP源码阅读]trim、rtrim、ltrim函数 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>[PHP源码阅读]trim、rtrim、ltrim函数</h1>
+    <div class="italic text-gray-500">
+      2016/05/20
+    </div>
+    <div>
+      <p>trim系列函数是用于去除字符串中首尾的空格或其他字符。ltrim函数只去除掉字符串首部的字符，rtrim函数只去除字符串尾部的字符。</p>
+<p>我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。<a href="https://github.com/read-php-src/read-php-src">PHP5.4源码注解</a>。可以通过<a href="https://github.com/read-php-src/read-php-src/commits/master">commit记录</a>查看已添加的注解。</p>
+<h1 id="trim" tabindex="-1">trim</h1>
+<p>string trim ( string $str [, string $character_mask = &quot; \t\n\r\0\x0B&quot; ] )</p>
+<h2 id="%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E" tabindex="-1">参数说明</h2>
+<p><strong>character_mask</strong>
+默认是&quot; \t\n\r\0\x0B&quot;等空白字符。</p>
+<p>使用..可以指定一段范围的字符。此处要注意，&quot;..&quot;左右两边是一对合法的范围值，如果传递的是非法的值会报错。</p>
+<h2 id="%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B" tabindex="-1">运行示例</h2>
+<p>先来看看用正常的使用：</p>
+<p>$str = 'hello..';
+$new_str = trim($str, '.'); // 结果是hello</p>
+<p>一个比较诡异的结果。这里报错是因为php把..左右两边看作是范围值，而此处'..'左边是字符'.'，PHP内部将认为其是一个缺少右边界的范围值。</p>
+<p>$str = 'hello...';
+$second_str = trim($str, '...'); // 报错</p>
+<p>第二个参数使用合法的边界值：</p>
+<p>$str = 'helloabcdefg';
+$new_str = trim($str, 'a..g'); // 输出hello</p>
+<h2 id="trim%E6%89%A7%E8%A1%8C%E6%AD%A5%E9%AA%A4" tabindex="-1">trim执行步骤</h2>
+<p>trim、ltrim、rtrim三个函数都是调用了php_do_trim函数，区别在于第二个参数mode的不同。本文主要对trim函数进行分析，ltrim和rtrim函数跟trim的类似。然后php_do_trim会调用了php_trim来实现功能，因此trim函数的核心函数时php_trim函数。其执行步骤如下：</p>
+<blockquote>
+<p>1、根据what的值设置保存过滤字符的mask数组</p>
+<p>2、过滤在字符串首部的待过滤字符</p>
+<p>3、过滤在字符串尾部的待过滤字符</p>
+</blockquote>
+<p>php_trim函数执行的流程图如下：</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/trim.png" alt="trim流程图"></p>
+<h2 id="%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB" tabindex="-1">源码解读</h2>
+<p>php_trim函数先调用了php_charmask，这个函数试将过滤字符设置为mask[char] = 1的形式，这样就是一个哈希数组，然后可用于后面的判断。如果第二个参数是范围值时，调用了memset函数给mask数组赋值。</p>
+<p>在用mode变量判断是哪种过滤时，此处有一个小优化，在PHP内部使用的是与运算，而不是多个的判断条件。该部分代码如下：</p>
+<p>if (mode &amp; 1) {
+for (i = 0; i &lt; len; i++) {
+if (mask[(unsigned char)c[i]]) {
+trimmed++;
+} else {
+break;
+}
+}
+len -= trimmed;
+c += trimmed;
+}
+if (mode &amp; 2) {
+for (i = len - 1; i &gt;= 0; i--) {
+if (mask[(unsigned char)c[i]]) {
+len--;
+} else {
+break;
+}
+}
+}</p>
+<p>判断的过程：</p>
+<blockquote>
+<p>1 &amp;&amp; 1 == 1 左边需要过滤</p>
+<p>2 &amp;&amp; 1 == 0 左边不需要过滤</p>
+<p>3 &amp;&amp; 1 == 1 左边需要过滤</p>
+<p>1 &amp;&amp; 2 == 0 右边不需要过滤</p>
+<p>2 &amp;&amp; 2 == 1 右边需要过滤</p>
+<p>3 &amp;&amp; 2 == 1 右边需要过滤</p>
+</blockquote>
+<p>像这样使用位操作可以提高程序的效率，而且代码更加简洁易读。</p>
+<h2 id="%E5%B0%8F%E7%BB%93" tabindex="-1">小结</h2>
+<p>阅读这个函数的源码，首先学习到在C语言中，如果需要做键值对数组，而且键值是单个字符，可以使用unsigned char的类型做数组下标，这样可以构造类似字符作为下标的映射数组。</p>
+<p>第二个就是使用位运算可以提高程序效率和代码可读性。</p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+<p>如果本文对你有帮助，请点下推荐吧，谢谢^_^</p>
+<p>最后再安利一下，我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。<a href="https://github.com/read-php-src/read-php-src">PHP5.4源码注解</a>。可以通过<a href="https://github.com/read-php-src/read-php-src/commits/master">commit记录</a>查看已添加的注解。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="一步步学习Dwoo模板引擎--变量" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-04-23-learning-dwoo-step-by-step-variables/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>一步步学习Dwoo模板引擎--变量 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>一步步学习Dwoo模板引擎--变量</h1>
+    <div class="italic text-gray-500">
+      2015/04/23
+    </div>
+    <div>
+      <p>##迭代器变量</p>
+<p>###变量</p>
+<blockquote>
+<ul>
+<li>first (bool) : 如果元素是第一个，则为true，否则为false</li>
+<li>last (bool) : 如果元素是最后一个，则为true，否则为false</li>
+<li>index (int) : 索引数字(从0开始计数，每次迭代增加1)</li>
+<li>iteration (int) : 迭代次数 (从1开始计数，每次迭代过程增加1)</li>
+<li>show (bool) : 如果loop循环会输出东西，则为true，否则为false</li>
+<li>total (int) : 数组的元素个数总数</li>
+</ul>
+</blockquote>
+<p>###说明</p>
+<blockquote>
+<ul>
+<li>你可以通过<code>{$dwoo.&lt;plugin (foreach, loop or for)&gt;.&lt;foreach name&gt;.&lt;var&gt;}</code>访问它们</li>
+<li>如果你没有为插件提供名字参数，它默认会使用&quot;default&quot;，这意味着你可以这样访问一个foreach变量：<code>{$dwoo.foreach.default.first}</code></li>
+<li>$dwoo变量可以被简写为$，那就是说，<code>{$.foreach.default.first}</code>也是可以运行的</li>
+</ul>
+</blockquote>
+<p>###例子</p>
+<p>{foreach $mArr, key, value, name='default'}
+{if $dwoo.foreach.default.first}
+First element
+{elseif $dwoo.foreach.default.index == 2}
+Second element
+{elseif $dwoo.foreach.default.last}
+Last element
+{/if}
+{/foreach}</p>
+<p>#Dwoo变量
+Dwoo变量的名字仅限于<code>/[a-z0-9_]/i</code>，那就是说仅限于所有的字母数字字符加上下划线，它们区分大小写的。</p>
+<p>作为提醒，我强烈建议你使用下划线'_'开始的变量因为当我需要魔法变量的时候我会使用例如<code>$_foo</code>的命名变量，这样的话所有人就避免了坏的情况。</p>
+<p>###下面的是保留变量：</p>
+<blockquote>
+<ul>
+<li>$dwoo</li>
+<li>$dwoo.parent</li>
+<li>$_key</li>
+</ul>
+</blockquote>
+<p>###检索作用域变量
+你可以在PHP端检索模板的作用域变量。例如：</p>
+<p>...
+$dwoo-&gt;get($tpl, $data);
+var_dump($dwoo-&gt;getScope()); // 会返回包含所有作用于变量的数组</p>
+<blockquote>
+<p>注：include文件得到的作用域变量也是这样的方式返回。</p>
+</blockquote>
+<p>##快捷方式</p>
+<p>在下面的所有例子中，FOO是你需要展示的变量名。</p>
+<p><code>{ %FOO } = {$dwoo.const.FOO}</code></p>
+<p><code>{$.FOO} = {$dwoo.FOO}, i.e. for a {$.get.user_id} = {$dwoo.get.user_id}</code></p>
+<p><code>{$} = 当前作用域</code>, 刚开始它表示全部模板数据，但如果你使用with或者loop改变其作用域的话它的值就会随着改变</p>
+<p><code>{$_} = {$_parent}</code>, 这是父作用域，在模板数据中比当前作用域高一个级别</p>
+<p><code>{$_._._}</code> 作为 <code>{$_parent._parent._parent}</code> 运行</p>
+<p><code>{$__} = {$_root}</code>, 这是最高级别的作用域，会一直等于全部模板数据</p>
+<p><code>{/} = closes</code> 最后一个打开的块</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

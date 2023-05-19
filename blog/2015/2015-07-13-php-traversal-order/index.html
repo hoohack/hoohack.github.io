@@ -1,0 +1,77 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="PHP数组遍历顺序" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-07-13-php-traversal-order/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>PHP数组遍历顺序 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>PHP数组遍历顺序</h1>
+    <div class="italic text-gray-500">
+      2015/07/13
+    </div>
+    <div>
+      <p>##问题
+上周五一位同事提出了一个问题，数组的排序是怎样的，当时理解错误，就以为是sort方法的排序规则，后来发现他想问的是数组的value的默认排序是怎样的。然后他给出下面这段代码：</p>
+<p>$arr = array(
+1 =&gt; 'a',
+0 =&gt; 'b',
+2 =&gt; 'c'
+);
+foreach ($arr as $val)
+{
+echo $val . ' ';
+}</p>
+<p>输出的结果是<code>a b c</code></p>
+<p>刚开始看到运行结果的时候，百思不得其解，于是自己测试一下，发现输出的结果正如同事所说的，于是乎就想弄懂为什么。</p>
+<p>##查找资料
+周末花了点时间查了一些资料，发现不是排序的问题，应该从数据结构上来解释。PHP的数组使用的数据结构是hashtable，而hashtable的实现是使用双向链表，处理冲突的方式是链接法。PHP数组在增加元素的时候，新元素会插在相同Hash元素链的头部和线性列表的尾部。也就是说，元素在线性遍历的时候是根据插入的先后顺序来遍历的，这个特殊的设计使得在PHP中，当使用数字索引时，元素的先后顺序是由添加的顺序决定的，而不是索引顺序。</p>
+<blockquote>
+<p>更详细解释可以查看PHP大神的这篇文章:<a href="http://www.laruence.com/2009/08/23/1065.html">深入理解PHP之数组(遍历顺序)</a></p>
+</blockquote>
+<p>因为上述文章里面有提到PHP的源码，所以继续研究了下，翻了一下PHP的源码，发现源码里面定义的数组的数据结构跟文章说的不一样，一直不能根据上述文章的解释来理解，，后来发现自己查看的是最新的源码，已经是PHP7的版本，而上述文章是在PHP5.6上解释的。PHP7的Zend引擎做了很大的改变，数据结构的定义也发生了改变。后来继续查找资料，发现了另一位大神针对PHP7的哈希表实现写了一篇文章。里面说到，PHP7里面的hashtable的数据结构更加的高效，在于它使用的是单向链表，每个节点少用了两个指针，节省了空间，占用的内存更少，经过测试后发现在64位的系统下，php7的数组的内存使用比起php5.6的少了3.5倍，这是是一个很大的提升。</p>
+<blockquote>
+<p>更详细的解释可以查看这篇文章:
+<a href="https://nikic.github.io/2014/12/22/PHPs-new-hashtable-implementation.html">PHP's new hashtable implementation</a></p>
+</blockquote>
+<p>这篇文章的一句话也说到新版本的PHP7的数组保存元素的顺序是根据元素插入顺序的<code>The arData array stores the elements in order of insertion. </code></p>
+<p>##总结</p>
+<blockquote>
+<p>PHP的数组保存元素的顺序是根据元素插入的顺序来保存的。</p>
+</blockquote>
+<p>这次遇到的这个小问题引发了自己的很多思考，也学到了不少东西。比如说查看PHP的源码。之前自己一直没有勇气查看源码，因为觉得自己还没有达到那个层次。直到这次遇到这个问题，导师跟我说有空的话可以查看一下源码方面的知识。所以我就趁周末有时间下载了源码，查阅资料，然后翻看了部分源码。虽然源码确实很难看懂，但是发现其实没有自己想象的那么复杂。慢慢地学习，查看别人的文章，还是能看懂一点点的，只要每次碰到需要查看源码的时候看一点点，那样就可以学会怎么看了。所以说，遇到困难的问题也要解决，把困难的问题解决了，才有提升的空间。如果总是解决简单的问题，为自己找舒适区，那么就永远不会进步了。</p>
+<p>最后，分享一下学习PHP源码的网站：<a href="http://www.php-internals.com/book/">深入理解PHP内核</a></p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

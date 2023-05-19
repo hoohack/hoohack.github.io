@@ -1,0 +1,163 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="在OpenSUSE下编译安装Nginx" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-01-27-compile-install-nginx-in-opensuse/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>在OpenSUSE下编译安装Nginx | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>在OpenSUSE下编译安装Nginx</h1>
+    <div class="italic text-gray-500">
+      2016/01/27
+    </div>
+    <div>
+      <h2 id="%E4%B8%8B%E8%BD%BD%E6%BA%90%E7%A0%81" tabindex="-1">下载源码</h2>
+<p>在nginx官网上选择稳定的版本<a href="http://nginx.org/en/download.html">Nginx</a>。解压到<code>/usr/local/src/</code>目录。</p>
+<p>笔者使用的是nginx-1.9.9。</p>
+<h2 id="%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C" tabindex="-1">准备工作</h2>
+<blockquote>
+<p>进入/usr/local/src继续操作)</p>
+</blockquote>
+<h3 id="%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85pcre%E5%BA%93" tabindex="-1">编译安装pcre库</h3>
+<p>下载:<a href="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/">ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/</a></p>
+<p>安装：</p>
+<p>.configure
+make &amp;&amp; make install</p>
+<p>高版本会出现<code>No rule to make target 'libpcre.la</code>错误，建议选择版本低一些，因为nginx暂不支持，可以使用8.37版本。</p>
+<p>编译错误：<code>'aclocal-1.14' is missing on your system.</code></p>
+<p>解决：输入命令<code>touch configure.ac aclocal.m4 configure Makefile.am Makefile.in</code>，然后重新编译。</p>
+<h3 id="%E5%AE%89%E8%A3%85zlib%E5%BA%93" tabindex="-1">安装zlib库</h3>
+<p>下载:<a href="http://zlib.net">http://zlib.net</a></p>
+<p>安装:</p>
+<p>.configure
+make &amp;&amp; make install</p>
+<h3 id="%E5%AE%89%E8%A3%85ssl" tabindex="-1">安装ssl</h3>
+<p><a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a></p>
+<p>解压即可</p>
+<h2 id="%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85" tabindex="-1">编译安装</h2>
+<h3 id="%E5%B8%B8%E7%94%A8%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9%E8%AF%B4%E6%98%8E" tabindex="-1">常用编译选项说明</h3>
+<p><code>--prefix=PATH</code>： 指定nginx的安装目录。默认<code>/usr/local/nginx</code></p>
+<p><code>--conf-path=PATH</code> ： 设置nginx.conf配置文件的路径。nginx允许通过命令行中的<code>-c</code>选项使用不同的配置文件启动。默认为<code>prefix/conf/nginx.conf</code></p>
+<p><code>--with-pcre</code> ： 设置PCRE库的源码路径</p>
+<p><code>--with-zlib=PATH</code> ： 指定 zlib的安装目录。</p>
+<p><code>--with-http_ssl_module</code> ： 使用https协议模块。默认情况下，该模块没有被构建。前提是openssl与openssl-devel已安装</p>
+<p><code>--with-openssl</code> ：openssl解压目录</p>
+<p><code>--pid-path</code>：nginx运行时的进程ID保存目录</p>
+<h3 id="%E7%BC%96%E8%AF%91%E6%96%B9%E6%A1%88" tabindex="-1">编译方案</h3>
+<p>./configure<br>
+--sbin-path=/usr/local/nginx/nginx<br>
+--conf-path=/usr/local/nginx/nginx.conf<br>
+--pid-path=/usr/local/nginx/nginx.pid<br>
+--with-http_ssl_module<br>
+--with-pcre=/usr/local/src/pcre-8.37<br>
+--with-zlib=/usr/local/src/zlib-1.2.8<br>
+--with-openssl=/usr/local/src/openssl-1.0.1c</p>
+<h3 id="%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85-1" tabindex="-1">编译安装</h3>
+<p>make &amp;&amp; make install</p>
+<h3 id="%E6%B5%8B%E8%AF%95%E5%AE%89%E8%A3%85%E7%BB%93%E6%9E%9C" tabindex="-1">测试安装结果</h3>
+<p>通过命令<code>/usr/local/nginx/nginx</code>运行nginx</p>
+<p>在命令行下输入 <code>netstat -ptnl | grep 'nginx'</code> 查看nginx是否启动成功</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/nginx-start-result.png" alt="nginx启动结果"></p>
+<p>打开浏览器，输入localhost，如果看到下面的Welcome nginx页面说明安装成功了</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/Nginx-welcome-page.png" alt="Welcome nginx页面"></p>
+<h3 id="%E6%B7%BB%E5%8A%A0%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC" tabindex="-1">添加启动脚本</h3>
+<p>安装完成后，如果需要在命令行下启动和停止nginx，或者添加开机启动任务，需要添加脚本到<code>/etc/init.d/</code>目录。</p>
+<p>脚本文件：</p>
+<p>#! /bin/sh</p>
+<p># Description: Startup script for nginx on CentOS、SuSE、redhat. cp it in /etc/init.d and
+# chkconfig --add nginx &amp;amp;&amp;amp; chkconfig nginx on
+# then you can use server command control nginx
+#
+# chkconfig: 2345 08 99
+# description: Starts, stops nginx</p>
+<p>set -e</p>
+<p>PATH=$PATH:/usr/local/nginx/sbin/
+DESC=&quot;nginx daemon&quot;
+NAME=nginx
+DAEMON=/usr/local/nginx/sbin/$NAME
+CONFIGFILE=/usr/local/nginx/conf/nginx.conf
+PIDFILE=/usr/local/nginx/logs/$NAME.pid
+SCRIPTNAME=/etc/init.d/$NAME</p>
+<p># Gracefully exit if the package has been removed.
+test -x $DAEMON || exit 0</p>
+<p>d_start() {
+$DAEMON -c $CONFIGFILE || echo -n &quot; already running&quot;
+}</p>
+<p>d_stop() {
+kill -QUIT <code>cat $PIDFILE</code> || echo -n &quot; not running&quot;
+}</p>
+<p>d_reload() {
+kill -HUP <code>cat $PIDFILE</code> || echo -n &quot; can't reload&quot;
+}</p>
+<p>case &quot;$1&quot; in
+start)
+echo -n &quot;Starting $DESC: $NAME&quot;
+d_start
+echo &quot;.&quot;
+;;
+stop)
+echo -n &quot;Stopping $DESC: $NAME&quot;
+d_stop
+echo &quot;.&quot;
+;;
+reload)
+echo -n &quot;Reloading $DESC configuration...&quot;
+d_reload
+echo &quot;reloaded.&quot;
+;;
+restart)
+echo -n &quot;Restarting $DESC: $NAME&quot;
+d_stop
+sleep 1
+d_start
+echo &quot;.&quot;
+;;
+*)
+echo &quot;Usage: $SCRIPTNAME {start|stop|restart|force-reload}&quot; &gt;&amp;2
+exit 3
+;;
+esac</p>
+<p>exit 0</p>
+<p>使用方法：</p>
+<p>vim /etc/init.d/nginx
+chmod +x /etc/init.d/nginx
+chkconfig nginx on
+chkconfig --level 2345 nginx on</p>
+<p>启动方法：</p>
+<p>service nginx xxx
+/etc/init.d/nginx xxx</p>
+<p>参考文章:<a href="http://www.coffin5257.com/opensuse-nginx-startup-script/">openSUSE Nginx 启动脚本</a></p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

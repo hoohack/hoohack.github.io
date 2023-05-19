@@ -1,0 +1,135 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="PHP优化之批量操作MySQL" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-05-11-php-optimization-batch-operate-mysql/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>PHP优化之批量操作MySQL | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>PHP优化之批量操作MySQL</h1>
+    <div class="italic text-gray-500">
+      2015/05/11
+    </div>
+    <div>
+      <p>设计一个数据表如下:</p>
+<p>create table optimization(
+id INT NOT NULL AUTO_INCREMENT,
+value VARCHAR(10) NOT NULL,
+PRIMARY KEY(id)
+);</p>
+<p>现在有一个业务需求需要批量插入数据。</p>
+<p>先来看看下面这一段代码：</p>
+<p>&lt;?php
+$dsn = 'mysql:dbname=test;host=127.0.0.1';
+$user = 'root';
+$password = 'root';</p>
+<p>try {
+$dbh = new PDO($dsn, $user, $password);
+} catch(PDOException $e) {
+echo 'Connection failed: ' , $e-&gt;getMessage();
+}</p>
+<p>$begin = microtime(true) * 1000;</p>
+<p>$count = 100;
+$stmt = $dbh-&gt;prepare('INSERT INTO <code>optimization</code> (id, value) VALUES(:id, :value)');
+$stmt-&gt;bindParam(':id', $id);
+$stmt-&gt;bindParam(':value', $value);
+for ($i = 0; $i &lt; $count; $i++)
+{
+$id = '';
+$value = $i;
+$stmt-&gt;execute();
+}</p>
+<p>$end = microtime(true) * 1000;
+echo 'excuted : ' , ($end - $begin) , ' ms';</p>
+<p>经过测试，上面代码运行结果如下：</p>
+<p>1、excuted : 7601.4348144531 ms</p>
+<p>2、excuted : 7476.4270019531 ms</p>
+<p>3、excuted : 7674.4387207031 ms</p>
+<p>平均：7584.100179036433 ms</p>
+<p>再来看看第二段代码：</p>
+<p>&lt;?php
+$dsn = 'mysql:dbname=test;host=127.0.0.1';
+$user = 'root';
+$password = 'root';</p>
+<p>try {
+$dbh = new PDO($dsn, $user, $password);
+} catch(PDOException $e) {
+echo 'Connection failed: ' , $e-&gt;getMessage();
+}</p>
+<p>$begin = microtime(true) * 1000;
+$dbh-&gt;beginTransaction();
+try {
+$count = 100;
+$sql = 'INSERT INTO <code>optimization</code> (id, value) VALUES ';
+$sql_arr = array();
+$sql_str = '';
+for ($i = 0; $i &lt; $count; $i++)
+{
+$sql_arr[] = (&quot;('', $i)&quot;);
+}
+$sql_str = implode(',', $sql_arr);
+$sql .= $sql_str;
+$stmt = $dbh-&gt;prepare($sql);
+$stmt-&gt;execute();
+$dbh-&gt;commit();
+} catch(Exception $e) {
+$dbh-&gt;rollBack();
+echo $e-&gt;getMessage() . '&lt;br&gt;';
+}</p>
+<p>$end = microtime(true) * 1000;
+echo 'excuted : ' , ($end - $begin) , ' ms';</p>
+<p>上面这段代码的运行结果如下：</p>
+<p>1、excuted : 99.005859375 ms</p>
+<p>2、excuted : 103.00610351562 ms</p>
+<p>3、excuted : 68.00390625 ms</p>
+<p>平均：90.00528971354 ms</p>
+<p>##分析
+可以看出，在第二段代码中，使用了批量插入，此时的效率比第一段提高了84%。原因如下：</p>
+<blockquote>
+<ul>
+<li>使用第一段代码的时候，因为每一次循环里都执行了一个mysql语句，此时php需要与mysql获得连接，然后再执行mysql语句，然后再断开。这就是第一段代码最主要的时间开销--PHP与MySQL连接的网络传输IO</li>
+<li>第一段代码SQL语句解析的次数更多</li>
+</ul>
+</blockquote>
+<p>因此，在第二段代码中，通过合并SQL语句来实现减少SQL语句解析的次数以及PHP与MySQL连接的次数来达到减少网络传输IO的开销。</p>
+<p>注意：
+1、SQL语句是有长度限制的，因此，在进行SQL语句合并时务必不能超过SQL长度限制，通过设置max_allowed_packet可以修改，默认是1M，测试时修改为8M。</p>
+<p>##总结</p>
+<blockquote>
+<p>在进行对数据库的批量操作（如：插入、更新、修改）时，应当尽可能将SQL语句合并后再执行而不是在循环中依次执行。</p>
+</blockquote>
+<p>记录下最近在项目中犯下的一个比较大的错误，以后不能再犯了。以前一直都没有注意到，直到现在真正参与到企业项目中，自己的代码被老大指出错误后才发现自己的错误。学习了。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

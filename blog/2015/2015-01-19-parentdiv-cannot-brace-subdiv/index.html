@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="父DIV浮动后无法撑开子DIV的解决方案" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-01-19-parentdiv-cannot-brace-subdiv/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>父DIV浮动后无法撑开子DIV的解决方案 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>父DIV浮动后无法撑开子DIV的解决方案</h1>
+    <div class="italic text-gray-500">
+      2015/01/19
+    </div>
+    <div>
+      <p>直奔主题。
+有这样一段代码</p>
+<p>&lt;div id=&quot;parent&quot;&gt;
+&lt;div id=&quot;sub&quot;&gt;DIV2&lt;/div&gt;
+DIV1
+&lt;/div&gt;</p>
+<p>很多时候我们期望实现下图的效果：</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/parentDIV-subDIV_actural.png" alt="期望效果"></p>
+<p>于是添加如下样式:</p>
+<p>#parent {
+background-color: #0086B3;
+width: 100%;
+height: auto;
+}</p>
+<p>#sub {
+background-color: #009926;
+float: left;
+width: 80%;
+height: auto;
+}</p>
+<p>但是却得到下图所示的效果：</p>
+<p><img src="http://7u2eqw.com1.z0.glb.clouddn.com/parentDIV-subDIV.png" alt="父DIV无法撑开子DIV示例"></p>
+<p>如图所示，DIV1里面嵌有DIV2，DIV2被设置浮动了，而此时DIV1无法被完全撑开，即DIV2相当于浮动在页面上，与DIV1不再同一个层面上，导致DIV2无法把DIV1撑开。</p>
+<h2 id="%E5%8E%9F%E5%9B%A0" tabindex="-1">原因</h2>
+<p>由于DIV2浮动，它不再属于标准流，DIV1自己组成了标准流，而浮动是漂浮在标准流之上的，因此DIV2就挡住了DIV1。</p>
+<h2 id="%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88" tabindex="-1">解决方案</h2>
+<h3 id="%E7%AC%AC%E4%B8%80%E7%A7%8D%EF%BC%9A%E5%9C%A8%E6%B5%AE%E5%8A%A8%E7%BB%93%E6%9D%9F%E7%9A%84%E5%AE%B9%E5%99%A8(%E6%AD%A4%E5%A4%84%E4%B8%BAsub)%E5%90%8E%E9%9D%A2%E5%8A%A0%E4%B8%8A%E8%BF%99%E6%AE%B5%E4%BB%A3%E7%A0%81" tabindex="-1">第一种：在浮动结束的容器(此处为sub)后面加上这段代码</h3>
+<p>&lt;div style=&quot;clear: both&quot;&gt;&lt;/div&gt;</p>
+<p>意思是清除浮动。这样后面的DIV就不会继承这个浮动。</p>
+<h3 id="%E7%AC%AC%E4%BA%8C%E7%A7%8D%EF%BC%9A%E5%9C%A8%E7%88%B6div(%E6%AD%A4%E5%A4%84%E4%B8%BAdiv1)%E5%8A%A0%E4%B8%8A%E7%9A%84%E6%A0%B7%E5%BC%8F%E5%8A%A0%E4%B8%8A%3A" tabindex="-1">第二种：在父DIV(此处为DIV1)加上的样式加上:</h3>
+<p>overflow: auto;</p>
+<h2 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h2>
+<p>这2种方法都可以实现DIV2把DIV1撑开。不过在此建议使用第一种解决方案，要养成一个习惯，在浮动使用完后消除浮动，这样后面的DIV就不会继承这个浮动（就像在操作数据库的时候，在打开数据库，操作完后，要养成个习惯在后面把数据库关闭）。也就是说浮动这个属性会被继承，除非消除这个浮动，才不会让后面接着的DIV受到继承。其实不仅是DIV，其他的像P等其他的容器都会有继承的效应，大家要养成一个消除浮动的习惯。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

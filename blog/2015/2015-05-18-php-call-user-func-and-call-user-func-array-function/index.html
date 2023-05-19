@@ -1,0 +1,162 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="PHP中call_user_func和call_user_func_array函数使用与比较" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-05-18-php-call-user-func-and-call-user-func-array-function/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>PHP中call_user_func和call_user_func_array函数使用与比较 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>PHP中call_user_func和call_user_func_array函数使用与比较</h1>
+    <div class="italic text-gray-500">
+      2015/05/18
+    </div>
+    <div>
+      <p>以前一直都有看到过和用过这两个回调函数，但是只是知道简单地使用，并没有深入了解两个函数的具体用法和不同之处，今天刚好有机会再次接触到这两个函数，就来做个总结，好记性不如烂笔头。</p>
+<p>##call_user_func</p>
+<p>###函数定义</p>
+<p>mixed call_user_func ( callable $callback [, mixed $parameter [, mixed $... ]] )</p>
+<p>把第一个参数作为回调函数调用，并且将其余的参数作为回调函数的参数。</p>
+<p>###参数说明</p>
+<p>callback</p>
+<blockquote>
+<p>将被调用的回调函数(callable)。</p>
+</blockquote>
+<p>parameter</p>
+<blockquote>
+<p>0个或更多的参数，都将被传入回调函数。</p>
+</blockquote>
+<p>###返回值
+返回回调函数的返回值，如果错误则返回FALSE。</p>
+<p>###注意</p>
+<blockquote>
+<p>传入call_user_func函数的参数不能为引用传递。</p>
+</blockquote>
+<p>###例子1(call_user_func)</p>
+<p>function sayName($name)
+{
+echo &quot;My name is $name&quot;;
+}</p>
+<p>call_user_func('sayName', 'Tom');
+call_user_func('sayName', 'Jack');</p>
+<p>以上例子输出</p>
+<blockquote>
+<p>My name is Tom</p>
+</blockquote>
+<blockquote>
+<p>My name is Jack</p>
+</blockquote>
+<p>###例子2(用call_user_func()来调用一个类里面的方法)</p>
+<p>class Test {
+static function sayHello($name)
+{
+echo &quot;Hello,my name is $name&quot;;
+}
+}</p>
+<p>$class_name = 'Test';
+call_user_func(array($class_name, 'sayHello'), 'Tom');
+call_user_func($class_name. '::sayHello', 'Tom');</p>
+<p>$obj = new Test();
+call_user_func(array($obj, 'sayHello'), 'Tom');</p>
+<p>以上例子输出</p>
+<blockquote>
+<p>Hello,my name is Tom</p>
+</blockquote>
+<blockquote>
+<p>Hello,my name is Tom</p>
+</blockquote>
+<p>##call_user_func_array</p>
+<p>##函数定义</p>
+<p>mixed call_user_func_array ( callable $callback , array $param_arr )</p>
+<p>把第一个参数作为回调函数(callback)调用，把参数数组作(param_arr)为回调函数的的参数传入。</p>
+<p>###参数
+callback</p>
+<blockquote>
+<p>被调用的回调函数。</p>
+</blockquote>
+<p>param_arr</p>
+<blockquote>
+<p>要被传入回调函数的数组，这个数组得是索引数组。</p>
+</blockquote>
+<p>###返回值
+返回回调函数的结果。如果出错的话就返回FALSE。</p>
+<p>###例子1</p>
+<p>function foobar($arg1, $arg2)
+{
+echo <strong>FUNCTION</strong> . &quot; got $arg1 and $arg2\n&quot;;
+}</p>
+<p>class Foo {
+function bar($arg1, $arg2)
+{
+echo <strong>METHOD</strong> . &quot; got $arg1 and $arg2\n&quot;;
+}
+}</p>
+<p>// 调用foobar函数并传入两个参数
+call_user_func_array(&quot;foobar&quot;, array(&quot;one&quot;, &quot;two&quot;));</p>
+<p>// 调用$foo-&gt;bar()方法并传入两个参数
+$foo = new foo;
+call_user_func_array(array($foo, &quot;bar&quot;), array(&quot;three&quot;, &quot;four&quot;));</p>
+<p>###例子2(传递引用参数)</p>
+<p>&lt;?php
+error_reporting(E_ALL);
+function increment(&amp;$var)
+{
+$var++;
+}</p>
+<p>$a = 0;
+call_user_func('increment', $a);
+echo $a.&quot;\n&quot;;//0</p>
+<p>call_user_func_array('increment', array(&amp;$a));
+echo $a.&quot;\n&quot;;//1
+?&gt;</p>
+<p>以上例子输出</p>
+<blockquote>
+<p>foobar got one and two</p>
+</blockquote>
+<blockquote>
+<p>foo::bar got three and four</p>
+</blockquote>
+<p>##注意</p>
+<blockquote>
+<p>在函数中注册有多个回调内容时(如使用 call_user_func() 与 call_user_func_array())，如在前一个回调中有未捕获的异常，其后的将不再被调用。</p>
+</blockquote>
+<p>##区别</p>
+<blockquote>
+<ul>
+<li>call_user_func不支持引用参数，call_user_func_array支持引用参数</li>
+<li>传入参数的方式不同</li>
+</ul>
+</blockquote>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

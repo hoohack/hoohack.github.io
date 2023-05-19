@@ -1,0 +1,171 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="PHP匿名函数" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-05-16-php-anonymous-function/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>PHP匿名函数 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>PHP匿名函数</h1>
+    <div class="italic text-gray-500">
+      2015/05/16
+    </div>
+    <div>
+      <p>##定义(摘抄自PHP手册)
+匿名函数(Anonymous functions)，也叫闭包函数(closures)，允许创建一个没有指定名称的函数。最经常用作回调函数(callback)参数的值。当然，也有其他应用的情况。</p>
+<p>###匿名函数示例一</p>
+<p>&lt;?php
+echo preg_replace_callback('~-([a-z])~', function ($match) {
+return strtoupper($match[1]);
+}, 'hello-world');</p>
+<p>输出</p>
+<blockquote>
+<p>helloWorld</p>
+</blockquote>
+<p>注意:</p>
+<blockquote>
+<p>上面的正则表达式<code>~-([a-z])~</code>中的<code>~</code>表示正则表达式的边界，相当于平常写的正则表达式的<code>//</code>。因此，上面的正则表达式也可以写作<code>/-([a-z])/</code>。</p>
+</blockquote>
+<p>闭包函数也可以作为变量来使用。PHP会把此种表达式转换成内置类Closure的对象实例。把一个closure对象赋值给一个变量的方式与普通变量赋值的语法是一样的。最后也要加上分号作为结束。</p>
+<p>###匿名函数变量赋值示例</p>
+<p>&lt;?php
+$greet = function($name) {
+printf(&quot;Hello %s\r\n&quot;, $name);
+};</p>
+<p>$greet('World');
+$greet('PHP');</p>
+<p>闭包可以从父作用域中继承变量。任何此类变量都应该使用<code>use</code>语言结构传递进去。</p>
+<p>###从父作用域继承变量例子</p>
+<p>&lt;?php
+$message = 'hello';</p>
+<p>// 没有使用&quot;use&quot;
+$example = function () {
+var_dump($message);
+};
+echo $example();</p>
+<p>// 继承 $message
+$example = function () use ($message) {
+var_dump($message);
+};
+echo $example();</p>
+<p>// 继承变量的值是当函数定义时继承而不是调用时
+$message = 'world';
+echo $example();</p>
+<p>// 重置$message
+$message = 'hello';</p>
+<p>// 通过引用继承
+$example = function () use (&amp;$message) {
+var_dump($message);
+};
+echo $example();</p>
+<p>// 值在父作用域的改变影响到了函数调用里面的值
+$message = 'world';
+echo $example();</p>
+<p>// 闭包也接收正常的参数
+$example = function ($arg) use ($message) {
+var_dump($arg . ' ' . $message);
+};
+$example(&quot;hello&quot;);</p>
+<p>上面程序的输出是：</p>
+<p>Notice: Undefined variable: message in /example.php on line 6
+NULL</p>
+<p>string(5) &quot;hello&quot;</p>
+<p>string(5) &quot;hello&quot;</p>
+<p>string(5) &quot;hello&quot;</p>
+<p>string(5) &quot;world&quot;</p>
+<p>string(11) &quot;hello world&quot;</p>
+<p>这些变量必须在函数或者类的头部声明。从父作用域中继承变量与使用全局变量是不同的。全局变量存在于一个全局的范围，无论当前在执行的是哪个函数。而闭包的父作用域是定义该闭包的函数(不一定是调用它的函数)。</p>
+<p>##递归
+如果需要递归地调用闭包的话，使用下面的代码：</p>
+<p>&lt;?php
+$recursive = function () use (&amp;$recursive) {
+//$recursive函数是有效的
+};</p>
+<p>//这样并不行
+$recusive = function() use ($recursive) {
+//$recursive并不能被识别
+};</p>
+<p>##注意</p>
+<p>1.当'引入'变量到闭包的作用域时，很容易忽略/忘记它们是真的被拷贝到闭包的作用域里而不是仅仅作为可以的值。</p>
+<p>因此当你需要在闭包里改变变量的时候，你应该使用引入变量的方式传入。</p>
+<p>2.当你调用一个保存在实例化的变量的闭包时是无效的，如下面的代码所示：</p>
+<p>&lt;?php
+$obj = new StdClass();</p>
+<p>$obj-&gt;func = function() {
+echo &quot;hello&quot;;
+}</p>
+<p>//$obj-&gt;func(); 并不能执行</p>
+<p>//应该这样调用：
+$func = $obj-&gt;func();
+$func();</p>
+<p>//或者
+call_user_func($obj-&gt;func);</p>
+<p>//但是，这样的方式也是可以的：
+$array['func'] = function() {
+echo 'hello';
+};</p>
+<p>$array<a href="">'func'</a>;</p>
+<p>##跟Javascript的闭包的几点比较
+上面提到，在PHP中通过值传递是这样的</p>
+<p>&lt;?php
+$message = 'hello';
+$example = function () use ($message) {
+var_dump($message);
+};
+$message = 'world';
+$example();</p>
+<p>上面输出的是<code>hello</code>。</p>
+<p>在Javascript的闭包可以通过下面的例子实现相同的效果</p>
+<p>var message = 'hello';</p>
+<p>var func = (function(message) { return function{ alert(message);}})(message);
+message = 'world';
+func();//输出hello</p>
+<p>PHP中在使用闭包时的引用传递如下：</p>
+<p>&lt;?php
+$message = 'hello';
+$example = function () use (&amp;$message) {
+var_dump($message);
+};
+$message = 'world';
+$example();</p>
+<p>上面输出的是<code>world</code>。</p>
+<p>在Javascript中可以这么实现达到相同的效果：</p>
+<p>var message = 'hello';
+var func = function() { alert(message); };
+message = 'world';
+func();//输出world</p>
+<p>PHP的闭包与Javascript的闭包有很大的不同。刚开始看到上面的差别时并没有弄懂，后来通过请教同学之后才知道了为什么。上面两端Javascript的不同是因为在Javascript中并没有块作用域以及两个语言之间本身的解析机制的不同。具体的解释日后再写一篇作解释。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

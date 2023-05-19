@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="Java项目如何分层" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2020/2020-08-07-how-java-project-stratify/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>Java项目如何分层 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>Java项目如何分层</h1>
+    <div class="italic text-gray-500">
+      2020/08/07
+    </div>
+    <div>
+      <p>在现在的Java项目中的项目分层，大多数都是简单的Controller、Service、Dao三层，看起来非常简单。</p>
+<p>但是，随着代码越写越多，写久了以后，渐渐发现其实并没有把他们真正的职责区分开来，大多数情况下，Controller只是简单的调用Service中的方法，然后就返回；Service之间组合起来处理业务逻辑，甚至有时候Service页只是Dao层的一次简单透传转发。在项目庞大，追求快速发展的情况下，往往不会过于在乎这些细节，所以大部分人都觉得无所谓了，能用就行，久而久之，层级关系逐渐混乱，维护起来就会觉得挺头疼，而且后续如果要扩展业务功能的时候也无法复用。</p>
+<p>在很多人眼里，分层这个都无所谓的，新建一个项目的时候都是从一个项目拷过来，反正能运行就行，大家都是这么写，我也这么写就好了，先跑起来再说。</p>
+<p>然而每个人的习惯都不一样，有的人习惯在Controller中写一大堆业务逻辑，有的人习惯在Controller里返回Service层的调用，去改别人代码的时候就会很纠结，究竟使用什么风格好呢？特别是一些其他语言转过来的新手往往会疑惑，究竟Controller、Service、Dao这些的区别是什么？应该怎么布局代码呢？当看到代码里的Service大部分都是Dao的封装，就会觉得在Controller里面调用各个Service的方法来处理业务逻辑也是没毛病的。</p>
+<blockquote>
+<p>本人不会觉得任何一种做法有任何问题的，以笔者自己亲身经历而言，项目要快速发展或者开发压力较大的情况下，绝对不会反对，也不会嘲笑任何一种做法，但是等到项目稍微稳定或者有时间停下来思考的时候，可以认真思考一下各个层之间的职责和关系，制定一个约定俗成的风格，大家遵循这种风格开发。个人认为风格是没有绝对的好与坏，只要团队里大家统一，那就可以了。</p>
+</blockquote>
+<p>讲了那么多文字，先来点代码更实际一点。以笔者个人比较倾向使用的应用分层，通过以下代码示例来介绍一个好的分层应该是怎么样的。</p>
+<h2 id="%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B" tabindex="-1">代码示例</h2>
+<pre class="language-java"><code class="language-java"><span class="token annotation punctuation">@RestController</span><br><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserController</span> <span class="token punctuation">{</span><br><br>    <span class="token annotation punctuation">@Autowired</span><br>    <span class="token keyword">private</span> <span class="token class-name">UserService</span> userService<span class="token punctuation">;</span><br><br>    <span class="token keyword">public</span> <span class="token class-name">HttpResult</span> <span class="token function">getUserInfo</span><span class="token punctuation">(</span><span class="token class-name">Parameter</span> parameter<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        parameter<span class="token punctuation">.</span><span class="token function">validateArgs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token keyword">return</span> userService<span class="token punctuation">.</span><span class="token function">getUserInfo</span><span class="token punctuation">(</span>parameter<span class="token punctuation">.</span><span class="token function">getUserId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><br><span class="token punctuation">}</span><br><br><span class="token annotation punctuation">@Service</span><br><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserService</span> <span class="token punctuation">{</span><br><br>    <span class="token annotation punctuation">@Autowired</span><br>    <span class="token keyword">private</span> <span class="token class-name">UserManager</span> userManager<span class="token punctuation">;</span><br><br>    <span class="token keyword">public</span> <span class="token class-name">UserInfoDTO</span> <span class="token function">getUserInfo</span><span class="token punctuation">(</span><span class="token keyword">long</span> userId<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>userManager<span class="token punctuation">.</span><span class="token function">isExists</span><span class="token punctuation">(</span>userId<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>            <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span><br>        <span class="token punctuation">}</span><br><br>        <span class="token keyword">return</span> userManager<span class="token punctuation">.</span><span class="token function">getUserInfo</span><span class="token punctuation">(</span>userId<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><br><span class="token punctuation">}</span><br><br><span class="token annotation punctuation">@Component</span><br><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserManager</span> <span class="token punctuation">{</span><br><br>    <span class="token annotation punctuation">@Autowired</span><br>    <span class="token keyword">private</span> <span class="token class-name">UserDao</span> userDao<span class="token punctuation">;</span><br><br>    <span class="token keyword">public</span> <span class="token class-name">UserInfoDTO</span> <span class="token function">getUserInfo</span><span class="token punctuation">(</span><span class="token keyword">long</span> userId<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">try</span> <span class="token punctuation">{</span><br>            <span class="token class-name">Optional</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">UserDO</span><span class="token punctuation">></span></span> userDO <span class="token operator">=</span> <span class="token class-name">Optional</span><span class="token punctuation">.</span><span class="token function">ofNullable</span><span class="token punctuation">(</span>userDao<span class="token punctuation">.</span><span class="token function">queryUserById</span><span class="token punctuation">(</span>userId<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>            <span class="token keyword">return</span> userDO<span class="token punctuation">.</span><span class="token function">ifPresent</span><span class="token punctuation">(</span>v <span class="token operator">-></span> <span class="token class-name">UserInfoDTO</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">orElse</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>            log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"exception, {}, "</span><span class="token punctuation">,</span> userId<span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token punctuation">}</span><br><br>        <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">getUserInfo</span><span class="token punctuation">(</span><span class="token keyword">long</span> userId<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">try</span> <span class="token punctuation">{</span><br>            <span class="token keyword">return</span> userDao<span class="token punctuation">.</span><span class="token function">countUser</span><span class="token punctuation">(</span>userId<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">;</span><br>        <span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>            log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"exception, {}, "</span><span class="token punctuation">,</span> userId<span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token punctuation">}</span><br><br>        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><span class="token punctuation">}</span><br><br><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">UserDao</span> <span class="token punctuation">{</span><br><br>    <span class="token annotation punctuation">@Select</span><span class="token punctuation">(</span><span class="token string">"SELECT count(*) FROM t_user WHERE userId = #{userId}"</span><span class="token punctuation">)</span><br>    <span class="token keyword">int</span> <span class="token function">countUser</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Param</span><span class="token punctuation">(</span><span class="token string">"userId"</span><span class="token punctuation">)</span><span class="token keyword">long</span> userId<span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>    <span class="token annotation punctuation">@Select</span><span class="token punctuation">(</span><span class="token string">"SELECT * FROM t_user WHERE userId = #{userId}"</span><span class="token punctuation">)</span><br>    <span class="token class-name">UserDO</span> <span class="token function">queryUserById</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Param</span><span class="token punctuation">(</span><span class="token string">"userId"</span><span class="token punctuation">)</span><span class="token keyword">long</span> userId<span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token punctuation">}</span><br></code></pre>
+<h2 id="%E9%98%BF%E9%87%8C%E8%A7%84%E8%8C%83" tabindex="-1">阿里规范</h2>
+<p>在互联网里，阿里在Java领域还是比较权威，所以笔者参考的是阿里分层规范，规范如下：</p>
+<p><img src="https://www.hoohack.me/assets/images/2020/08/alibaba-project-stratify.jpg" alt="阿里项目分层规范"></p>
+<p>开放接口层:可直接封装Service接口暴露成RPC接口;通过Web封装成http接口;网关控制层等。</p>
+<p>终端显示层:各个端的模板渲染并执行显示层。当前主要是velocity渲染，JS渲染，JSP渲染，移动端展示层等。</p>
+<p>Web层:主要是对访问控制进行转发，各类基本参数校验，或者不复用的业务简单处理等。</p>
+<p>Service 层:相对具体的业务逻辑服务层。</p>
+<p>Manager 层:通用业务处理层，它有如下特征:</p>
+<blockquote>
+<ul>
+<li>对第三方平台封装的层，预处理返回结果及转化异常信息;</li>
+<li>对Service层通用能力的下沉，如缓存方案、中间件通用处理;</li>
+<li>与DAO层交互，对DAO的业务通用能力的封装。</li>
+</ul>
+</blockquote>
+<p>DAO 层:数据访问层，与底层 MySQL、Oracle、Hbase 进行数据交互。</p>
+<p>外部接口或第三方平台:包括其它部门 RPC 开放接口，基础平台，其它公司的 HTTP 接口。</p>
+<p>以上图文来自于阿里开发手册，而笔者个人的理解是这样的：</p>
+<p>Web层，就是Http的Controller/Thrift的TService层，主要是暴露给前端/内部部门的接口，里面做的是访问控制的转发，完成基本的参数校验，token校验等等，不做任何业务逻辑处理。</p>
+<p>Service层，处理具体的业务逻辑，通常是一个功能/接口对应一个Controller，Controller调用Service的业务方法。</p>
+<p>Manager层，对所有需要RPC调用的封装，包括但不限于内部接口调用、Dao调用、Redis调用，以及上述调用的异常封装、数据转换；这一层是最适合做复用逻辑抽象的，其他Service也可以调用封装好的Manager。</p>
+<p>Dao层，封装数据库层，映射到DB的表和实体类。</p>
+<h2 id="%E5%88%86%E5%B1%82%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BD%AC%E6%8D%A2" tabindex="-1">分层领域模型的转换</h2>
+<p>阿里规范文档还给了领域模型规范的参考：</p>
+<p>DO(Data Object):与数据库表结构一一对应，通过 DAO 层向上传输数据源对象。</p>
+<p>DTO(Data Transfer Object):数据传输对象，Service 和 Manager 向外传输的对象。</p>
+<p>BO(Business Object):业务对象。可以由 Service 层输出的封装业务逻辑的对象。</p>
+<p>QUERY:数据查询对象，各层接收上层的查询请求。注:超过 2 个参数的查询封装，禁止 使用 Map 类来传输。</p>
+<p>VO(View Object):显示层对象，通常是 Web 向模板渲染引擎层传输的对象。</p>
+<p>规范并不一定是全对的，如果按照上面的数据模型操作，那么数据从数据库读取出来到真正展示到接口层，将经历3-4次的数据实体转换，而这些转换大多是重复的，甚至还会因为漏掉设置某个属性而出现意想不到的bug。所以还是具体情况具体分析，有一条基本原则就是<strong>Controller/TService与Dao的数据不能直接互传</strong>。</p>
+<h2 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h2>
+<p>以上就是本文要介绍的内容，对于业务发展比较稳定的团队，或者没有任何历史代码的团队，项目的分层还是很有必要的，对于之后代码的可维护性及复用性都有很大的帮助。</p>
+<p>另外，再次重申，所有的风格都没有绝对的好与坏，只要适合团队，统一使用，那就是好的风格。</p>
+<p>原创文章，文笔有限，才疏学浅，文中若有不正之处，万望告知。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

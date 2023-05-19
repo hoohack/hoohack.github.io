@@ -1,0 +1,83 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="无限多级分类实现(PHP)" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-01-17-unlimited-multi-level-classification-implement/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>无限多级分类实现(PHP) | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>无限多级分类实现(PHP)</h1>
+    <div class="italic text-gray-500">
+      2015/01/17
+    </div>
+    <div>
+      <h2 id="%E5%89%8D%E8%A8%80" tabindex="-1">前言</h2>
+<p>项目中遇到需要实现多级分类的功能，刚开始想通过静态数据的方法，但是后来发现分类需要添加编辑功能，而且当分类很多的时候管理起来也不方便，于是乎就想到了使用数据库的方法。</p>
+<hr>
+<h2 id="%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1" tabindex="-1">数据库设计</h2>
+<p>tbl_category</p>
+<p>id          int     not null    auto_increment</p>
+<p>cat_id      int     not null</p>
+<p>cat_name    varchar not null</p>
+<p>parent_id   int     not null</p>
+<h3 id="%E8%AF%B4%E6%98%8E" tabindex="-1">说明</h3>
+<blockquote>
+<ul>
+<li>如果parent_id为0说明该分类是顶级父节点</li>
+<li>如果parent_id不为0说明为孩子节点</li>
+<li>如果cat_id不属于parent_id，说明为叶子节点</li>
+</ul>
+</blockquote>
+<h2 id="%E6%9F%A5%E8%AF%A2%E7%AE%97%E6%B3%95" tabindex="-1">查询算法</h2>
+<p>首先获取顶级父节点</p>
+<p>根据顶级父节点获取子节点</p>
+<p>遍历所有子节点，如果当前节点有孩子节点</p>
+<p>先把当前孩子节点找出来</p>
+<p>再把当前孩子节点的孩子节点找出来</p>
+<p>不断重复此步骤，递归实现</p>
+<p>否则不做处理</p>
+<h2 id="%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B" tabindex="-1">代码示例</h2>
+<p>$rootArr = getRootCategory();</p>
+<p>getChildren($rootArr);</p>
+<p>function getChildren(&amp; $rootArr) {
+foreach ($rootArr as &amp;$row) {
+if (haveChildren($row['cat_id'])) {
+$row['children'] = getChildren($row['cat_id']);
+getChildren($row['children']);
+}
+}
+}</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="在PHP中获取脚本执行时间" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-09-16-get-excute-time-in-php/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>在PHP中获取脚本执行时间 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>在PHP中获取脚本执行时间</h1>
+    <div class="italic text-gray-500">
+      2015/09/16
+    </div>
+    <div>
+      <p>首先介绍一个PHP的函数<code>microtime()</code></p>
+<p>##microtime函数</p>
+<blockquote>
+<p>mixed microtime([ bool $get_as_float = false ])</p>
+</blockquote>
+<p>这个函数返回当前的UNIX时间戳和毫秒数。</p>
+<p>如果<code>$get_as_float</code>被设置为TRUE，那么microtime()会返回float类型的值，否则返回string类型的值。</p>
+<p>获取脚本执行时间思路：在脚本开始时使用microtime获取一次时间，在脚本结束时获取再获取一次时间。在获取完时间后需要对结果进行处理，因为该函数返回的字符串使用空格将时间戳和微妙数分割开，所以使用空格分隔字符串，然后将两部分加起来组成一个float类型的值。然后用结束时间减去开始时间就得到脚本执行的时间值。最终要使用什么格式输出看自己的需求选择。</p>
+<p>&lt;?php
+function microtime_float()
+{
+list($u_sec, $sec) = explode(' ', microtime());
+return (floatval($u_sec) + floatval($sec));
+}</p>
+<p>$start_time = microtime_float();</p>
+<p>//do something
+usleep(100);</p>
+<p>$end_time = microtime_float();
+$total_time = $end_time - $start_time;</p>
+<p>$time_cost = sprintf(&quot;%.10f&quot;, $total_time);</p>
+<p>echo &quot;program cost total &quot; . $time_cost . &quot;s\n&quot;;</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

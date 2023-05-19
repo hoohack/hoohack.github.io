@@ -1,0 +1,103 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="一步步学习Dwoo模板引擎--后台开发者使用" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2015/2015-04-23-learning-dwoo-step-by-step-dwoo-for-developer/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>一步步学习Dwoo模板引擎--后台开发者使用 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>一步步学习Dwoo模板引擎--后台开发者使用</h1>
+    <div class="italic text-gray-500">
+      2015/04/23
+    </div>
+    <div>
+      <p>##基本使用</p>
+<p>&lt;?php
+// 引入主要的类和注册autoloader类(它会自己处理接下来的事情)
+require 'lib/Dwoo/Autoloader.php';
+\Dwoo\Autoloader::register();</p>
+<p>// 创建一个Dwoo对象
+$dwoo = new \Dwoo\Core();</p>
+<p>// 创建一些数据
+$data = array('a'=&gt;5, 'b'=&gt;6);</p>
+<p>// 输出结果...
+$dwoo-&gt;output('path/to/index.tpl', $data);
+// ... 或者获得结果
+echo $dwoo-&gt;get('path/to/index.tpl', $data);</p>
+<p>##文件以及数据对象</p>
+<p>&lt;?php
+require 'lib/Dwoo/Autoloader.php';
+\Dwoo\Autoloader::register();</p>
+<p>$dwoo = new \Dwoo\Core();</p>
+<p>// 加载模板文件，如果你想使用不同数据多次渲染一个模板文件可以重复使用这句
+$tpl = new \Dwoo\Template\File('path/to/index.tpl');</p>
+<p>// 创建一个数据集合，如果你想渲染多个可以被这个集合填充的模板的话可以重复使用这个数据集合
+$data = new \Dwoo\Data();</p>
+<p>// 赋值
+$data-&gt;assign('foo', 'BAR');
+$data-&gt;assign('bar', 'BAZ');</p>
+<p>// 输出结果
+$dwoo-&gt;output($tpl, $data);
+// ... 或者获得它们的值
+echo $dwoo-&gt;get($tpl, $data);</p>
+<p>##编译对象</p>
+<p>&lt;?php
+require 'lib/Dwoo/Autoloader.php';
+\Dwoo\Autoloader::register();</p>
+<p>$dwoo = new \Dwoo\Core();
+$tpl = new \Dwoo\Template\File('path/to/index.tpl');
+$data = array('a' =&gt; 5, 'b' =&gt; 6);</p>
+<p>// 实例化一个编译类
+$compiler = new \Dwoo\Compiler();
+// 增加一个插件目录的预处理器
+$compiler-&gt;addPreProcessor('Processor_Name', true);
+// 或者使用你的过滤器
+$compiler-&gt;addPreProcessor('Processor_Function_Name');</p>
+<p>// 输出结果，提供给编译器使用
+$dwoo-&gt;output($tpl, $data, $compiler);</p>
+<p>##设置目录
+学习一下怎么使用<code>setCompileDir</code>和<code>setTemplateDir</code>方法。</p>
+<p>&lt;?php
+require 'lib/Dwoo/Autoloader.php';
+\Dwoo\Autoloader::register();</p>
+<p>$dwoo = new \Dwoo\Core();</p>
+<p>// 配置目录
+$dwoo-&gt;setCompileDir('path/to/compiled/dir/'); // 保存编译模板的目录
+$dwoo-&gt;setTemplateDir('path/to/your/template/dir/'); // 保存.tpl文件</p>
+<p>$data = array('a'=&gt;5, 'b'=&gt;6);</p>
+<p>$dwoo-&gt;output('index.tpl', $data);
+echo $dwoo-&gt;get('index.tpl', $data);</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

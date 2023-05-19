@@ -1,0 +1,69 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="[PHP源码阅读笔记]strlen函数" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/blog/2016/2016-02-22-phps-source-analytics-strlen/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>[PHP源码阅读笔记]strlen函数 | Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+<div>
+  <div class="container mx-auto prose py-12 sm:py-24 px-12 sm:px-0">
+    <div class="mb-12">
+      <a class="no-underline font-bold" href="/">Hoohack&#39;s Blog</a>
+    </div>
+    <h1>[PHP源码阅读笔记]strlen函数</h1>
+    <div class="italic text-gray-500">
+      2016/02/22
+    </div>
+    <div>
+      <p>我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。<a href="https://github.com/read-php-src/read-php-src">PHP5.4源码注解</a>。可以通过<a href="https://github.com/read-php-src/read-php-src/commits/master">commit记录</a>查看已添加的注解。</p>
+<p>strlen函数说明。</p>
+<p>int strlen ( string $string )</p>
+<p>在<a href="https://www.hoohack.me/2016/02/10/understanding-phps-internal-function-definitions-ch">这篇文章</a>，我们可以知道<code>strlen</code>函数是通过Zend Engine定义的。函数的定义可以在<a href="http://lxr.php.net/xref/PHP_5_4/Zend/zend_builtin_functions.c#478">这里</a>查看。</p>
+<p>在这里也给出函数的源码：</p>
+<p>ZEND_FUNCTION(strlen)
+{
+char *s1;
+int s1_len;</p>
+<p>if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, &quot;s&quot;, &amp;s1, &amp;s1_len) == FAILURE) {
+return;
+}</p>
+<p>RETVAL_LONG(s1_len);
+}</p>
+<p>该文章讲到，该函数很简单，并不需要进一步的解释。而<a href="https://www.hoohack.me/2016/02/12/phps-source-code-for-php-developers-part3-variables-ch">这篇文章</a>也有对<code>zend_parse_parameters</code>函数做介绍。笔者较笨，于是便想理解<code>zend_parse_parameters</code>函数是怎么返回变量长度的。</p>
+<p>在<code>zend_parse_arg_impl</code>函数，就是解析参数的地方，我们继续看<code>case 's'</code>的分支。这个分支是对字符串变量的解析。</p>
+<p><code>int *pl = va_arg(*va, int *);</code>是字符串长度变量的定义。</p>
+<p>继续往下看，可以看到对<code>pl</code>变量的赋值语句：<code>*pl = Z_STRLEN_PP(arg);</code>。</p>
+<p>而<code>Z_STRLEN_PP</code>宏的定义在<code>zend_operators.h</code>文件中：</p>
+<p>#define Z_STRLEN_PP(zval_pp)    Z_STRLEN(**zval_pp)</p>
+<p>再继续看<code>Z_STRLEN</code>宏的定义，<code>#define Z_STRLEN(zval)          (zval).value.str.len</code>。由此我们可以知道，<code>strlen</code>函数是通过直接返回zval结构体中的str的len属性来实现的。</p>
+<p>最后再安利一下，我在github有对PHP源码更详细的注解。感兴趣的可以围观一下，给个star。<a href="https://github.com/read-php-src/read-php-src">PHP5.4源码注解</a>。可以通过<a href="https://github.com/read-php-src/read-php-src/commits/master">commit记录</a>查看已添加的注解。</p>
+
+    </div>
+    <hr />
+      <div class="text-sm text-center">
+        评论和交流请发送邮件到 hoohackhu@gmail.com
+      </div>
+      <hr />
+    <div class="text-center">
+</div>
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

@@ -12,6 +12,8 @@ module.exports = config => {
   config.addPlugin(rss) 
   config.addPassthroughCopy("_redirects");
   config.addPassthroughCopy("favicon.ico");
+  
+  config.addPassthroughCopy("src/CNAME");
 
   config.addShortcode("date", (content) => {
     return dayjs(content).format('YYYY/MM/DD')

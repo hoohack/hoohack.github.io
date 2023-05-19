@@ -1,0 +1,962 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="Hoohack&#39;s Blog" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hoohack.me/tech/" />
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="me" href="https://mas.to/@djyde">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism.min.css">
+  
+  <title>Hoohack&#39;s Blog</title>
+  
+</head>
+<body>
+  
+  <div class="container prose prose-zinc prose-sm sm:prose-base mx-auto py-12 sm:py-24 px-12 sm:px-0">
+    <a href="/" class="no-underline">
+      <h1>Hoohack&#39;s Blog</h1>
+    </a>
+    <nav class="flex gap-4">
+      <a href="/blog">文章</a>
+      <a href="/tech">技术文章</a>
+      <a href="https://twitter.com/hoohack_">Twitter</a>
+      <a href="/rss">RSS</a>
+    </nav>
+
+    
+<div class="mt-12">
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-09-19-using-redis-geo-find-nearby/">你附近的人都有谁，这个功能是怎么实现的？</a> <span
+        class="italic text-gray-400">2020/09/19</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-09-01-what-is-thread-safe/">你真的知道什么是线程安全吗？</a> <span
+        class="italic text-gray-400">2020/09/01</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-08-07-how-java-project-stratify/">Java项目如何分层</a> <span
+        class="italic text-gray-400">2020/08/07</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-07-04-exploring-raft-part-2/">Raft探索历程--Part2</a> <span
+        class="italic text-gray-400">2020/07/04</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-06-21-exploring-raft-part-one/">Raft探索历程--Part1</a> <span
+        class="italic text-gray-400">2020/06/21</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-06-13-handle-exception-in-one-place/">使用拦截器统一处理异常</a> <span
+        class="italic text-gray-400">2020/06/13</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-06-06-why-we-need-distributed-system/">为什么需要分布式系统</a> <span
+        class="italic text-gray-400">2020/06/06</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-05-30-mockito-in-unit-test/">Mockito-提高单元测试效率利器</a> <span
+        class="italic text-gray-400">2020/05/30</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-05-23-java-time-api/">理解Java8中的时间API</a> <span
+        class="italic text-gray-400">2020/05/23</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-05-16-summary-of-new-project/">【总结】从0到1的项目经历</a> <span
+        class="italic text-gray-400">2020/05/16</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-04-22-common-check-with-interceptor/">使用拦截器统一处理通用检查</a> <span
+        class="italic text-gray-400">2020/04/22</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-04-16-summary-about-mapduce-lab/">[总结]MIT-6.824分布式课程-Mapduce实验</a> <span
+        class="italic text-gray-400">2020/04/16</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2020/2020-02-06-talk-about-disaster-recovery/">聊聊服务灾备</a> <span
+        class="italic text-gray-400">2020/02/06</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2019/2019-06-24-redis-expire-strategy/">理解Redis的内存回收机制</a> <span
+        class="italic text-gray-400">2019/06/24</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2019/2019-03-11-service-crash-and-hystrix/">从不可描述的服务雪崩到初探Hystrix</a> <span
+        class="italic text-gray-400">2019/03/11</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2019/2019-03-01-hystrix-command-pattern/">聊聊Hystrix中的命令模式</a> <span
+        class="italic text-gray-400">2019/03/02</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2018/2018-11-19-go-generic-program-practice/">GO语言泛型编程实践</a> <span
+        class="italic text-gray-400">2018/11/19</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2018/2018-09-27-webser-zero-to-hero-tcp-status/">［从0到1编写服务器］TCP连接建立与断开状态变化</a> <span
+        class="italic text-gray-400">2018/09/27</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2018/2018-09-05-webserver-zero-to-one-basic/">［从0到1编写服务器］准备知识</a> <span
+        class="italic text-gray-400">2018/09/05</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2018/2018-08-26-rdb-tools-read-binary-file/">［深入理解Redis］读取RDB文件</a> <span
+        class="italic text-gray-400">2018/08/27</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2018/2018-06-21-implement-redis-command-nonzerodecr/">［Redis源码阅读］实现一个redis命令--nonzerodecr</a> <span
+        class="italic text-gray-400">2018/06/21</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2018/2018-06-11-what-happen-when-you-use-get-set/">［Redis源码阅读］当你输入get/set命令的时候，redis做了什么</a> <span
+        class="italic text-gray-400">2018/06/11</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2018/2018-05-26-read-redis-src-how-server-start/">［Redis源码阅读］当你启动Redis的时候，Redis做了什么</a> <span
+        class="italic text-gray-400">2018/05/26</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2018/2018-04-04-deep-learning-redis-durability/">［Redis源码阅读］redis持久化</a> <span
+        class="italic text-gray-400">2018/04/04</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2018/2018-03-21-read-redis-src-object/">［Redis源码阅读］redis对象</a> <span
+        class="italic text-gray-400">2018/03/21</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2018/2018-01-07-read-redis-src-dict/">［Redis源码阅读］dict字典的实现</a> <span
+        class="italic text-gray-400">2018/01/07</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2017/2017-11-12-read-redis-src-sds/">［Redis源码阅读］sds字符串实现</a> <span
+        class="italic text-gray-400">2017/11/12</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2017/2017-09-21-php-source-code-number-format/">［PHP源码阅读］number_format函数</a> <span
+        class="italic text-gray-400">2017/09/21</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2017/2017-09-14-learning-php-big-number-detail/">自上而下，逐步揭开PHP解析大整数的面纱</a> <span
+        class="italic text-gray-400">2017/09/14</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2017/2017-07-11-learning-mysql-replication-detail/">MySQL主从复制原理探索</a> <span
+        class="italic text-gray-400">2017/07/11</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2017/2017-06-24-mark-mysql-replication-bad-case/">【踩坑记录】记一次MySQL主从复制延迟的坑</a> <span
+        class="italic text-gray-400">2017/06/24</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2017/2017-04-27-learning-src-cjson/">[源码学习]cjson库学习</a> <span
+        class="italic text-gray-400">2017/04/27</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2017/2017-04-04-analysis-redis-commands-atomicity/">[深入学习Redis]RedisAPI的原子性分析</a> <span
+        class="italic text-gray-400">2017/04/04</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-11-06-mhs-parse-request/">[计算机网络]httpserver--如何解析HTTP请求报文</a> <span
+        class="italic text-gray-400">2016/11/06</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-10-28-lcn-simple-server/">[计算机网络]简易http server程序</a> <span
+        class="italic text-gray-400">2016/10/28</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-07-25-how-to-define-great-variable-name/">[代码大全读书笔记]如何定义一个好的变量名</a> <span
+        class="italic text-gray-400">2016/07/25</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-07-06-php-internal-hashtable/">[PHP内核探索]PHP中的哈希表</a> <span
+        class="italic text-gray-400">2016/07/06</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-07-05-php-source-code-array-slice-array-splice/">[PHP源码阅读]array_slice和array_splice函数</a> <span
+        class="italic text-gray-400">2016/07/05</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-06-27-red-black-study-note/">红黑树探索笔记</a> <span
+        class="italic text-gray-400">2016/06/27</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-06-02-php-source-code-strtolower-strtoupper/">[PHP源码阅读]strtolower和strtoupper函数</a> <span
+        class="italic text-gray-400">2016/06/02</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-05-31-php-source-code-count/">[PHP源码阅读]count函数</a> <span
+        class="italic text-gray-400">2016/05/31</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-05-30-php-source-code-array-pop-array-shift/">[PHP源码阅读]array_pop和array_shift函数</a> <span
+        class="italic text-gray-400">2016/05/30</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-05-27-php-source-code-array-push-array-unshift/">[PHP源码阅读]array_push和array_unshift函数</a> <span
+        class="italic text-gray-400">2016/05/27</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-05-26-php-source-code-empty-isset/">[PHP源码阅读]empty和isset函数</a> <span
+        class="italic text-gray-400">2016/05/26</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-05-20-php-source-code-trim-ltrim-rtrim/">[PHP源码阅读]trim、rtrim、ltrim函数</a> <span
+        class="italic text-gray-400">2016/05/20</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-05-20-php-source-code-explode-implode/">［PHP源码阅读］explode和implode函数</a> <span
+        class="italic text-gray-400">2016/05/20</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-05-10-php-source-code-strpos-strstr-stripos-stristr/">［PHP源码阅读］strpos、strstr和stripos、stristr函数</a> <span
+        class="italic text-gray-400">2016/05/10</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-05-09-datasture-and-algorithm-of-search-engine/">［搜索引擎］搜索引擎索引数据结构和算法</a> <span
+        class="italic text-gray-400">2016/05/09</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-04-27-making-tictactoe-game/">［井字游戏］做一款回忆童年的游戏</a> <span
+        class="italic text-gray-400">2016/04/27</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-04-25-multiple-update-database-by-using-pdo/">［PDO绑定参数］使用PHP的PDO扩展进行批量更新操作</a> <span
+        class="italic text-gray-400">2016/04/25</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-04-21-introduce-sphinx-and-study-theory/">［搜索引擎］Sphinx的介绍和原理探索</a> <span
+        class="italic text-gray-400">2016/04/21</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-04-05-learning-on-freecodecamp-konwledge-points/">FreeCodeCamp学习知识点汇总</a> <span
+        class="italic text-gray-400">2016/04/05</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-03-23-code-clean-read-note/">【读书笔记】代码整洁之道</a> <span
+        class="italic text-gray-400">2016/03/23</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-03-18-compile-install-sphinx-extend-on-opensuse/">在OpenSUSE上编译安装sphinx扩展</a> <span
+        class="italic text-gray-400">2016/03/18</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-02-25-analyze-array-unique-array-keys-source-code/">【性能为王】从PHP源码剖析array_keys和array_unique</a> <span
+        class="italic text-gray-400">2016/02/25</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-02-22-phps-source-analytics-strlen/">[PHP源码阅读笔记]strlen函数</a> <span
+        class="italic text-gray-400">2016/02/22</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-02-15-understanding-phps-internal-array-implementation-ch/">【译】理解数组在PHP内部的实现（给PHP开发者的PHP源码-第四部分）</a> <span
+        class="italic text-gray-400">2016/02/15</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-02-12-phps-source-code-for-php-developers-part3-variables-ch/">【译】PHP的变量实现（给PHP开发者的PHP源码-第三部分）</a> <span
+        class="italic text-gray-400">2016/02/12</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-02-10-understanding-phps-internal-function-definitions-ch/">【译】理解PHP内部函数的定义（给PHP开发者的PHP源码-第二部分）</a> <span
+        class="italic text-gray-400">2016/02/10</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-02-04-phps-source-code-for-php-developers-ch/">【译】给PHP开发者的PHP源码-第一部分-源码结构</a> <span
+        class="italic text-gray-400">2016/02/04</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-01-27-compile-install-nginx-in-opensuse/">在OpenSUSE下编译安装Nginx</a> <span
+        class="italic text-gray-400">2016/01/27</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-01-19-the-reason-why-lastInsertId-return-0/">【PDO扩展】lastInsertId函数返回0的原因</a> <span
+        class="italic text-gray-400">2016/01/19</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2016/2016-01-11-faster-way-to-phps-array-unique-function/">【译】更快的方式实现PHP数组去重</a> <span
+        class="italic text-gray-400">2016/01/11</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-12-24-how-to-compile-php7-on-opensuse-leap-42-1/">如何在openSUSE42.1下编译安装PHP7</a> <span
+        class="italic text-gray-400">2015/12/24</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-12-10-nginx-non80-port-forward/">【nginx配置】nginx做非80端口转发</a> <span
+        class="italic text-gray-400">2015/12/10</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-09-30-php-spider-millons-of-zhihu-user-analyze/">【php爬虫】百万级别知乎用户数据爬取与分析</a> <span
+        class="italic text-gray-400">2015/09/30</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-09-28-optimize-count-function-in-innodb/">在MySQL的InnoDB存储引擎中count(*)函数的优化</a> <span
+        class="italic text-gray-400">2015/09/28</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-09-16-get-excute-time-in-php/">在PHP中获取脚本执行时间</a> <span
+        class="italic text-gray-400">2015/09/16</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-09-02-how-php-excute/">PHP是怎么运行的</a> <span
+        class="italic text-gray-400">2015/09/02</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-08-21-php-secure-program/">读书笔记--PHP安全编程</a> <span
+        class="italic text-gray-400">2015/08/21</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-08-17-sql-basic-corse/">读书笔记--SQL基础教程</a> <span
+        class="italic text-gray-400">2015/08/17</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-08-03-using-array-values-to-reorganize-array-in-php/">在php中使用array_values函数调整数组键值</a> <span
+        class="italic text-gray-400">2015/08/03</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-07-30-javascript-equal-expression/">JavaScript中[]==![]比较的分析</a> <span
+        class="italic text-gray-400">2015/07/30</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-07-21-mysql-left-right-inner-join-usage/">MySQL LEFT JOIN, RIGHT JOIN INNER JOIN区别分析</a> <span
+        class="italic text-gray-400">2015/07/21</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-07-18-linux-command-head-and-tail/">Linux获取文件内容命令总结--tail和head</a> <span
+        class="italic text-gray-400">2015/07/18</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-07-16-php-function-array-map/">PHP函数--array_map</a> <span
+        class="italic text-gray-400">2015/07/16</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-07-14-php-function-array-key-exists/">PHP函数--array_key_exists</a> <span
+        class="italic text-gray-400">2015/07/14</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-07-13-php-traversal-order/">PHP数组遍历顺序</a> <span
+        class="italic text-gray-400">2015/07/13</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-07-09-php-explode-and-implode-function/">PHP-explode以及implode函数</a> <span
+        class="italic text-gray-400">2015/07/09</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-06-25-PDO-hole-ATTR-AUTOCOMMIT/">PDO中使用了ATTR_AUTOCOMMIT的一个坑</a> <span
+        class="italic text-gray-400">2015/06/25</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-05-18-php-call-user-func-and-call-user-func-array-function/">PHP中call_user_func和call_user_func_array函数使用与比较</a> <span
+        class="italic text-gray-400">2015/05/18</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-05-16-php-anonymous-function/">PHP匿名函数</a> <span
+        class="italic text-gray-400">2015/05/16</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-05-13-php-the-right-way-functional-rogramming/">PHP之道--函数式编程(译)</a> <span
+        class="italic text-gray-400">2015/05/13</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-05-11-php-optimization-batch-operate-mysql/">PHP优化之批量操作MySQL</a> <span
+        class="italic text-gray-400">2015/05/11</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-05-06-read-tcp-ip-illustrated-address-reverse-protocol/">TCP/IP详解读书笔记--ARP：地址解析协议</a> <span
+        class="italic text-gray-400">2015/05/06</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-05-05-read-tcp-ip-illustrated-IP-Internet-protocol/">TCP/IP详解读书笔记--IP：网际协议</a> <span
+        class="italic text-gray-400">2015/05/05</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-04-30-read-tcp-ip-illustrated-link-layer/">TCP/IP详解读书笔记--链路层</a> <span
+        class="italic text-gray-400">2015/04/30</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-04-29-learning-dwoo-step-by-step-functions-modifiers/">一步步学习Dwoo模板引擎--函数/修饰符</a> <span
+        class="italic text-gray-400">2015/04/29</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-04-25-talk-about-a-hole-in-php-foreach-quote/">说说PHP中foreach引用的一个坑</a> <span
+        class="italic text-gray-400">2015/04/25</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-04-24-learning-dwoo-step-by-step-blocks-tags/">一步步学习Dwoo模板引擎--块和标签</a> <span
+        class="italic text-gray-400">2015/04/24</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-04-23-learning-dwoo-step-by-step-variables/">一步步学习Dwoo模板引擎--变量</a> <span
+        class="italic text-gray-400">2015/04/23</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-04-23-learning-dwoo-step-by-step-dwoo-for-developer/">一步步学习Dwoo模板引擎--后台开发者使用</a> <span
+        class="italic text-gray-400">2015/04/23</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-04-23-learning-dwoo-step-by-step-dwoo-for-designers/">一步步学习Dwoo模板引擎--前端使用</a> <span
+        class="italic text-gray-400">2015/04/23</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-04-22-linux-command-chmod-learning/">Linux命令chmod学习</a> <span
+        class="italic text-gray-400">2015/04/22</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-04-22-learning-dwoo-template-engine-step-by-step-introduction-and-installation/">一步步学习Dwoo模板引擎--介绍、安装</a> <span
+        class="italic text-gray-400">2015/04/22</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-04-01-php-interview-questions-set/">PHP面试题总结</a> <span
+        class="italic text-gray-400">2015/04/01</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-03-28-rotate-array-algorithm-Analysis/">[LeetCode]字符翻转--多种解法分析</a> <span
+        class="italic text-gray-400">2015/03/28</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-03-23-redis-common-command/">Redis常用命令</a> <span
+        class="italic text-gray-400">2015/03/23</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-03-21-php-remove-head-tail-blank/">在PHP中使用正则表达式去除字符串首尾的空格</a> <span
+        class="italic text-gray-400">2015/03/21</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-03-19-redis-first-experience/">Redis初体验--在Window安装Redis和配置PHPRedis扩展</a> <span
+        class="italic text-gray-400">2015/03/19</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-03-06-onclick-closure-solve/">Javascript中使用onclick函数时的闭包问题解决</a> <span
+        class="italic text-gray-400">2015/03/05</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-02-05-php-filter-html/">PHP过滤HTML数据</a> <span
+        class="italic text-gray-400">2015/02/05</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-02-01-php-filter/">PHP过滤器(Filter)的用法总结</a> <span
+        class="italic text-gray-400">2015/02/01</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-01-24-php-ob_start-function/">谈谈PHP中ob_start()函数的用法</a> <span
+        class="italic text-gray-400">2015/01/24</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-01-19-parentdiv-cannot-brace-subdiv/">父DIV浮动后无法撑开子DIV的解决方案</a> <span
+        class="italic text-gray-400">2015/01/19</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-01-17-unlimited-multi-level-classification-implement/">无限多级分类实现(PHP)</a> <span
+        class="italic text-gray-400">2015/01/17</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-01-15-use-dd-to-burn-system/">在Linux中使用dd刻录系统</a> <span
+        class="italic text-gray-400">2015/01/15</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-01-13-tcp-three-way-handshake/">学习TCP三次握手总结</a> <span
+        class="italic text-gray-400">2015/01/13</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-01-10-php-require-include-require_once-include_once/">PHP中require、include、require_once和include_once的区别</a> <span
+        class="italic text-gray-400">2015/01/10</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-01-07-ajax-cross-domain-request-jsonp/">AJAX跨域请求----JSONP</a> <span
+        class="italic text-gray-400">2015/01/07</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-01-05-ajax-theory-summary/">AJAX原理总结</a> <span
+        class="italic text-gray-400">2015/01/05</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-01-04-difference-between-varchar-and-char-in-mysql/">MySQL中VARCHAR与CHAR格式数据的区别</a> <span
+        class="italic text-gray-400">2015/01/04</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2015/2015-01-01-TCP-and-UDP-difference/">TCP字节流和UDP数据报区别</a> <span
+        class="italic text-gray-400">2015/01/01</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2014/2014-12-29-linux-change-path/">Linux修改环境变量</a> <span
+        class="italic text-gray-400">2014/12/29</span>
+    </div>
+  </div>
+  
+  <div class="relative">
+    
+    <div class="my-2 flex gap-2">
+      <a class="no-underline text-gray-700 font-normal" href="/blog/2014/2014-12-28-read-high-performance-web-sites/">读书笔记：高性能网站建设</a> <span
+        class="italic text-gray-400">2014/12/28</span>
+    </div>
+  </div>
+  
+</div>
+
+
+    <footer class="text-sm py-12 text-gray-500 text-center">
+  Hoohack's Blog since 2014
+</footer>
+  </div>
+
+
+</body>
+</html>

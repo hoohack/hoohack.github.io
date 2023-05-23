@@ -1124,6 +1124,9 @@ video {
 .block {
   display: block;
 }
+.inline-block {
+  display: inline-block;
+}
 .inline {
   display: inline;
 }
@@ -1138,6 +1141,9 @@ video {
 }
 .hidden {
   display: none;
+}
+.w-64 {
+  width: 16rem;
 }
 .border-collapse {
   border-collapse: collapse;

@@ -55,6 +55,7 @@ PHP的curl扩展是PHP支持的允许你与各种服务器使用各种类型的�
 在使用正则表达式获取到图片的链接之后，再发一次请求，这时候带上图片请求的来源，说明该请求来自知乎网站的转发。具体例子如下：
 
 
+```php
     function getImg($url, $u_id)
     {
         if (file_exists('./images/' . $u_id . ".jpg"))
@@ -77,6 +78,7 @@ PHP的curl扩展是PHP支持的允许你与各种服务器使用各种类型的�
         file_put_contents('./images/' . $u_id . ".jpg", $img);
         return "images/$u_id" . '.jpg';
     }
+```
 
 ###爬取更多用户
 抓取了自己的个人信息后，就需要再访问用户的关注者和关注了的用户列表获取更多的用户信息。然后一层一层地访问。可以看到，在个人中心页面里，有两个链接如下：
@@ -118,6 +120,7 @@ PHP的curl扩展是PHP支持的允许你与各种服务器使用各种类型的�
 ##使用curl_multi实现多线程抓取页面
 刚开始单进程而且单个curl去抓取数据，速度很慢，挂机爬了一个晚上只能抓到2W的数据，于是便想到能不能在进入新的用户页面发curl请求的时候一次性请求多个用户，后来发现了curl_multi这个好东西。curl_multi这类函数可以实现同时请求多个url，而不是一个个请求，这类似于linux系统中一个进程开多条线程执行的功能。下面是使用curl_multi实现多线程爬虫的示例：
 
+```php
         $mh = curl_multi_init(); //返回一个新cURL批处理句柄
         for ($i = 0; $i < $max_size; $i++)
         {
@@ -172,6 +175,7 @@ PHP的curl扩展是PHP支持的允许你与各种服务器使用各种类型的�
 
         curl_multi_close($mh);
         return $user_arr;
+```
 
 ###HTTP 429 Too Many Requests
 使用curl_multi函数可以同时发多个请求，但是在执行过程中使同时发200个请求的时候，发现很多请求无法返回了，即发现了丢包的情况。进一步分析，使用 curl_getinfo 函数打印每个请求句柄信息，该函数返回一个包含HTTP response信息的关联数组，其中有一个字段是http_code，表示请求返回的HTTP状态码。看到有很多个请求的http_code都是429，这个返回码的意思是发送太多请求了。我猜是知乎做了防爬虫的防护，于是我就拿其他的网站来做测试，发现一次性发200个请求时没问题的，证明了我的猜测，知乎在这方面做了防护，即一次性的请求数量是有限制的。于是我不断地减少请求数量，发现在5的时候就没有丢包情况了。说明在这个程序里一次性最多只能发5个请求，虽然不多，但这也是一次小提升了。
@@ -181,6 +185,7 @@ PHP的curl扩展是PHP支持的允许你与各种服务器使用各种类型的�
 
 在PHP中使用redis示例：
 
+```php
     <?php
         $redis = new Redis();
         $redis->connect('127.0.0.1', '6379');
@@ -189,6 +194,7 @@ PHP的curl扩展是PHP支持的允许你与各种服务器使用各种类型的�
         {
             echo $redis->get('tmp') . "\n";
         }
+```
 
 
 ##使用PHP的pcntl扩展实现多进程
@@ -254,6 +260,7 @@ PHP的curl扩展是PHP支持的允许你与各种服务器使用各种类型的�
 
 改造后的代码如下：
 
+```php
     <?php
          public static function getInstance() {
               static $instances = array();
@@ -264,11 +271,13 @@ PHP的curl扩展是PHP支持的允许你与各种服务器使用各种类型的�
 
               return $instances[$key];
          }
+```
 
 
 ###PHP统计脚本执行时间
 因为想知道每个进程花费的时间是多少，因此写个函数统计脚本执行时间：
 
+```php
     function microtime_float()
     {
          list($u_sec, $sec) = explode(' ', microtime());
@@ -286,6 +295,7 @@ PHP的curl扩展是PHP支持的允许你与各种服务器使用各种类型的�
     $time_cost = sprintf("%.10f", $total_time);
 
     echo "program cost total " . $time_cost . "s\n";
+```
 
 
 若文中有不正确的地方，望各位指出以便改正。

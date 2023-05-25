@@ -70,14 +70,7 @@
 <p>7、近乎实时地监控指标和配置更改。</p>
 <h3 id="%E4%B8%80%E6%AE%B5%E4%BB%A3%E7%A0%81demo" tabindex="-1">一段代码demo</h3>
 <p>讲完这么多，还是看看代码更实在，从Hystrix官网上截取了一段代码如下：</p>
-<p>public class Order {</p>
-<p>private final int orderId;
-private UserAccount user;</p>
-<p>public Order(int orderId) {
-this.orderId = orderId;</p>
-<p>user = new GetUserAccountCommand(new HttpCookie(&quot;mockKey&quot;, &quot;mockValueFromHttpRequest&quot;)).execute();
-}</p>
-<p>}</p>
+<pre class="language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Order</span> <span class="token punctuation">{</span><br><br>        <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token keyword">int</span> orderId<span class="token punctuation">;</span><br>        <span class="token keyword">private</span> <span class="token class-name">UserAccount</span> user<span class="token punctuation">;</span><br>    <br>        <span class="token keyword">public</span> <span class="token class-name">Order</span><span class="token punctuation">(</span><span class="token keyword">int</span> orderId<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>            <span class="token keyword">this</span><span class="token punctuation">.</span>orderId <span class="token operator">=</span> orderId<span class="token punctuation">;</span><br>    <br>            user <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GetUserAccountCommand</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">HttpCookie</span><span class="token punctuation">(</span><span class="token string">"mockKey"</span><span class="token punctuation">,</span> <span class="token string">"mockValueFromHttpRequest"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token punctuation">}</span><br>    <br>    <span class="token punctuation">}</span></code></pre>
 <p>更多代码内容：<a href="https://github.com/Netflix/Hystrix/tree/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/demo">https://github.com/Netflix/Hystrix/tree/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/demo</a></p>
 <p>上面就是Hystrix使用的实例，在实际代码中，就是new一个Command，然后调用execute方法获取结果，那么这一个过程中Hystrix做了什么呢？</p>
 <h3 id="hystrix%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B" tabindex="-1">Hystrix的工作流程</h3>
@@ -91,22 +84,7 @@ queue - 返回一个Future，然后可以通过get方法获得依赖服务的结
 observe - 订阅包含依赖服务响应结果的订阅器，当有结果时返回一个订阅器。
 toObservable - 返回一个订阅器，当订阅它时，会知晓Hystrix命令并返回结果。</p>
 <p>execute的源码如下：</p>
-<p>public R execute() {
-try {
-return queue().get();
-} catch (Exception e) {
-throw Exceptions.sneakyThrow(decomposeException(e));
-}
-}</p>
-<p>public Future&lt;R&gt; queue() {
-/*
-* The Future returned by Observable.toBlocking().toFuture() does not implement the
-* interruption of the execution thread when the &quot;mayInterrupt&quot; flag of Future.cancel(boolean) is set to true;
-* thus, to comply with the contract of Future, we must wrap around it.
-*/
-final Future&lt;R&gt; delegate = toObservable().toBlocking().toFuture();
-// 其他定义
-}</p>
+<pre class="language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token class-name">R</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">try</span> <span class="token punctuation">{</span><br>            <span class="token keyword">return</span> <span class="token function">queue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>            <span class="token keyword">throw</span> <span class="token class-name">Exceptions</span><span class="token punctuation">.</span><span class="token function">sneakyThrow</span><span class="token punctuation">(</span><span class="token function">decomposeException</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">public</span> <span class="token class-name">Future</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">R</span><span class="token punctuation">></span></span> <span class="token function">queue</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token comment">/*<br>         * The Future returned by Observable.toBlocking().toFuture() does not implement the<br>         * interruption of the execution thread when the "mayInterrupt" flag of Future.cancel(boolean) is set to true;<br>         * thus, to comply with the contract of Future, we must wrap around it.<br>         */</span><br>        <span class="token keyword">final</span> <span class="token class-name">Future</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">R</span><span class="token punctuation">></span></span> delegate <span class="token operator">=</span> <span class="token function">toObservable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBlocking</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toFuture</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token comment">// 其他定义</span><br>    <span class="token punctuation">}</span></code></pre>
 <p>从源码看到，execute方法会调用queue().get()方法，queue()会调用toObservable().toBlocking().toFuture()，说明每一个Hystrix命令最终都回到Observable对象的实现，即使是为了返回一个简单的值。</p>
 <p>3、判断Hystrix是否启用缓存且对应请求有缓存值，则返回缓存的结果。</p>
 <p>4、如果3没有缓存，Hystrix会检查它的熔断器，如果此时熔断器开启了，那么Hystrix不会执行命令，直接返回降级结果。</p>

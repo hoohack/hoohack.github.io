@@ -62,15 +62,7 @@
 <p>为了大家听起来不会觉得疑惑，在正式介绍过期删除策略原理之前，先给大家介绍一点可能会用到的相关Redis基础知识。</p>
 <h4 id="redisdb%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9A%E4%B9%89" tabindex="-1">redisDb结构体定义</h4>
 <p>我们知道，Redis是一个键值对数据库，对于每一个redis数据库，redis使用一个redisDb的结构体来保存，它的结构如下：</p>
-<p>typedef struct redisDb {
-dict <em>dict;                 /</em> 数据库的键空间，保存数据库中的所有键值对 */
-dict <em>expires;              /</em> 保存所有过期的键 <em>/
-dict <em>blocking_keys;        /</em> Keys with clients waiting for data (BLPOP)</em>/
-dict <em>ready_keys;           /</em> Blocked keys that received a PUSH */
-dict <em>watched_keys;         /</em> WATCHED keys for MULTI/EXEC CAS <em>/
-int id;                     /</em> 数据库ID字段，代表不同的数据库 <em>/
-long long avg_ttl;          /</em> Average TTL, just for stats */
-} redisDb;</p>
+<pre class="language-c"><code class="language-c">    <span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">redisDb</span> <span class="token punctuation">{</span><br>            dict <span class="token operator">*</span>dict<span class="token punctuation">;</span>                 <span class="token comment">/* 数据库的键空间，保存数据库中的所有键值对 */</span><br>            dict <span class="token operator">*</span>expires<span class="token punctuation">;</span>              <span class="token comment">/* 保存所有过期的键 */</span><br>            dict <span class="token operator">*</span>blocking_keys<span class="token punctuation">;</span>        <span class="token comment">/* Keys with clients waiting for data (BLPOP)*/</span><br>            dict <span class="token operator">*</span>ready_keys<span class="token punctuation">;</span>           <span class="token comment">/* Blocked keys that received a PUSH */</span><br>            dict <span class="token operator">*</span>watched_keys<span class="token punctuation">;</span>         <span class="token comment">/* WATCHED keys for MULTI/EXEC CAS */</span><br>            <span class="token keyword">int</span> id<span class="token punctuation">;</span>                     <span class="token comment">/* 数据库ID字段，代表不同的数据库 */</span><br>            <span class="token keyword">long</span> <span class="token keyword">long</span> avg_ttl<span class="token punctuation">;</span>          <span class="token comment">/* Average TTL, just for stats */</span><br>    <span class="token punctuation">}</span> redisDb<span class="token punctuation">;</span></code></pre>
 <p>从结构定义中我们可以发现，对于每一个Redis数据库，都会使用一个字典的数据结构来保存每一个键值对，dict的结构图如下：</p>
 <p><img src="https://www.hoohack.me/assets/images/2019/06/redis_dict_struct.png" alt="dict struct"></p>
 <p>以上就是过期策略实现时用到比较核心的数据结构。程序=数据结构+算法，介绍完数据结构以后，接下来继续看看处理的算法是怎样的。</p>
@@ -84,50 +76,25 @@ long long avg_ttl;          /</em> Average TTL, just for stats */
 <p>从Redis持久化文件中恢复文件或者修改key，如果数据中的key已经设置了过期时间，就将这个key加入到expires字典中</p>
 <p>以上这些操作都会将过期的key保存到expires。redis会定期从expires字典中清理过期的key。</p>
 <h4 id="redis%E6%B8%85%E7%90%86%E8%BF%87%E6%9C%9Fkey%E7%9A%84%E6%97%B6%E6%9C%BA" tabindex="-1">Redis清理过期key的时机</h4>
-<p>1、Redis在启动的时候，会注册两种事件，一种是时间事件，另一种是文件事件。（可参考<a href="https://www.hoohack.me/2018/05/26/read-redis-src-how-server-start">启动Redis的时候，Redis做了什么</a>）时间事件主要是Redis处理后台操作的一类事件，比如客户端超时、删除过期key；文件事件是处理请求。</p>
+<p>1、Redis在启动的时候，会注册两种事件，一种是时间事件，另一种是文件事件。（可参考<a href="https://www.hoohack.me/blog/2018/2018-05-26-read-redis-src-how-server-start">启动Redis的时候，Redis做了什么</a>）时间事件主要是Redis处理后台操作的一类事件，比如客户端超时、删除过期key；文件事件是处理请求。</p>
 <p>在时间事件中，redis注册的回调函数是serverCron，在定时任务回调函数中，通过调用databasesCron清理部分过期key。（这是定期删除的实现。）</p>
-<p>int serverCron(struct aeEventLoop *eventLoop, long long id, void <em>clientData)
-{
-…
-/</em> Handle background operations on Redis databases. */
-databasesCron();
-...
-}</p>
+<pre class="language-c"><code class="language-c">    <span class="token keyword">int</span> <span class="token function">serverCron</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">aeEventLoop</span> <span class="token operator">*</span>eventLoop<span class="token punctuation">,</span> <span class="token keyword">long</span> <span class="token keyword">long</span> id<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>clientData<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>        …<br>        <span class="token comment">/* Handle background operations on Redis databases. */</span><br>        <span class="token function">databasesCron</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><br>    <span class="token punctuation">}</span></code></pre>
 <p>2、每次访问key的时候，都会调用expireIfNeeded函数判断key是否过期，如果是，清理key。（这是惰性删除的实现。）</p>
-<p>robj *lookupKeyRead(redisDb *db, robj *key) {
-robj *val;
-expireIfNeeded(db,key);
-val = lookupKey(db,key);
-...
-return val;
-}</p>
+<pre class="language-c"><code class="language-c">    robj <span class="token operator">*</span><span class="token function">lookupKeyRead</span><span class="token punctuation">(</span>redisDb <span class="token operator">*</span>db<span class="token punctuation">,</span> robj <span class="token operator">*</span>key<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        robj <span class="token operator">*</span>val<span class="token punctuation">;</span><br>        <span class="token function">expireIfNeeded</span><span class="token punctuation">(</span>db<span class="token punctuation">,</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span><br>        val <span class="token operator">=</span> <span class="token function">lookupKey</span><span class="token punctuation">(</span>db<span class="token punctuation">,</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span><br>         <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><br>        <span class="token keyword">return</span> val<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span></code></pre>
 <p>3、每次事件循环执行时，主动清理部分过期key。（这也是惰性删除的实现。）</p>
-<p>void aeMain(aeEventLoop *eventLoop) {
-eventLoop-&gt;stop = 0;
-while (!eventLoop-&gt;stop) {
-if (eventLoop-&gt;beforesleep != NULL)
-eventLoop-&gt;beforesleep(eventLoop);
-aeProcessEvents(eventLoop, AE_ALL_EVENTS);
-}
-}</p>
-<p>void beforeSleep(struct aeEventLoop <em>eventLoop) {
-...
-/</em> Run a fast expire cycle (the called function will return
-- ASAP if a fast cycle is not needed). */
-if (server.active_expire_enabled &amp;&amp; server.masterhost == NULL)
-activeExpireCycle(ACTIVE_EXPIRE_CYCLE_FAST);
-...
-}</p>
+<pre class="language-c"><code class="language-c">    <span class="token keyword">void</span> <span class="token function">aeMain</span><span class="token punctuation">(</span>aeEventLoop <span class="token operator">*</span>eventLoop<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        eventLoop<span class="token operator">-></span>stop <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><br>        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span>eventLoop<span class="token operator">-></span>stop<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>            <span class="token keyword">if</span> <span class="token punctuation">(</span>eventLoop<span class="token operator">-></span>beforesleep <span class="token operator">!=</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><br>                eventLoop<span class="token operator">-></span><span class="token function">beforesleep</span><span class="token punctuation">(</span>eventLoop<span class="token punctuation">)</span><span class="token punctuation">;</span><br>            <span class="token function">aeProcessEvents</span><span class="token punctuation">(</span>eventLoop<span class="token punctuation">,</span> AE_ALL_EVENTS<span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">void</span> <span class="token function">beforeSleep</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">aeEventLoop</span> <span class="token operator">*</span>eventLoop<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>           <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><br>           <span class="token comment">/* Run a fast expire cycle (the called function will return<br>            - ASAP if a fast cycle is not needed). */</span><br>           <span class="token keyword">if</span> <span class="token punctuation">(</span>server<span class="token punctuation">.</span>active_expire_enabled <span class="token operator">&amp;&amp;</span> server<span class="token punctuation">.</span>masterhost <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><br>               <span class="token function">activeExpireCycle</span><span class="token punctuation">(</span>ACTIVE_EXPIRE_CYCLE_FAST<span class="token punctuation">)</span><span class="token punctuation">;</span><br>           <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><br>       <span class="token punctuation">}</span></code></pre>
 <h4 id="%E8%BF%87%E6%9C%9F%E7%AD%96%E7%95%A5%E7%9A%84%E5%AE%9E%E7%8E%B0" tabindex="-1">过期策略的实现</h4>
 <p>我们知道，Redis是以单线程运行的，在清理key是不能占用过多的时间和CPU，需要在尽量不影响正常的服务情况下，进行过期key的清理。过期清理的算法如下：</p>
-<p>1、server.hz配置了serverCron任务的执行周期，默认是10，即CPU空闲时每秒执行十次。
-2、每次清理过期key的时间不能超过CPU时间的25%：timelimit = 1000000*ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC/server.hz/100;
-比如，如果hz=1，一次清理的最大时间为250ms，hz=10，一次清理的最大时间为25ms。
-3、如果是快速清理模式（在beforeSleep函数调用），则一次清理的最大时间是1ms。
-4、依次遍历所有的DB。
-5、从db的过期列表中随机取20个key，判断是否过期，如果过期，则清理。
-6、如果有5个以上的key过期，则重复步骤5，否则继续处理下一个db
-7、在清理过程中，如果达到CPU的25%时间，退出清理过程。</p>
+<ul>
+<li>1、server.hz配置了serverCron任务的执行周期，默认是10，即CPU空闲时每秒执行十次。</li>
+<li>2、每次清理过期key的时间不能超过CPU时间的25%：timelimit = 1000000*ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC/server.hz/100;
+比如，如果hz=1，一次清理的最大时间为250ms，hz=10，一次清理的最大时间为25ms。</li>
+<li>3、如果是快速清理模式（在beforeSleep函数调用），则一次清理的最大时间是1ms。</li>
+<li>4、依次遍历所有的DB。</li>
+<li>5、从db的过期列表中随机取20个key，判断是否过期，如果过期，则清理。</li>
+<li>6、如果有5个以上的key过期，则重复步骤5，否则继续处理下一个db</li>
+<li>7、在清理过程中，如果达到CPU的25%时间，退出清理过程。</li>
+</ul>
 <p>从实现的算法中可以看出，这只是基于概率的简单算法，且是随机的抽取，因此是无法删除所有的过期key，通过调高hz参数可以提升清理的频率，过期key可以更及时的被删除，但hz太高会增加CPU时间的消耗。</p>
 <h4 id="%E5%88%A0%E9%99%A4key" tabindex="-1">删除key</h4>
 <p>Redis4.0以前，删除指令是del，del会直接释放对象的内存，大部分情况下，这个指令非常快，没有任何延迟的感觉。但是，如果删除的key是一个非常大的对象，比如一个包含了千万元素的hash，那么删除操作就会导致单线程卡顿，Redis的响应就慢了。为了解决这个问题，在Redis4.0版本引入了unlink指令，能对删除操作进行“懒”处理，将删除操作丢给后台线程，由后台线程来异步回收内存。</p>
@@ -152,20 +119,11 @@ activeExpireCycle(ACTIVE_EXPIRE_CYCLE_FAST);
 </blockquote>
 <h4 id="%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BC%9A%E8%BF%9B%E8%A1%8C%E6%B7%98%E6%B1%B0%EF%BC%9F" tabindex="-1">什么时候会进行淘汰？</h4>
 <p>Redis会在每一次处理命令的时候（processCommand函数调用freeMemoryIfNeeded）判断当前redis是否达到了内存的最大限制，如果达到限制，则使用对应的算法去处理需要删除的key。伪代码如下：</p>
-<p>int processCommand(client *c)
-{
-...
-if (server.maxmemory) {
-int retval = freeMemoryIfNeeded();<br>
-}
-...
-}</p>
+<pre class="language-c"><code class="language-c">    <span class="token keyword">int</span> <span class="token function">processCommand</span><span class="token punctuation">(</span>client <span class="token operator">*</span>c<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><br>        <span class="token keyword">if</span> <span class="token punctuation">(</span>server<span class="token punctuation">.</span>maxmemory<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>            <span class="token keyword">int</span> retval <span class="token operator">=</span> <span class="token function">freeMemoryIfNeeded</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <br>        <span class="token punctuation">}</span><br>        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><br>    <span class="token punctuation">}</span></code></pre>
 <h4 id="lru%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86" tabindex="-1">LRU实现原理</h4>
 <p>在淘汰key时，Redis默认最常用的是LRU算法（Latest Recently Used）。Redis通过在每一个redisObject保存lru属性来保存key最近的访问时间，在实现LRU算法时直接读取key的lru属性。</p>
 <p>具体实现时，Redis遍历每一个db，从每一个db中随机抽取一批样本key，默认是3个key，再从这3个key中，删除最近最少使用的key。实现伪代码如下：</p>
-<p>keys = getSomeKeys(dict, sample)
-key = findSmallestIdle(keys)
-remove(key)</p>
+<pre class="language-c"><code class="language-c">    keys <span class="token operator">=</span> <span class="token function">getSomeKeys</span><span class="token punctuation">(</span>dict<span class="token punctuation">,</span> sample<span class="token punctuation">)</span><br>    key <span class="token operator">=</span> <span class="token function">findSmallestIdle</span><span class="token punctuation">(</span>keys<span class="token punctuation">)</span><br>    <span class="token function">remove</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span></code></pre>
 <p>3这个数字是配置文件中的maxmeory-samples字段，也是可以可以设置采样的大小，如果设置为10，那么效果会更好，不过也会耗费更多的CPU资源。</p>
 <p>以上就是Redis内存回收机制的原理介绍，了解了上面的原理介绍后，回到一开始的问题，在怀疑Redis内存回收机制的时候能不能及时判断故障是不是因为Redis的内存回收机制导致的呢？</p>
 <h2 id="%E5%9B%9E%E5%88%B0%E9%97%AE%E9%A2%98%E5%8E%9F%E7%82%B9" tabindex="-1">回到问题原点</h2>

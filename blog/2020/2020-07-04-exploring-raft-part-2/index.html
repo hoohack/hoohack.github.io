@@ -29,7 +29,7 @@
       <blockquote>
 <p>声明：本系列文章面向的读者需要看过Raft论文或者对Raft有一定的了解，如果没有看过论文或者不了解Raft，建议先去学习后再来看，否则会比较难懂。</p>
 </blockquote>
-<p>紧接着<a href="https://www.hoohack.me/2020/06/21/exploring-raft-part-one">上一篇</a>的内容，继续探索Raft的leader选举、日志复制、安全性等等实现细节。</p>
+<p>紧接着<a href="https://www.hoohack.me/blog/2020/2020-06-21-exploring-raft-part-one/">上一篇</a>的内容，继续探索Raft的leader选举、日志复制、安全性等等实现细节。</p>
 <h2 id="raft%E5%9F%BA%E7%A1%80" tabindex="-1">Raft基础</h2>
 <p>一个Raft集群通常包含多个机器，比较普遍的Raft集群组成是2F+1，F代表的是可以发生失败的机器数量。比如集群有5台机器，那么Raft只能容忍两台服务失败，如果三台服务不能工作了，那么整个集群也就失败了。大多数Raft集群的机器数量都是5个。</p>
 <p>每台机器都有三个状态：leader、follower、candidate，如下图所示，就是三种状态之间的转换图。</p>
@@ -39,17 +39,23 @@
 <li>follower只是接收来自leader和candidate的请求，不会主动发起请求。如果follower没有收到任何通信或信号，转变为candidate，然后重新进行一轮新的选举</li>
 <li>candidate，是在选举新leader时出现的状态，如果candidate收到来自大多数机器的投票请求(RequestVote RPC，以下称为RequestVote请求)，就会转变为leader</li>
 </ul>
-<p>Raft把时间按照term划分，每个term以一次选举开始，如果某一个candidate成为新的leader后，就进入正常运行阶段，如果没有选举出新的leader，那么就再次进行一次新的选举，这时候又是一个新的term。简单地说，在Raft中，是以term做时间单位。如下图所示：</p>
+<p>Raft把时间按照term划分，每个term以一次选举开始，如果某一个candidate成为新的leader后，就进入正常运行阶段，如果没有选举出新的leader，那么就再次进行一次新的选举，这时候又是一个新的term。</p>
+<p>简单地说，在Raft中，是以term做时间单位。如下图所示：</p>
 <p><img src="https://www.hoohack.me/assets/images/2020/07/raft-time-unit.jpg" alt="Raft时间单位"></p>
 <p>每一个服务器都会保存当前的term序号，当前的term序号会在服务器通信之间传递。如果服务器收到的请求包含了旧的term，服务器会拒绝该请求。</p>
 <h2 id="leader%E9%80%89%E4%B8%BE" tabindex="-1">leader选举</h2>
-<p>再来看看Raft是如何进行leader选举的，Raft使用心跳机制来触发leader选举。当服务器启动的时候，初始状态是follower，leader发送心跳的方式是发起一个不包含日志条目的AppendEntries RPC（以下称为Append请求）到所有的follower，follower收到来自leader的心跳请求包，说明leader还在&quot;存活&quot;着，如果长时间没有收到leader的心跳，那么follower就会认为当前没有leader，转为candidate，然后发起一次新的leader选举。</p>
+<p>再来看看Raft是如何进行leader选举的，Raft使用心跳机制来触发leader选举。</p>
+<p>当服务器启动的时候，初始状态是follower，leader发送心跳的方式是发起一个不包含日志条目的AppendEntries RPC（以下称为Append请求）到所有的follower，follower收到来自leader的心跳请求包，说明leader还在&quot;存活&quot;着，如果长时间没有收到leader的心跳，那么follower就会认为当前没有leader，转为candidate，然后发起一次新的leader选举。</p>
 <p>当leader选举开始时，follower会将当前的term自增，随后马上进入candidate状态，并发起一次RequestVote请求到所有机器，请求其他机器对它进行投票。Raft集群中的服务器在一个term里，除了投给自己之外，只能投票给一个candidate。</p>
-<p>如果有以下三种情况发生，candidate的状态就会发生转变：
-1、candidate获得大多数服务器的投票，成为leader，此时leader会马上发出心跳消息包，通知其他机器它成为了leader
-2、candidate收到来自其他机器的心跳消息包，且该心跳包含的term大于当前candidate的term，说明已经有新的leader产生，candidate转为follwoer。（如果心跳包含的term小于当前candidate的term，candidate会直接忽略该心跳）。
-3、所有的candidate在一段时间内都没能成功获得大多数投票，该次选举被认为超时，candidate会重新进行一次选举。但是如果没有其他的限制，多个follower同时成为candidate，candidate就会同时发出RequestVote请求，投票就会被分散到多个candidate上，因此没有candidate赢得选举，选举超时，再发起一次选举又是相同的结果，就会进入一个超时导致没有leader的死循环。</p>
-<p>为了解决第三种情况，Raft用了随机超时时间来确保投票分散的情况不会发生。随机超时时间的意思就是，Raft的超时时间是在一个区间（如150-300ms）里面选择，而不是固定的一个时间单位。这样一来，大部分情况下就只有一个服务器会超时。另外，在超时之后，Raft使用随机时间来启动一次新的选举，这样就不会出现所有的candidate同时开始重新选举而导致进入选举超时的死循环。</p>
+<p>如果有以下三种情况发生，candidate的状态就会发生转变：</p>
+<ul>
+<li>1、candidate获得大多数服务器的投票，成为leader，此时leader会马上发出心跳消息包，通知其他机器它成为了leader</li>
+<li>2、candidate收到来自其他机器的心跳消息包，且该心跳包含的term大于当前candidate的term，说明已经有新的leader产生，candidate转为follwoer。（如果心跳包含的term小于当前candidate的term，candidate会直接忽略该心跳）。</li>
+<li>3、所有的candidate在一段时间内都没能成功获得大多数投票，该次选举被认为超时，candidate会重新进行一次选举。但是如果没有其他的限制，多个follower同时成为candidate，candidate就会同时发出RequestVote请求，投票就会被分散到多个candidate上，因此没有candidate赢得选举，选举超时，再发起一次选举又是相同的结果，就会进入一个超时导致没有leader的死循环。</li>
+</ul>
+<p>为了解决第三种情况，Raft用了随机超时时间来确保投票分散的情况不会发生。</p>
+<p>随机超时时间的意思就是，Raft的超时时间是在一个区间（如150-300ms）里面选择，而不是固定的一个时间单位。这样一来，大部分情况下就只有一个服务器会超时。</p>
+<p>另外，在超时之后，Raft使用随机时间来启动一次新的选举，这样就不会出现所有的candidate同时开始重新选举而导致进入选举超时的死循环。</p>
 <p>这个随机超时时间机制简单且有效地解决这个死循环的问题。</p>
 <h2 id="%E6%97%A5%E5%BF%97%E5%A4%8D%E5%88%B6" tabindex="-1">日志复制</h2>
 <p>Raft是保证分布式系统数据一致性的协议，主要的工作就是接收客户端的数据，并同步数据，保证所有节点的数据一致。</p>
@@ -63,15 +69,19 @@
 </blockquote>
 <p>上面描述的日志复制流程如下图所示：</p>
 <p><img src="https://www.hoohack.me/assets/images/2020/07/raft-leader-log-replicate.jpg" alt="Raft日志复制流程"></p>
-<p>1、client发起指令</p>
-<p>2、leader收到指令，发起Append请求到所有follower</p>
-<p>3、follower同步日志到本地</p>
-<p>4、follower操作完成，返回给leader</p>
-<p>5、如果大多数的follower完成同步，leader返回响应给client</p>
+<ul>
+<li>1、client发起指令</li>
+<li>2、leader收到指令，发起Append请求到所有follower</li>
+<li>3、follower同步日志到本地</li>
+<li>4、follower操作完成，返回给leader</li>
+<li>5、如果大多数的follower完成同步，leader返回响应给client</li>
+</ul>
 <h3 id="%E6%97%A5%E5%BF%97%E5%8C%B9%E9%85%8D%E7%89%B9%E6%80%A7" tabindex="-1">日志匹配特性</h3>
 <p>关于日志，Raft实现并维护了以下两个特性：</p>
-<p>1、如果两个日志条目有相同的下标和term，那么它们保存的指令是一样的</p>
-<p>2、如果两个日志条目有相同的下标和term，那么在它们之前的日志都是一样的</p>
+<ul>
+<li>1、如果两个日志条目有相同的下标和term，那么它们保存的指令是一样的</li>
+<li>2、如果两个日志条目有相同的下标和term，那么在它们之前的日志都是一样的</li>
+</ul>
 <p>这两个特性共同构成了Raft的日志匹配特性。如果两个日志条目有相同的下标和term，那么这些日志都是相同的。在Raft中，leader在某个term的某个下标最多只会创建一个日志条目，且它的下标不会发生变化。每一次Append请求时都会做一致性检查（follower在收到Append请求时，如果发现前一个日志条目的下标和term与请求包含prevLogIndex与prevLogTerm的不一致，follower会拒绝该请求）。Raft通过以上操作来维护日志匹配特性，从而保证了日志条目的一致性。</p>
 <h3 id="%E6%97%A5%E5%BF%97%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7" tabindex="-1">日志的一致性</h3>
 <p>正常情况下，leader与follower的数据是保持一致的，但是如果leader突然挂了，可能会导致数据出现不一致。</p>

@@ -92,7 +92,7 @@ Hystrix是一个通过增加延迟容错和容错逻辑来控制分布式服务�
 
 ### 一段代码demo
 讲完这么多，还是看看代码更实在，从Hystrix官网上截取了一段代码如下：
-
+```java
     public class Order {
 
         private final int orderId;
@@ -105,6 +105,7 @@ Hystrix是一个通过增加延迟容错和容错逻辑来控制分布式服务�
         }
     
     }
+```
 
 更多代码内容：[https://github.com/Netflix/Hystrix/tree/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/demo](https://github.com/Netflix/Hystrix/tree/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/demo)
 
@@ -128,7 +129,7 @@ Hystrix是一个通过增加延迟容错和容错逻辑来控制分布式服务�
     toObservable - 返回一个订阅器，当订阅它时，会知晓Hystrix命令并返回结果。
 
 execute的源码如下：
-
+```java
     public R execute() {
         try {
             return queue().get();
@@ -146,6 +147,7 @@ execute的源码如下：
         final Future<R> delegate = toObservable().toBlocking().toFuture();
         // 其他定义
     }
+```
 
 从源码看到，execute方法会调用queue().get()方法，queue()会调用toObservable().toBlocking().toFuture()，说明每一个Hystrix命令最终都回到Observable对象的实现，即使是为了返回一个简单的值。
 

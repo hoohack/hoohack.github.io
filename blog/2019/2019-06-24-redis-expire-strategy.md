@@ -58,6 +58,7 @@ Redis的内存回收主要分为过期删除策略和内存淘汰策略两部分
 #### redisDb结构体定义
 我们知道，Redis是一个键值对数据库，对于每一个redis数据库，redis使用一个redisDb的结构体来保存，它的结构如下：
 
+```c
     typedef struct redisDb {
             dict *dict;                 /* 数据库的键空间，保存数据库中的所有键值对 */
             dict *expires;              /* 保存所有过期的键 */
@@ -67,6 +68,7 @@ Redis的内存回收主要分为过期删除策略和内存淘汰策略两部分
             int id;                     /* 数据库ID字段，代表不同的数据库 */
             long long avg_ttl;          /* Average TTL, just for stats */
     } redisDb;
+```
 
 从结构定义中我们可以发现，对于每一个Redis数据库，都会使用一个字典的数据结构来保存每一个键值对，dict的结构图如下：
 
@@ -92,10 +94,10 @@ redisDb定义的第二个属性是expires，它的类型也是字典，Redis会�
 以上这些操作都会将过期的key保存到expires。redis会定期从expires字典中清理过期的key。
 
 #### Redis清理过期key的时机
-1、Redis在启动的时候，会注册两种事件，一种是时间事件，另一种是文件事件。（可参考[启动Redis的时候，Redis做了什么](https://www.hoohack.me/2018/05/26/read-redis-src-how-server-start)）时间事件主要是Redis处理后台操作的一类事件，比如客户端超时、删除过期key；文件事件是处理请求。
+1、Redis在启动的时候，会注册两种事件，一种是时间事件，另一种是文件事件。（可参考[启动Redis的时候，Redis做了什么](https://www.hoohack.me/blog/2018/2018-05-26-read-redis-src-how-server-start)）时间事件主要是Redis处理后台操作的一类事件，比如客户端超时、删除过期key；文件事件是处理请求。
 
 在时间事件中，redis注册的回调函数是serverCron，在定时任务回调函数中，通过调用databasesCron清理部分过期key。（这是定期删除的实现。）
-    
+```c  
     int serverCron(struct aeEventLoop *eventLoop, long long id, void *clientData)
     {
         …
@@ -103,9 +105,10 @@ redisDb定义的第二个属性是expires，它的类型也是字典，Redis会�
         databasesCron();
         ...
     }
+```
 
 2、每次访问key的时候，都会调用expireIfNeeded函数判断key是否过期，如果是，清理key。（这是惰性删除的实现。）
-    
+```c
     robj *lookupKeyRead(redisDb *db, robj *key) {
         robj *val;
         expireIfNeeded(db,key);
@@ -113,10 +116,10 @@ redisDb定义的第二个属性是expires，它的类型也是字典，Redis会�
          ...
         return val;
     }
-
+```
 
 3、每次事件循环执行时，主动清理部分过期key。（这也是惰性删除的实现。）
-
+```c
     void aeMain(aeEventLoop *eventLoop) {
         eventLoop->stop = 0;
         while (!eventLoop->stop) {
@@ -134,19 +137,18 @@ redisDb定义的第二个属性是expires，它的类型也是字典，Redis会�
                activeExpireCycle(ACTIVE_EXPIRE_CYCLE_FAST);
            ...
        }
-
+```
 
 #### 过期策略的实现
 我们知道，Redis是以单线程运行的，在清理key是不能占用过多的时间和CPU，需要在尽量不影响正常的服务情况下，进行过期key的清理。过期清理的算法如下：
-    
-    1、server.hz配置了serverCron任务的执行周期，默认是10，即CPU空闲时每秒执行十次。
-    2、每次清理过期key的时间不能超过CPU时间的25%：timelimit = 1000000*ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC/server.hz/100;
-        比如，如果hz=1，一次清理的最大时间为250ms，hz=10，一次清理的最大时间为25ms。
-    3、如果是快速清理模式（在beforeSleep函数调用），则一次清理的最大时间是1ms。
-    4、依次遍历所有的DB。
-    5、从db的过期列表中随机取20个key，判断是否过期，如果过期，则清理。
-    6、如果有5个以上的key过期，则重复步骤5，否则继续处理下一个db
-    7、在清理过程中，如果达到CPU的25%时间，退出清理过程。
+- 1、server.hz配置了serverCron任务的执行周期，默认是10，即CPU空闲时每秒执行十次。
+- 2、每次清理过期key的时间不能超过CPU时间的25%：timelimit = 1000000*ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC/server.hz/100;
+    比如，如果hz=1，一次清理的最大时间为250ms，hz=10，一次清理的最大时间为25ms。
+- 3、如果是快速清理模式（在beforeSleep函数调用），则一次清理的最大时间是1ms。
+- 4、依次遍历所有的DB。
+- 5、从db的过期列表中随机取20个key，判断是否过期，如果过期，则清理。
+- 6、如果有5个以上的key过期，则重复步骤5，否则继续处理下一个db
+- 7、在清理过程中，如果达到CPU的25%时间，退出清理过程。
 
 从实现的算法中可以看出，这只是基于概率的简单算法，且是随机的抽取，因此是无法删除所有的过期key，通过调高hz参数可以提升清理的频率，过期key可以更及时的被删除，但hz太高会增加CPU时间的消耗。
 
@@ -177,7 +179,8 @@ Redis的内存淘汰策略，是指内存达到maxmemory极限时，使用某种
 
 #### 什么时候会进行淘汰？
 Redis会在每一次处理命令的时候（processCommand函数调用freeMemoryIfNeeded）判断当前redis是否达到了内存的最大限制，如果达到限制，则使用对应的算法去处理需要删除的key。伪代码如下：
-    
+
+```c
     int processCommand(client *c)
     {
         ...
@@ -186,15 +189,18 @@ Redis会在每一次处理命令的时候（processCommand函数调用freeMemory
         }
         ...
     }
+```
 
 #### LRU实现原理
 在淘汰key时，Redis默认最常用的是LRU算法（Latest Recently Used）。Redis通过在每一个redisObject保存lru属性来保存key最近的访问时间，在实现LRU算法时直接读取key的lru属性。
 
 具体实现时，Redis遍历每一个db，从每一个db中随机抽取一批样本key，默认是3个key，再从这3个key中，删除最近最少使用的key。实现伪代码如下：
-    
+
+```c 
     keys = getSomeKeys(dict, sample)
     key = findSmallestIdle(keys)
     remove(key)
+```
 
 3这个数字是配置文件中的maxmeory-samples字段，也是可以可以设置采样的大小，如果设置为10，那么效果会更好，不过也会耗费更多的CPU资源。
 
